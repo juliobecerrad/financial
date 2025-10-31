@@ -1,8 +1,8 @@
-const CACHE_NAME = 'control-financiero-cache-v1';
+const CACHE_NAME = 'control-financiero-cache-v2';
 // Lista de archivos base para que la app funcione offline.
 const urlsToCache = [
-  'Financial2.html',
-  '/', // Redirige a la raíz (usualmente abre el index o el start_url)
+  './Financial2.html',
+  './', // Redirige a la raíz (usualmente abre el index o el start_url)
   'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css',
   'https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js',
   'https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0'
@@ -70,4 +70,5 @@ self.addEventListener('activate', (event) => {
       );
     })
   );
+
 });
