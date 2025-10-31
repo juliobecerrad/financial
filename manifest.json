@@ -2,7 +2,7 @@
   "name": "Control Financiero",
   "short_name": "Finanzas",
   "description": "Aplicación de control de gastos e ingresos personales.",
-  "start_url": "Financial2.html",
+  "start_url": "./Financial2.html",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#007bff",
@@ -18,4 +18,5 @@
       "type": "image/png"
     }
   ]
+
 }
