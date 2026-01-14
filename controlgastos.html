@@ -476,6 +476,67 @@
             font-size: 1em;
             color: var(--text-main);
         }
+
+
+/* --- TECLADO NUMPAD PRO (Diseño Final) --- */
+        .keypad-grid-pro {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr); /* 4 Columnas iguales */
+            grid-template-rows: repeat(4, 1fr);    /* 4 Filas iguales */
+            gap: 8px;
+            height: 240px; /* Altura cómoda y fija */
+            margin-top: 5px;
+        }
+
+        /* Estilo base de botones */
+        .keypad-grid-pro .key-btn {
+            height: 100%;
+            width: 100%;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            border-radius: 10px;
+            background-color: #F8FAFC; /* Color base teclas */
+            border: 1px solid var(--border-color);
+        }
+
+        /* Tecla CERO (Ocupa 2 espacios a la izquierda) */
+        .key-zero-span {
+            grid-column: 1 / 3; /* Ocupa columnas 1 y 2 */
+            grid-row: 4;        /* Fila 4 */
+        }
+
+        /* Tecla PUNTO */
+        .key-dot {
+            grid-column: 3;
+            grid-row: 4;
+        }
+
+
+        /* Botón GUARDAR (Columna derecha, ocupa 3 filas) - APLICA A GASTO E INGRESO */
+        #btnAddGasto, #btnAddIngreso {
+            grid-column: 4;
+            grid-row: 1 / 4; /* Desde fila 1 hasta el final de la 3 */
+            background-color: transparent !important; 
+            border: 2px solid var(--success-color) !important;
+            color: var(--success-color) !important;
+            font-size: 2.2em;
+        }
+        #btnAddGasto:active, #btnAddIngreso:active {
+            background-color: rgba(16, 185, 129, 0.1) !important;
+        }
+ 
+        /* Botón BORRAR (Columna derecha, última fila) */
+        .key-back-pos {
+            grid-column: 4;
+            grid-row: 4;
+            color: var(--danger-color) !important;
+            background-color: #FEF2F2 !important;
+            border-color: #FECACA !important;
+            font-size: 1.3em !important;
+        }
     </style>
 </head>
 <body>
@@ -518,7 +579,6 @@
                     <div class="smart-value-display">
                         <span id="smartValueDisplay" style="width: 100%; text-align: right; margin-right: 10px;">0.00</span>
                         <div class="cursor-blink" id="cursorGasto"></div>
-                        <button class="btn-backspace-inline" onclick="tecladoPress('back')"><i class="fas fa-backspace"></i></button>
                     </div>
                 </div>
                 <div class="payment-pills-row">
@@ -542,24 +602,31 @@
                         <div id="budgetProgressBar" class="budget-bar-fill"></div>
                     </div>
                 </div>
-                <div id="keypadContainer" class="keypad-container-gasto">
-                    <div class="keypad-grid">
-                        <button class="key-btn" onclick="tecladoPress('1')">1</button>
-                        <button class="key-btn" onclick="tecladoPress('2')">2</button>
-                        <button class="key-btn" onclick="tecladoPress('3')">3</button>
-                        <button class="key-btn" onclick="tecladoPress('4')">4</button>
-                        <button class="key-btn" onclick="tecladoPress('5')">5</button>
-                        <button class="key-btn" onclick="tecladoPress('6')">6</button>
-                        <button class="key-btn" onclick="tecladoPress('7')">7</button>
-                        <button class="key-btn" onclick="tecladoPress('8')">8</button>
-                        <button class="key-btn" onclick="tecladoPress('9')">9</button>
-                        <button class="key-btn" onclick="tecladoPress('.')">.</button>
-                        <button class="key-btn" onclick="tecladoPress('0')">0</button>
-                        <button class="key-btn key-btn-success" id="btnAddGasto" onclick="agregarGasto()">
-                            <i class="fas fa-check"></i>
-                        </button>
+                    <div id="keypadContainer" class="keypad-container-gasto">
+                        <div class="keypad-grid-pro">
+                            <button class="key-btn" onclick="tecladoPress('1')">1</button>
+                            <button class="key-btn" onclick="tecladoPress('2')">2</button>
+                            <button class="key-btn" onclick="tecladoPress('3')">3</button>
+                            
+                            <button class="key-btn" id="btnAddGasto" onclick="agregarGasto()">
+                                <i class="fas fa-check"></i>
+                            </button>
+
+                            <button class="key-btn" onclick="tecladoPress('4')">4</button>
+                            <button class="key-btn" onclick="tecladoPress('5')">5</button>
+                            <button class="key-btn" onclick="tecladoPress('6')">6</button>
+                            
+                            <button class="key-btn" onclick="tecladoPress('7')">7</button>
+                            <button class="key-btn" onclick="tecladoPress('8')">8</button>
+                            <button class="key-btn" onclick="tecladoPress('9')">9</button>
+                            
+                            <button class="key-btn key-zero-span" onclick="tecladoPress('0')">0</button>
+                            <button class="key-btn key-dot" onclick="tecladoPress('.')">.</button>
+                            <button class="key-btn key-back-pos" onclick="tecladoPress('back')">
+                                <i class="fas fa-backspace"></i>
+                            </button>
+                        </div>
                     </div>
-                </div>
                 <div id="feedbackUltimoGasto" class="last-action-card" onclick="toggleTablaGastos()">
                     <div class="last-action-icon"><i class="fas fa-check-circle"></i></div>
                     <div class="last-action-details">
@@ -605,25 +672,31 @@
                     <div class="smart-value-display">
                         <span id="smartValueDisplayIngreso" style="width: 100%; text-align: right; margin-right: 10px;">0.00</span>
                         <div class="cursor-blink" id="cursorIngreso"></div>
-                        <button class="btn-backspace-inline" onclick="tecladoPress('back')"><i class="fas fa-backspace"></i></button>
                     </div>
                 </div>
                 <input type="text" id="ingresoDescripcion" class="smart-desc-input" data-i18n-ph="phDescIngreso" placeholder="¿Origen del ingreso?" autocomplete="off" style="margin-top:10px; margin-bottom:10px;" list="sugerenciasIngresos">
                 <datalist id="sugerenciasIngresos"></datalist>
-                <div class="keypad-grid">
+                <div class="keypad-grid-pro">
                     <button class="key-btn" onclick="tecladoPress('1')">1</button>
                     <button class="key-btn" onclick="tecladoPress('2')">2</button>
                     <button class="key-btn" onclick="tecladoPress('3')">3</button>
+                    
+                    <button class="key-btn" id="btnAddIngreso" onclick="agregarIngreso()">
+                        <i class="fas fa-check"></i>
+                    </button>
+
                     <button class="key-btn" onclick="tecladoPress('4')">4</button>
                     <button class="key-btn" onclick="tecladoPress('5')">5</button>
                     <button class="key-btn" onclick="tecladoPress('6')">6</button>
+                    
                     <button class="key-btn" onclick="tecladoPress('7')">7</button>
                     <button class="key-btn" onclick="tecladoPress('8')">8</button>
                     <button class="key-btn" onclick="tecladoPress('9')">9</button>
-                    <button class="key-btn" onclick="tecladoPress('.')">.</button>
-                    <button class="key-btn" onclick="tecladoPress('0')">0</button>
-                    <button class="key-btn key-btn-success" id="btnAddIngreso" onclick="agregarIngreso()">
-                        <i class="fas fa-check"></i>
+                    
+                    <button class="key-btn key-zero-span" onclick="tecladoPress('0')">0</button>
+                    <button class="key-btn key-dot" onclick="tecladoPress('.')">.</button>
+                    <button class="key-btn key-back-pos" onclick="tecladoPress('back')">
+                        <i class="fas fa-backspace"></i>
                     </button>
                 </div>
                 <div id="feedbackUltimoIngreso" class="last-action-card" onclick="toggleTablaIngresos()">
