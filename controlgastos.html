@@ -310,69 +310,92 @@
         .smart-desc-input { flex-grow: 1; border: none; border-bottom: 1px dashed var(--border-color); border-radius: 0; padding: 8px 0; font-size: 1.05em; background: transparent; color: var(--text-main); }
         .smart-desc-input:focus { outline: none; border-color: var(--primary-color); border-bottom-style: solid; }
         
-        /* DISEÑO DE CATEGORÍAS EN UNA SOLA FILA (SCROLL HORIZONTAL) */
+/* --- GRID DE CATEGORÍAS (Diseño Apps) --- */
         .smart-cat-grid { 
             display: grid; 
             grid-auto-flow: column; 
-            grid-template-rows: 1fr; 
-            grid-auto-columns: calc(20% - 5px); /* EXACTAMENTE 5 ELEMENTOS VISIBLES */
-            gap: 6px; 
+            grid-template-rows: repeat(2, 1fr); 
+            grid-auto-columns: calc(25% - 5px); /* 4 Columnas exactas */
+            gap: 8px 4px; /* Gap Vertical 8px, Horizontal 4px */
             overflow-x: auto; 
             overflow-y: hidden; 
-            max-height: 80px; 
-            padding: 2px 0; 
+            max-height: 135px; /* Altura ajustada para 2 filas de iconos */
+            padding: 5px 2px; 
             margin-bottom: 5px; 
             scrollbar-width: none; 
         }
         .smart-cat-grid::-webkit-scrollbar { display: none; }
         
-        /* MODO EXPANDIDO */
         .smart-cat-grid.expanded { 
             grid-template-rows: auto; 
             grid-auto-flow: row; 
-            grid-template-columns: repeat(5, 1fr); 
+            grid-template-columns: repeat(4, 1fr); 
             max-height: 250px; 
-            overflow-y: auto; 
-            padding: 5px; 
-            border: 1px solid var(--border-color); 
-            border-radius: 8px; 
-        } 
+        }
         
-        /* BOTÓN CATEGORÍA COMPACTO */
+        
+/* CONTENEDOR DEL BOTÓN (Transparente, solo estructura) */
         .cat-btn { 
-            background-color: #F8FAFC; 
-            border: 1px solid var(--border-color); 
-            color: var(--secondary-color); 
-            padding: 2px; 
-            border-radius: 10px; 
-            font-size: 0.8em; 
-            cursor: pointer; 
-            text-align: center; 
-            height: 60px; /* ALTURA REDUCIDA */
+            background-color: transparent; 
+            border: none; 
+            padding: 0; 
+            height: auto; 
             display: flex; 
             flex-direction: column; 
             align-items: center; 
-            justify-content: center; 
-            transition: all 0.2s; 
-            box-shadow: 0 1px 1px rgba(0,0,0,0.05);
+            justify-content: flex-start; 
+            cursor: pointer; 
+            transition: transform 0.1s;
         }
-        .cat-btn:active { background-color: #E2E8F0; }
+        .cat-btn:active { transform: scale(0.95); }
 
-        .cat-btn-icon { font-size: 1.6em; margin-bottom: 2px; line-height: 1; }
-        .cat-btn-text { 
-            font-size: 0.65em; 
-            line-height: 1; 
-            max-width: 100%;
-            display: -webkit-box;
-            -webkit-line-clamp: 2; 
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            word-wrap: break-word;
+/* EL AVATAR (Círculo) */
+        .cat-btn-icon { 
+            width: 44px;
+            height: 44px;
+            background-color: #F1F5F9; /* Gris muy claro por defecto */
+            border: 1px solid var(--border-color);
+            border-radius: 50%; /* Círculo perfecto */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8em; /* Emoji grande */
+            margin-bottom: 4px;
+            transition: all 0.2s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
         }
-        
-        .cat-btn.selected { background-color: var(--primary-color); color: white; border-color: var(--primary-color); box-shadow: 0 2px 4px rgba(37, 99, 235, 0.3); }
+
+        /* EL TEXTO (Limpio, sin negrilla) */
+        .cat-btn-text { 
+            font-size: 0.75em; 
+            color: var(--secondary-color);
+            font-weight: 400; /* Texto ligero */
+            text-align: center;
+            line-height: 1.1;
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+/* ESTADO SELECCIONADO (El círculo se pinta, no el cuadrado entero) */
+        .cat-btn.selected .cat-btn-icon { 
+            background-color: var(--primary-color); 
+            border-color: var(--primary-color);
+            color: white; /* Emoji sobre azul */
+            box-shadow: 0 3px 8px rgba(37, 99, 235, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .cat-btn.selected .cat-btn-text {
+            color: var(--primary-color);
+            font-weight: 600; /* Un poco de peso solo al seleccionar para destacar */
+        }
+
         @keyframes pulse-blue { 0% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.7); transform: scale(1); } 50% { box-shadow: 0 0 0 6px rgba(37, 99, 235, 0); transform: scale(1.05); } 100% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0); transform: scale(1); } }
-        .cat-btn.flash { animation: pulse-blue 0.4s ease-out; border-color: var(--primary-color) !important; background-color: var(--primary-color) !important; color: white !important; }
+
+        /* Animación Flash */
+        .cat-btn.flash .cat-btn-icon { animation: pulse-blue 0.4s ease-out; background-color: var(--primary-color); color: white; }
         .keypad-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 5px; }
         .key-btn { background-color: var(--bg-body); border: 1px solid var(--border-color); font-size: 1.3em; padding: 12px 0; border-radius: 12px; color: var(--text-main); cursor: pointer; box-shadow: 0 1px 1px rgba(0,0,0,0.05); font-weight: 500; }
         .key-btn:active { transform: translateY(1px); box-shadow: none; background-color: #E2E8F0; }
@@ -427,6 +450,32 @@
         .slider:before { position: absolute; content: ""; height: 20px; width: 20px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
         input:checked + .slider { background-color: var(--primary-color); }
         input:checked + .slider:before { transform: translateX(24px); }
+
+        /* --- ESTILOS AVATAR CATEGORÍAS --- */
+        .cat-row-wrapper { 
+            display: flex; 
+            align-items: center; 
+            gap: 15px; /* Separación entre emoji y texto */
+        }
+        .cat-avatar {
+            width: 50px; 
+            height: 50px;
+            background-color: var(--bg-body); /* Fondo adaptable (claro/oscuro) */
+            border: 1px solid var(--border-color);
+            border-radius: 50%; /* Círculo perfecto */
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            font-size: 2.2em; /* Emoji GRANDE */
+            flex-shrink: 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            padding-bottom: 4px; /* Pequeño ajuste visual para centrar emojis verticalmente */
+        }
+        .cat-name-styled {
+            font-weight: 400;
+            font-size: 1em;
+            color: var(--text-main);
+        }
     </style>
 </head>
 <body>
@@ -785,9 +834,14 @@
                 <option value="es">Español</option><option value="en">English</option>
             </select>
         </div>
-        <h3 data-i18n="titleCategorias">Categorías</h3>
+        <h3 data-i18n="titleCategorias">Personaliza tus Categorías</h3>
         <table id="tablaCategorias" class="tabla-gastos">
-            <thead><tr><th data-i18n="colNombre">Nombre</th><th data-i18n="colAccion" style="text-align:center">Acción</th></tr></thead>
+            <thead>
+                <tr>
+                    <th data-i18n="colNombre">Nombre</th>
+                    <th style="text-align: right;" data-i18n="colMeta">Meta ($)</th> <th data-i18n="colAccion" style="text-align:center">Acción</th>
+                </tr>
+            </thead>
             <tbody></tbody>
         </table>
         <div style="display: flex; gap: 10px; margin-top: 15px;">
@@ -899,55 +953,65 @@
                 <label data-i18n="lblNombreCat">Nombre:</label>
                 <input type="text" id="modalCategoriaNombre">
                 <div class="emoji-bar">
+                    <button class="emoji-btn" onclick="insertarEmoji('🏠')">🏠</button>
+                    <button class="emoji-btn" onclick="insertarEmoji('🏦')">🏦</button>
+                    <button class="emoji-btn" onclick="insertarEmoji('💡')">💡</button>
+                    <button class="emoji-btn" onclick="insertarEmoji('🚿')">🚿</button>
+                    <button class="emoji-btn" onclick="insertarEmoji('📱')">📱</button>
+                    <button class="emoji-btn" onclick="insertarEmoji('📶')">📶</button>
+                    
+                    <button class="emoji-btn" onclick="insertarEmoji('🛒')">🛒</button>
+                    <button class="emoji-btn" onclick="insertarEmoji('🧺')">🧺</button>
+                    <button class="emoji-btn" onclick="insertarEmoji('🍽️')">🍽️</button>
                     <button class="emoji-btn" onclick="insertarEmoji('🍔')">🍔</button>
                     <button class="emoji-btn" onclick="insertarEmoji('🍕')">🍕</button>
-                    <button class="emoji-btn" onclick="insertarEmoji('🌮')">🌮</button>
-                    <button class="emoji-btn" onclick="insertarEmoji('🍱')">🍱</button>
-                    <button class="emoji-btn" onclick="insertarEmoji('🛒')">🛒</button>
-                    <button class="emoji-btn" onclick="insertarEmoji('🍞')">🍞</button>
-                    <button class="emoji-btn" onclick="insertarEmoji('🥦')">🥦</button>
-                    <button class="emoji-btn" onclick="insertarEmoji('🍎')">🍎</button>
                     <button class="emoji-btn" onclick="insertarEmoji('☕')">☕</button>
-                    <button class="emoji-btn" onclick="insertarEmoji('🍺')">🍺</button>
+                    <button class="emoji-btn" onclick="insertarEmoji('🛵')">🛵</button>
                     
-                    <button class="emoji-btn" onclick="insertarEmoji('🚌')">🚌</button>
-                    <button class="emoji-btn" onclick="insertarEmoji('🚕')">🚕</button>
-                    <button class="emoji-btn" onclick="insertarEmoji('🚗')">🚗</button>
                     <button class="emoji-btn" onclick="insertarEmoji('⛽')">⛽</button>
+                    <button class="emoji-btn" onclick="insertarEmoji('🚗')">🚗</button>
+                    <button class="emoji-btn" onclick="insertarEmoji('🚌')">🚌</button>
+                    <button class="emoji-btn" onclick="insertarEmoji('🚇')">🚇</button>
+                    <button class="emoji-btn" onclick="insertarEmoji('🚕')">🚕</button>
                     <button class="emoji-btn" onclick="insertarEmoji('🔧')">🔧</button>
-                    <button class="emoji-btn" onclick="insertarEmoji('✈️')">✈️</button>
-                    <button class="emoji-btn" onclick="insertarEmoji('🚂')">🚂</button>
-                    <button class="emoji-btn" onclick="insertarEmoji('🚲')">🚲</button>
+                    <button class="emoji-btn" onclick="insertarEmoji('🅿️')">🅿️</button>
                     
-                    <button class="emoji-btn" onclick="insertarEmoji('🏠')">🏠</button>
-                    <button class="emoji-btn" onclick="insertarEmoji('💡')">💡</button>
-                    <button class="emoji-btn" onclick="insertarEmoji('💧')">💧</button>
-                    <button class="emoji-btn" onclick="insertarEmoji('🌐')">🌐</button>
-                    <button class="emoji-btn" onclick="insertarEmoji('📱')">📱</button>
-                    <button class="emoji-btn" onclick="insertarEmoji('📺')">📺</button>
-                    <button class="emoji-btn" onclick="insertarEmoji('🛋️')">🛋️</button>
-                    
-                    <button class="emoji-btn" onclick="insertarEmoji('💊')">💊</button>
-                    <button class="emoji-btn" onclick="insertarEmoji('🏥')">🏥</button>
-                    <button class="emoji-btn" onclick="insertarEmoji('🏋️‍♀️')">🏋️‍♀️</button>
-                    <button class="emoji-btn" onclick="insertarEmoji('💇‍♂️')">💇‍♂️</button>
                     <button class="emoji-btn" onclick="insertarEmoji('👕')">👕</button>
-                    <button class="emoji-btn" onclick="insertarEmoji('💄')">💄</button>
+                    <button class="emoji-btn" onclick="insertarEmoji('👟')">👟</button>
+                    <button class="emoji-btn" onclick="insertarEmoji('💻')">💻</button>
+                    <button class="emoji-btn" onclick="insertarEmoji('🎧')">🎧</button>
+                    <button class="emoji-btn" onclick="insertarEmoji('🎁')">🎁</button>
+                    <button class="emoji-btn" onclick="insertarEmoji('💳')">💳</button>
                     
+                    <button class="emoji-btn" onclick="insertarEmoji('🏥')">🏥</button>
+                    <button class="emoji-btn" onclick="insertarEmoji('💊')">💊</button>
+                    <button class="emoji-btn" onclick="insertarEmoji('🩺')">🩺</button>
+                    <button class="emoji-btn" onclick="insertarEmoji('🏋️‍♀️')">🏋️‍♀️</button>
                     <button class="emoji-btn" onclick="insertarEmoji('🎓')">🎓</button>
                     <button class="emoji-btn" onclick="insertarEmoji('📚')">📚</button>
-                    <button class="emoji-btn" onclick="insertarEmoji('👶')">👶</button>
-                    <button class="emoji-btn" onclick="insertarEmoji('🐶')">🐶</button>
-                    <button class="emoji-btn" onclick="insertarEmoji('🎁')">🎁</button>
-                    <button class="emoji-btn" onclick="insertarEmoji('🎉')">🎉</button>
+                    
                     <button class="emoji-btn" onclick="insertarEmoji('🎮')">🎮</button>
-                    <button class="emoji-btn" onclick="insertarEmoji('🎵')">🎵</button>
                     <button class="emoji-btn" onclick="insertarEmoji('🎬')">🎬</button>
+                    <button class="emoji-btn" onclick="insertarEmoji('🎵')">🎵</button>
+                    <button class="emoji-btn" onclick="insertarEmoji('✈️')">✈️</button>
+                    <button class="emoji-btn" onclick="insertarEmoji('🧳')">🧳</button>
+                    <button class="emoji-btn" onclick="insertarEmoji('🏖️')">🏖️</button>
+                    <button class="emoji-btn" onclick="insertarEmoji('🎫')">🎫</button>
                     
                     <button class="emoji-btn" onclick="insertarEmoji('💰')">💰</button>
-                    <button class="emoji-btn" onclick="insertarEmoji('💳')">💳</button>
-                    <button class="emoji-btn" onclick="insertarEmoji('🏦')">🏦</button>
+                    <button class="emoji-btn" onclick="insertarEmoji('🐷')">🐷</button>
+                    <button class="emoji-btn" onclick="insertarEmoji('📈')">📈</button>
+                    <button class="emoji-btn" onclick="insertarEmoji('🧾')">🧾</button>
                     <button class="emoji-btn" onclick="insertarEmoji('💼')">💼</button>
+                    <button class="emoji-btn" onclick="insertarEmoji('🗂️')">🗂️</button>
+                    
+                    <button class="emoji-btn" onclick="insertarEmoji('👶')">👶</button>
+                    <button class="emoji-btn" onclick="insertarEmoji('🐾')">🐾</button>
+                    <button class="emoji-btn" onclick="insertarEmoji('🐶')">🐶</button>
+                    <button class="emoji-btn" onclick="insertarEmoji('🎯')">🎯</button>
+                    <button class="emoji-btn" onclick="insertarEmoji('🤝')">🤝</button>
+                    <button class="emoji-btn" onclick="insertarEmoji('🎉')">🎉</button>
+                    <button class="emoji-btn" onclick="insertarEmoji('📦')">📦</button>
                 </div>
             </div>
             <div class="form-group">
@@ -1002,8 +1066,8 @@
 // --- CONFIG Y TRADUCCIONES ---
 const MONTH_NAMES_FULL = { es: ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'], en: ['January','February','March','April','May','June','July','August','September','October','November','December'] };
 const TRADUCTIONS = {
-    es: { alertMissing:"Faltan campos.", alertGuardado:"¡Guardado!", alertMissingCat:"¡Seleccione una categoría!", confirmDelete:"¿Eliminar?", confirmDeleteAll:"¿BORRAR TODO?", alertNoExport:"Sin datos.", alertCSVEmpty:"Vacío.", alertImportSuccess:c=>`Importados ${c}.`, alertImportSuccessJSON:"¡Datos cargados!", alertImportErrorJSON:"Error archivo.", alertCatNombreExiste:n=>`"${n}" existe.`, alertCatNoSePuedeBorrar:n=>`"${n}" en uso.`, modalConfirmDeleteCat:n=>`¿Borrar "${n}"?`, toastGastoEliminado:"Eliminado.", toastCategoriaGuardada:"Guardada.", toastCategoriaEliminada:"Eliminada.", appTitle:"Control de Gastos", titleIngresoGasto:"Ingreso de Gasto", lblFecha:"Fecha:", lblCategoria:"Categoría:", lblDescripcion:"Descripción:", phEjCafe:"Ej: Café", lblValor:"Valor:", lblTipoPago:"Pago:", lblContado:"Efectivo", lblTarjeta:"Tarjeta", lblTransf:"Transf.", btnAddGasto:"➕", titleGastosMes:"Últimos Gastos", lblClicEditar:"Clic para editar", colFecha:"Fecha", colDesc:"Descripción", colValor:"Valor", lblTotal:"TOTAL", titleResumenMensual:"Resumen Mensual", titleTotalCategoria:"Total por Categoría", colTotal:"Total", colCategoria:"Categoría", titleDetalle:"Detalle", phBuscar:"Buscar...", lblTotalGeneral:"TOTAL GENERAL", btnAnterior:"Ant", btnSiguiente:"Sig", btnCsvMes:"Excel", titleResumenAnual:"Resumen Anual", titleTotalCatAnio:"Total Año", btnCsvAnio:"Excel", menuConfig:"Config", lblMoneda:"Moneda:", lblIdioma:"Idioma:", titleCategorias:"Categorías", colNombre:"Nombre", colAccion:"Acción", phNueva:"Nueva Categoría", titleDatos:"Datos", btnBackup:"⬆️ Backup", btnImportar:"⬇️ Import", btnBorrarTodo:"⚠️ Borrar Todo", titleEditar:"Editar", btnGuardar:"Guardar", btnBorrar:"Borrar", btnCancelar:"Cancelar", titleRenombrar:"Editar Categoría", titleConfirmar:"Confirmar", btnSi:"Sí", btnNo:"No", menuGasto:"Gasto", menuMes:"Mes", menuAnio:"Año", btnCargado:"¡Cargado!", msgGastoGuardado:"Gasto Guardado", btnVolver:"Volver", menuIngreso:"Ingreso", titleIngresoDinero:"Nuevo Ingreso", phDescIngreso:"Sueldo, Bono...", msgIngresoGuardado:"Ingreso Guardado", titleIngresosMes:"Últimos Ingresos", titleEditarIngreso:"Editar Ingreso", lblIngreso:"Ingreso", lblGasto:"Gasto", lblDisponible:"Disponible", lblDispCorto:"Disp:", lblFiltroPago:"Filtro por tipo de pago", lblVerTodos:"Todo", titleDetalleMensual:"Detalle Mensual", colMes:"Mes", colIngreso:"Ingreso", colSaldo:"Saldo", lblNombreCat:"Nombre:", lblMetaMensual:"Meta Mensual ($):", lblMeta:"Meta Mensual" },
-    en: { alertMissing:"Missing fields.", alertGuardado:"Saved!", alertMissingCat:"Select category!", confirmDelete:"Delete?", confirmDeleteAll:"DELETE ALL?", alertNoExport:"No data.", alertCSVEmpty:"Empty.", alertImportSuccess:c=>`Imported ${c}.`, alertImportSuccessJSON:"Data Loaded!", alertImportErrorJSON:"Error.", alertCatNombreExiste:n=>`"${n}" exists.`, alertCatNoSePuedeBorrar:n=>`"${n}" used.`, modalConfirmDeleteCat:n=>`Delete "${n}"?`, toastGastoEliminado:"Deleted.", toastCategoriaGuardada:"Saved.", toastCategoriaEliminada:"Deleted.", appTitle:"Expense Tracker", titleIngresoGasto:"Add Expense", lblFecha:"Date:", lblCategoria:"Category:", lblDescripcion:"Description:", phEjCafe:"Ex: Coffee", lblValor:"Value:", lblTipoPago:"Payment:", lblContado:"Cash", lblTarjeta:"Card", lblTransf:"Transfer", btnAddGasto:"➕", titleGastosMes:"Recent Expenses", lblClicEditar:"Click to edit", colFecha:"Date", colDesc:"Description", colValor:"Value", lblTotal:"TOTAL", titleResumenMensual:"Monthly Summary", titleTotalCategoria:"Total by Category", colTotal:"Total", colCategoria:"Category", titleDetalle:"Detail", phBuscar:"Search...", lblTotalGeneral:"GRAND TOTAL", btnAnterior:"Prev", btnSiguiente:"Next", btnCsvMes:"Export", titleResumenAnual:"Annual Summary", titleTotalCatAnio:"Total Year", btnCsvAnio:"Export", menuConfig:"Config", lblMoneda:"Currency:", lblIdioma:"Language:", titleCategorias:"Categories", colNombre:"Name", colAccion:"Action", phNueva:"New Category", titleDatos:"Data", btnBackup:"⬆️ Backup", btnImportar:"⬇️ Import", btnBorrarTodo:"⚠️ Delete All", titleEditar:"Edit", btnGuardar:"Save", btnBorrar:"Delete", btnCancelar:"Cancel", titleRenombrar:"Edit Category", titleConfirmar:"Confirm", btnSi:"Yes", btnNo:"No", menuGasto:"Expense", menuMes:"Month", menuAnio:"Year", btnCargado:"Loaded!", msgGastoGuardado:"Saved", btnVolver:"Back", menuIngreso:"Income", titleIngresoDinero:"New Income", phDescIngreso:"Salary...", msgIngresoGuardado:"Saved", titleIngresosMes:"Recent Incomes", titleEditarIngreso:"Edit Income", lblIngreso:"Income", lblGasto:"Expense", lblDisponible:"Available", lblDispCorto:"Avail:", lblFiltroPago:"Filter Payment", lblVerTodos:"All", titleDetalleMensual:"Monthly Detail", colMes:"Month", colIngreso:"Income", colSaldo:"Balance", lblNombreCat:"Name:", lblMetaMensual:"Monthly Goal ($):", lblMeta:"Monthly Goal" }
+    es: { alertMissing:"Faltan campos.", alertGuardado:"¡Guardado!", alertMissingCat:"¡Seleccione una categoría!", confirmDelete:"¿Eliminar?", confirmDeleteAll:"¿BORRAR TODO?", alertNoExport:"Sin datos.", alertCSVEmpty:"Vacío.", alertImportSuccess:c=>`Importados ${c}.`, alertImportSuccessJSON:"¡Datos cargados!", alertImportErrorJSON:"Error archivo.", alertCatNombreExiste:n=>`"${n}" existe.`, alertCatNoSePuedeBorrar:n=>`"${n}" en uso.`, modalConfirmDeleteCat:n=>`¿Borrar "${n}"?`, toastGastoEliminado:"Eliminado.", toastCategoriaGuardada:"Guardada.", toastCategoriaEliminada:"Eliminada.", appTitle:"Control de Gastos", titleIngresoGasto:"Ingreso de Gasto", lblFecha:"Fecha:", lblCategoria:"Categoría:", lblDescripcion:"Descripción:", phEjCafe:"Ej: Café", lblValor:"Valor:", lblTipoPago:"Pago:", lblContado:"Efectivo", lblTarjeta:"Tarjeta", lblTransf:"Transf.", btnAddGasto:"➕", titleGastosMes:"Últimos Gastos", lblClicEditar:"Clic para editar", colFecha:"Fecha", colDesc:"Descripción", colValor:"Valor", lblTotal:"TOTAL", titleResumenMensual:"Resumen Mensual", titleTotalCategoria:"Total por Categoría", colTotal:"Total", colCategoria:"Categoría", titleDetalle:"Detalle", phBuscar:"Buscar...", lblTotalGeneral:"TOTAL GENERAL", btnAnterior:"Ant", btnSiguiente:"Sig", btnCsvMes:"Excel", titleResumenAnual:"Resumen Anual", titleTotalCatAnio:"Total Año", btnCsvAnio:"Excel", menuConfig:"Config", lblMoneda:"Moneda:", lblIdioma:"Idioma:", titleCategorias:"Personaliza tus Categorías", colNombre:"Nombre", colMeta: "Meta ($)", colAccion:"Acción", phNueva:"Nueva Categoría", titleDatos:"Datos", btnBackup:"⬆️ Backup", btnImportar:"⬇️ Import", btnBorrarTodo:"⚠️ Borrar Todo", titleEditar:"Editar", btnGuardar:"Guardar", btnBorrar:"Borrar", btnCancelar:"Cancelar", titleRenombrar:"Editar Categoría", titleConfirmar:"Confirmar", btnSi:"Sí", btnNo:"No", menuGasto:"Gasto", menuMes:"Mes", menuAnio:"Año", btnCargado:"¡Cargado!", msgGastoGuardado:"Gasto Guardado", btnVolver:"Volver", menuIngreso:"Ingreso", titleIngresoDinero:"Nuevo Ingreso", phDescIngreso:"Sueldo, Bono...", msgIngresoGuardado:"Ingreso Guardado", titleIngresosMes:"Últimos Ingresos", titleEditarIngreso:"Editar Ingreso", lblIngreso:"Ingreso", lblGasto:"Gasto", lblDisponible:"Disponible", lblDispCorto:"Disp:", lblFiltroPago:"Filtro por tipo de pago", lblVerTodos:"Todo", titleDetalleMensual:"Detalle Mensual", colMes:"Mes", colIngreso:"Ingreso", colSaldo:"Saldo", lblNombreCat:"Nombre:", lblMetaMensual:"Meta Mensual ($):", lblMeta:"Meta Mensual" },
+    en: { alertMissing:"Missing fields.", alertGuardado:"Saved!", alertMissingCat:"Select category!", confirmDelete:"Delete?", confirmDeleteAll:"DELETE ALL?", alertNoExport:"No data.", alertCSVEmpty:"Empty.", alertImportSuccess:c=>`Imported ${c}.`, alertImportSuccessJSON:"Data Loaded!", alertImportErrorJSON:"Error.", alertCatNombreExiste:n=>`"${n}" exists.`, alertCatNoSePuedeBorrar:n=>`"${n}" used.`, modalConfirmDeleteCat:n=>`Delete "${n}"?`, toastGastoEliminado:"Deleted.", toastCategoriaGuardada:"Saved.", toastCategoriaEliminada:"Deleted.", appTitle:"Expense Tracker", titleIngresoGasto:"Add Expense", lblFecha:"Date:", lblCategoria:"Category:", lblDescripcion:"Description:", phEjCafe:"Ex: Coffee", lblValor:"Value:", lblTipoPago:"Payment:", lblContado:"Cash", lblTarjeta:"Card", lblTransf:"Transfer", btnAddGasto:"➕", titleGastosMes:"Recent Expenses", lblClicEditar:"Click to edit", colFecha:"Date", colDesc:"Description", colValor:"Value", lblTotal:"TOTAL", titleResumenMensual:"Monthly Summary", titleTotalCategoria:"Total by Category", colTotal:"Total", colCategoria:"Category", titleDetalle:"Detail", phBuscar:"Search...", lblTotalGeneral:"GRAND TOTAL", btnAnterior:"Prev", btnSiguiente:"Next", btnCsvMes:"Export", titleResumenAnual:"Annual Summary", titleTotalCatAnio:"Total Year", btnCsvAnio:"Export", menuConfig:"Config", lblMoneda:"Currency:", lblIdioma:"Language:", titleCategorias:"Customize Categories", colNombre:"Name", colMeta: "Goal ($)", colAccion:"Action", phNueva:"New Category", titleDatos:"Data", btnBackup:"⬆️ Backup", btnImportar:"⬇️ Import", btnBorrarTodo:"⚠️ Delete All", titleEditar:"Edit", btnGuardar:"Save", btnBorrar:"Delete", btnCancelar:"Cancel", titleRenombrar:"Edit Category", titleConfirmar:"Confirm", btnSi:"Yes", btnNo:"No", menuGasto:"Expense", menuMes:"Month", menuAnio:"Year", btnCargado:"Loaded!", msgGastoGuardado:"Saved", btnVolver:"Back", menuIngreso:"Income", titleIngresoDinero:"New Income", phDescIngreso:"Salary...", msgIngresoGuardado:"Saved", titleIngresosMes:"Recent Incomes", titleEditarIngreso:"Edit Income", lblIngreso:"Income", lblGasto:"Expense", lblDisponible:"Available", lblDispCorto:"Avail:", lblFiltroPago:"Filter Payment", lblVerTodos:"All", titleDetalleMensual:"Monthly Detail", colMes:"Month", colIngreso:"Income", colSaldo:"Balance", lblNombreCat:"Name:", lblMetaMensual:"Monthly Goal ($):", lblMeta:"Monthly Goal" }
 };
 
 // --- DICCIONARIO EMOJIS (AUTO-REPARACIÓN) ---
@@ -1036,8 +1100,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function cargarDatos(){
     try{
-        const def={moneda:'$', idioma:'es', categorias:['Comida','Transporte','Hogar','Salud','Ocio','Otros'], presupuestos:{}, pin:null, fechaUltimoBackup:null};
-        const loaded=JSON.parse(localStorage.getItem('config_v2'));
+        const def={moneda:'$', idioma:'es', categorias:['🍔 Comida','🚌 Transporte','🏠 Hogar','💊 Salud','🎉 Ocio','📦 Otros'], presupuestos:{}, pin:null, fechaUltimoBackup:null};        const loaded=JSON.parse(localStorage.getItem('config_v2'));
         config=loaded?{...def,...loaded}:def;
         if(!config.presupuestos) config.presupuestos={};
         
@@ -1109,14 +1172,30 @@ function renderizarSelectores() {
         const valA = sa.value || new Date().getFullYear();
         const valH = sh.value || new Date().getFullYear();
         sa.innerHTML = ''; sh.innerHTML = '';
-        const years = new Set();
-        years.add(new Date().getFullYear());
-        gastos.forEach(g => years.add(parseInt(g.fecha.split('-')[0])));
-        ingresos.forEach(i => years.add(parseInt(i.fecha.split('-')[0])));
-        const sortedYears = Array.from(years).sort((a, b) => b - a);
-        sortedYears.forEach(y => { sa.add(new Option(y, y)); sh.add(new Option(y, y)); });
-        if (sortedYears.includes(parseInt(valA))) sa.value = valA;
-        if (sortedYears.includes(parseInt(valH))) sh.value = valH;
+        
+        // 1. Recolectar años existentes en datos
+        const existingYears = new Set();
+        const currentYear = new Date().getFullYear();
+        existingYears.add(currentYear);
+        gastos.forEach(g => existingYears.add(parseInt(g.fecha.split('-')[0])));
+        ingresos.forEach(i => existingYears.add(parseInt(i.fecha.split('-')[0])));
+
+        // 2. Determinar rango (Mínimo de datos vs Límite 2030)
+        const minYear = Math.min(...existingYears);
+        const maxYear = 2030; // Límite solicitado
+
+        // 3. Generar lista descendente
+        const finalYears = [];
+        for (let y = maxYear; y >= minYear; y--) {
+            finalYears.push(y);
+        }
+        
+        // 4. Llenar selects
+        finalYears.forEach(y => { sa.add(new Option(y, y)); sh.add(new Option(y, y)); });
+        
+        // 5. Mantener selección
+        if (finalYears.includes(parseInt(valA))) sa.value = valA;
+        if (finalYears.includes(parseInt(valH))) sh.value = valH;
     }
 }
 
@@ -1136,7 +1215,9 @@ function inicializarUI(){
     const d=document.getElementById('gastoDescripcion'); 
     if(d){ 
         d.addEventListener('focus',()=>{document.getElementById('keypadContainer').style.display='none'}); 
-        d.addEventListener('blur',()=>{setTimeout(()=>{document.getElementById('keypadContainer').style.display='block'},150)}); 
+        d.addEventListener('blur',()=>{setTimeout(()=>{document.getElementById('keypadContainer').style.display='block'},150)});
+        // NUEVO: Detectar selección de la lista (datalist) o pegado de texto
+        d.addEventListener('input', predecirCategoria);
     } 
     window.onclick=(e)=>{ 
         if(e.target.className==='modal'||e.target.className==='close-btn') { document.querySelectorAll('.modal').forEach(m=>m.style.display='none'); } 
@@ -1260,9 +1341,84 @@ function actualizarDisplayValor(){
     if(smartValorInput === "0" || smartValorInput === "") cursor.style.display = 'inline-block';
     else cursor.style.display = 'none';
 }
-function predecirCategoria(){ const t=document.getElementById('gastoDescripcion').value.toLowerCase().trim(), c=document.getElementById('smartCategories'); if(t.length<2){if(t.length===0){c.classList.add('expanded');document.getElementById('gastoCategoria').value="";renderizarCategoriasSmart(null)} return;} const m=gastos.find(g=>g.descripcion.toLowerCase().startsWith(t)); if(m){seleccionarCategoriaSmart(m.categoria); const b=c.getElementsByClassName('cat-btn'); for(let btn of b){if(btn.textContent===m.categoria){btn.classList.add('flash');setTimeout(()=>btn.classList.remove('flash'),400);break;}} c.classList.remove('expanded'); } else {document.getElementById('gastoCategoria').value="";renderizarCategoriasSmart(null);c.classList.add('expanded');} }
+function predecirCategoria(){ 
+    const input = document.getElementById('gastoDescripcion');
+    const t = input.value.toLowerCase().trim();
+    const c = document.getElementById('smartCategories');
+    
+    // 1. Limpieza si está vacío
+    if(t.length<2){
+        if(t.length===0){
+            c.classList.add('expanded');
+            document.getElementById('gastoCategoria').value="";
+            renderizarCategoriasSmart(null);
+        }
+        return;
+    } 
+
+    // 2. Predicción Visual (StartsWith) - Mantiene la categoría seleccionada visualmente mientras escribes
+    const m = gastos.find(g => g.descripcion.toLowerCase().startsWith(t)); 
+    if(m){ 
+        seleccionarCategoriaSmart(m.categoria); 
+        const b = c.getElementsByClassName('cat-btn'); 
+        for(let btn of b){
+            if(btn.textContent===m.categoria){
+                btn.classList.add('flash');
+                setTimeout(()=>btn.classList.remove('flash'),400);
+                break;
+            }
+        } 
+        c.classList.remove('expanded'); 
+    } else {
+        document.getElementById('gastoCategoria').value="";
+        renderizarCategoriasSmart(null);
+        c.classList.add('expanded');
+    }
+    
+    // 3. NUEVO: Auto-cierre del teclado (Exact Match)
+    // Si lo que hay escrito coincide EXACTAMENTE con un gasto previo (ej. al hacer clic en sugerencia)
+    const exactMatch = gastos.find(g => g.descripcion.toLowerCase() === t);
+    if(exactMatch) {
+        seleccionarCategoriaSmart(exactMatch.categoria); // Asegurar categoría
+        input.blur(); // ESTO OCULTA EL TECLADO NATIVO Y MUESTRA EL NUMÉRICO
+    }
+}
 function seleccionarCategoriaSmart(cat){ document.getElementById('gastoCategoria').value=cat; renderizarCategoriasSmart(cat); const bc=document.getElementById('budgetProgressContainer'), bb=document.getElementById('budgetProgressBar'), bv=document.getElementById('budgetValue'); if(config.presupuestos&&config.presupuestos[cat]>0){const lim=config.presupuestos[cat]; const h=new Date(); const gm=gastos.filter(g=>{const[y,m]=g.fecha.split('-');return parseInt(y)===h.getFullYear()&&parseInt(m)===(h.getMonth()+1)&&g.categoria===cat}).reduce((s,x)=>s+Number(x.valor),0); const p=(gm/lim)*100; bc.style.display='block'; bv.textContent=`${formatearMoneda(gm)} / ${formatearMoneda(lim)}`; requestAnimationFrame(()=>{bb.style.width=Math.min(p,100)+'%'; bb.style.backgroundColor=p>100?'var(--danger-color)':(p>70?'var(--warning-color)':'var(--success-color)')});} else {bc.style.display='none';} document.getElementById('smartCategories').scrollLeft=0; }
-function renderizarCategoriasSmart(s=null){ const c=document.getElementById('smartCategories'); c.innerHTML=''; c.classList.remove('expanded'); if(!s)s=document.getElementById('gastoCategoria').value; const f={}; gastos.forEach(g=>f[g.categoria]=(f[g.categoria]||0)+1); let co=[...config.categorias].sort((a,b)=>(f[b]||0)-(f[a]||0)); if(s&&co.includes(s)){co=co.filter(x=>x!==s);co.unshift(s);} co.forEach(cat=>{const b=document.createElement('div'); b.className='cat-btn'; if(cat===s)b.classList.add('selected'); b.innerHTML=`<div class="cat-btn-icon">${cat.split(' ')[0]}</div><div class="cat-btn-text">${cat.split(' ').slice(1).join(' ')||cat}</div>`; b.onclick=()=>{seleccionarCategoriaSmart(cat);c.classList.remove('expanded')}; c.appendChild(b);}); }
+function renderizarCategoriasSmart(s=null){ 
+    const c=document.getElementById('smartCategories'); 
+    c.innerHTML=''; 
+    c.classList.remove('expanded'); 
+    
+    if(!s) s=document.getElementById('gastoCategoria').value; 
+    
+    // Frecuencia de uso para ordenar
+    const f={}; 
+    gastos.forEach(g=>f[g.categoria]=(f[g.categoria]||0)+1); 
+    
+    let co=[...config.categorias].sort((a,b)=>(f[b]||0)-(f[a]||0)); 
+    
+    // Si hay selección, ponerla primero
+    if(s && co.includes(s)){ co=co.filter(x=>x!==s); co.unshift(s); } 
+    
+    co.forEach(cat=>{
+        const b=document.createElement('div'); 
+        b.className='cat-btn'; 
+        if(cat===s) b.classList.add('selected'); 
+        
+        // Lógica de separación Emoji/Texto (Igual que en Config)
+        let emoji = cat.split(' ')[0]; 
+        let nombre = cat.substring(emoji.length).trim();
+        if(!nombre) { nombre = emoji; emoji = '🏷️'; } // Fallback
+        
+        b.innerHTML=`
+            <div class="cat-btn-icon">${emoji}</div>
+            <div class="cat-btn-text">${nombre}</div>
+        `; 
+        
+        b.onclick=()=>{ seleccionarCategoriaSmart(cat); c.classList.remove('expanded'); }; 
+        c.appendChild(b);
+    }); 
+}
 function toggleTablaGastos(){ const c=document.getElementById('contenedorUltimosGastos'), b=document.getElementById('btnToggleGastos'); if(c.style.display==='block'){c.style.display='none';b.innerHTML=`⬇️ ${TRADUCTIONS[config.idioma].titleGastosMes}`}else{c.style.display='block';b.innerHTML=`⬆️ ${TRADUCTIONS[config.idioma].titleGastosMes}`;setTimeout(()=>c.scrollIntoView({behavior:"smooth"}),100)} }
 function toggleTablaIngresos(){ const c=document.getElementById('contenedorUltimosIngresos'), b=document.getElementById('btnToggleIngresos'); if(c.style.display==='block'){c.style.display='none';b.innerHTML=`⬇️ ${TRADUCTIONS[config.idioma].titleIngresosMes}`}else{c.style.display='block';b.innerHTML=`⬆️ ${TRADUCTIONS[config.idioma].titleIngresosMes}`;setTimeout(()=>c.scrollIntoView({behavior:"smooth"}),100)} }
 function mostrarPantalla(id,btn){ window.scrollTo(0,0); document.querySelectorAll('.pantalla').forEach(p=>p.classList.remove('activa')); document.getElementById(id).classList.add('activa'); document.querySelectorAll('.nav-tabs button').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); 
@@ -1303,7 +1459,53 @@ function guardarEdicionIngreso(){ const g=ingresos.find(x=>x.id===ingresoEditand
 function confirmarEliminarIngreso(){ mostrarModalConfirmacion(TRADUCTIONS[config.idioma].confirmDelete,()=>{ ingresos=ingresos.filter(g=>g.id!==ingresoEditandoId); guardarIngresos(); try{renderizarIngresosAnuales(); actualizarSaldoHeader(); actualizarResumenMensual(); actualizarResumenHistorico();}catch(e){} cerrarModalEdicionIngreso(); }); }
 function agregarCategoria(){ const n=sanitizar(document.getElementById('nuevaCategoria').value.trim()); if(!n)return; if(config.categorias.includes(n))return mostrarToast(TRADUCTIONS[config.idioma].alertCatNombreExiste(n),'error'); config.categorias.push(n); config.categorias.sort(); localStorage.setItem('config_v2',JSON.stringify(config)); document.getElementById('nuevaCategoria').value=''; actualizarSelectCategorias(); renderizarTablaCategorias(); renderizarCategoriasSmart(); }
 function actualizarSelectCategorias(){ const s=config.categorias.map(c=>`<option value="${c}">${c}</option>`).join(''); document.getElementById('modalCategoria').innerHTML=s; }
-function renderizarTablaCategorias(){ const tb=document.querySelector('#tablaCategorias tbody'); tb.innerHTML=''; config.categorias.forEach((c,i)=>{let b=''; if(config.presupuestos&&config.presupuestos[c]>0)b=`<span class="presupuesto-tag">🎯 ${config.presupuestos[c]}</span>`; tb.innerHTML+=`<tr onclick="abrirModalCategoria(${i})" class="tr-clickable"><td><div class="cat-row-content"><span class="cat-name">${c}</span>${b}</div></td><td class="acciones-container"><button class="btn-accion-tabla btn-accion-borrar" onclick="event.stopPropagation(); confirmarEliminarCategoria(${i})"><i class="fas fa-trash"></i></button><i class="fas fa-chevron-right" style="color:var(--secondary-color);font-size:0.8em;margin-left:10px;"></i></td></tr>`;}); }
+function renderizarTablaCategorias(){ 
+    const tb = document.querySelector('#tablaCategorias tbody'); 
+    tb.innerHTML = ''; 
+    
+    config.categorias.forEach((c, i) => {
+        // --- 1. Lógica de Separación Visual (Emoji vs Texto) ---
+        // Asumimos formato "EMOJI ESPACIO NOMBRE"
+        let emoji = c.split(' ')[0]; 
+        let nombre = c.substring(emoji.length).trim();
+        
+        // Fallback: Si por alguna razón no hay emoji o espacio, manejamos el error visual
+        if(!nombre) { nombre = emoji; emoji = '🏷️'; }
+
+        // --- 2. Lógica del Presupuesto ---
+        let metaVisual = '<span style="color:var(--secondary-color); opacity:0.3;">-</span>';
+        let estiloMeta = '';
+        
+        if(config.presupuestos && config.presupuestos[c] > 0){
+            metaVisual = formatearMonedaSinDecimales(config.presupuestos[c]);
+            estiloMeta = 'font-weight:700; color:var(--primary-color); font-size: 1em;';
+        }
+
+        const tr = document.createElement('tr');
+        tr.className = "tr-clickable";
+        tr.onclick = () => abrirModalCategoria(i);
+        
+        // --- 3. HTML con Diseño Avatar ---
+        tr.innerHTML = `
+            <td style="padding-top:12px; padding-bottom:12px;">
+                <div class="cat-row-wrapper">
+                    <div class="cat-avatar">${emoji}</div>
+                    <div class="cat-name-styled">${nombre}</div>
+                </div>
+            </td>
+            <td style="text-align: right; vertical-align: middle; ${estiloMeta}">
+                ${metaVisual}
+            </td>
+            <td class="acciones-container" style="text-align:center; vertical-align: middle;">
+                <button class="btn-accion-tabla btn-accion-borrar" onclick="event.stopPropagation(); confirmarEliminarCategoria(${i})">
+                    <i class="fas fa-trash"></i>
+                </button>
+                <i class="fas fa-chevron-right" style="color:var(--secondary-color);font-size:0.8em;margin-left:15px;"></i>
+            </td>`;
+            
+        tb.appendChild(tr);
+    }); 
+}
 function abrirModalCategoria(i){ categoriaEditandoNombreAntiguo=config.categorias[i]; document.getElementById('modalCategoriaNombre').value=categoriaEditandoNombreAntiguo; const p=(config.presupuestos&&config.presupuestos[categoriaEditandoNombreAntiguo])?config.presupuestos[categoriaEditandoNombreAntiguo]:''; document.getElementById('modalCategoriaPresupuesto').value=p; document.getElementById('modalEdicionCategoria').style.display='block'; }
 function cerrarModalCategoria(){ document.getElementById('modalEdicionCategoria').style.display='none'; }
 function guardarEdicionCategoria(){ const n=sanitizar(document.getElementById('modalCategoriaNombre').value.trim()); const p=parsearValor(document.getElementById('modalCategoriaPresupuesto').value); if(n&&n!==categoriaEditandoNombreAntiguo){if(config.categorias.includes(n))return mostrarToast(TRADUCTIONS[config.idioma].alertCatNombreExiste(n),'error'); config.categorias[config.categorias.indexOf(categoriaEditandoNombreAntiguo)]=n; gastos.forEach(g=>{if(g.categoria===categoriaEditandoNombreAntiguo)g.categoria=n}); if(config.presupuestos&&config.presupuestos[categoriaEditandoNombreAntiguo]){config.presupuestos[n]=config.presupuestos[categoriaEditandoNombreAntiguo]; delete config.presupuestos[categoriaEditandoNombreAntiguo];}} const nf=(n&&n!==categoriaEditandoNombreAntiguo)?n:categoriaEditandoNombreAntiguo; if(!config.presupuestos)config.presupuestos={}; if(p>0)config.presupuestos[nf]=p; else delete config.presupuestos[nf]; localStorage.setItem('config_v2',JSON.stringify(config)); guardarGastos(); renderizarTablaCategorias(); renderizarCategoriasSmart(); actualizarSelectCategorias(); cerrarModalCategoria(); mostrarToast("Categoría guardada","success"); }
