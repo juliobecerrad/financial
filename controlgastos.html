@@ -848,6 +848,67 @@
             width: 100%;
             font-weight: 600;
         }
+        /* --- AJUSTES FINALES DE ESPACIO (INPUT CÓMODO + TARJETA DESPEJADA) --- */
+
+        /* 1. Input de Descripción: Recuperamos su altura cómoda */
+        .smart-desc-input { 
+            padding: 8px 0 !important;    /* Volvemos a 8px (antes era 4px) */
+            font-size: 1.05em !important; /* Letra un poco más grande y legible */
+        }
+
+        /* 2. Tarjeta de Confirmación: Más separada del teclado */
+        .last-action-card {
+            margin-top: 15px !important;   /* Aumentamos de 5px a 15px para que no "pise" botones */
+            padding: 8px 15px !important;  /* Un poco más de cuerpo */
+            min-height: 40px;              /* Altura mínima asegurada */
+            border-radius: 10px !important;
+        }
+
+        /* Mantenemos el teclado compacto para compensar */
+        .keypad-grid-pro {
+            height: 200px !important;
+            gap: 5px !important;
+            margin-top: 5px !important;
+        }
+        
+        /* Ajuste de márgenes internos */
+        .input-card { padding: 12px 15px !important; }
+        .row-date-val { margin-bottom: 5px !important; }
+        /* --- AJUSTES FINALES (Teclado, Categorías y Espacios) --- */
+
+        /* 1. Categorías Expandidas: Altura inteligente y "colchón" abajo */
+        .smart-cat-grid.expanded {
+            max-height: 45vh !important;    /* Puede crecer hasta casi la mitad de la pantalla */
+            padding-bottom: 30px !important; /* Espacio EXTRA abajo para que se lea el texto de la última fila */
+        }
+
+        /* 2. Botón BACK (Unificado: Gris igual que los números) */
+        .key-back-pos {
+            background-color: #F8FAFC !important; /* Mismo color que las teclas numéricas */
+            border-color: var(--border-color) !important;
+            color: var(--danger-color) !important; /* Solo el ícono queda rojo */
+        }
+        .key-back-pos:active {
+            background-color: #E2E8F0 !important; /* Efecto pulsado estándar */
+        }
+
+        /* 3. Botón GUARDAR (Borde más fino) */
+        #btnAddGasto, #btnAddIngreso {
+            border-width: 1px !important; /* Más elegante */
+        }
+
+        /* 4. Ajustes de Espacio (Para que la tarjeta no pise el teclado) */
+        .keypad-grid-pro {
+            height: 210px !important;       /* Altura cómoda */
+            margin-top: 10px !important;
+        }
+        .last-action-card {
+            margin-top: 15px !important;    /* Separación clara del teclado */
+            margin-bottom: 5px !important;
+        }
+        .smart-desc-input {
+            padding: 8px 0 !important;      /* Input con altura cómoda */
+        }
     </style>
 </head>
 <body>
@@ -1682,19 +1743,31 @@ function insertarEmoji(e){ const i=document.getElementById('modalCategoriaNombre
 
 function inicializarUI(){ 
     mostrarPantalla('gasto',document.querySelector('.nav-tabs button.active')); 
+
+    // Listener para el campo de Gasto
     const d=document.getElementById('gastoDescripcion'); 
     if(d){ 
-        d.addEventListener('focus',()=>{document.getElementById('keypadContainer').style.display='none'}); 
+        d.addEventListener('focus', () => {
+            document.getElementById('keypadContainer').style.display='none';
+            ocultarConfirmaciones(); // <--- OCULTAR AL ESCRIBIR
+        }); 
         d.addEventListener('blur',()=>{setTimeout(()=>{document.getElementById('keypadContainer').style.display='block'},150)});
-        // NUEVO: Detectar selección de la lista (datalist) o pegado de texto
         d.addEventListener('input', predecirCategoria);
     } 
+
+    // Listener para el campo de Ingreso (si existe)
+    const di = document.getElementById('ingresoDescripcion');
+    if(di){
+        di.addEventListener('focus', () => ocultarConfirmaciones()); // <--- OCULTAR AL ESCRIBIR
+    }
+
     window.onclick=(e)=>{ 
         if(e.target.className==='modal'||e.target.className==='close-btn') { document.querySelectorAll('.modal').forEach(m=>m.style.display='none'); } 
         const g=document.getElementById('smartCategories'); 
         const c=e.target.closest('.smart-cat-grid')||e.target.closest('.cat-btn')||e.target.closest('#gastoDescripcion'); 
         if(!c&&g){ if(document.getElementById('gastoCategoria').value!==""||document.getElementById('gastoDescripcion').value.trim().length>0) g.classList.remove('expanded'); } 
     }; 
+
     const f=document.getElementById('inputImportar'); if(f) f.addEventListener('change',importarDatos); 
     document.querySelectorAll('input[name="filtroTipoPagoMensual"]').forEach(r=>{r.addEventListener('change',(e)=>{filtroPagoMensual=e.target.value;actualizarResumenMensual()})}); 
     document.querySelectorAll('input[name="filtroTipoPagoHistorico"]').forEach(r=>{r.addEventListener('change',(e)=>{filtroPagoHistorico=e.target.value;actualizarResumenHistorico(true)})}); 
@@ -1901,7 +1974,22 @@ function formatearMonedaSinDecimales(v){ return `${config.moneda} ${(v||0).toLoc
 function renderizarResumenPresupuestos(gm){ const c=document.getElementById('budgetSummaryContainer'); c.innerHTML=''; const pres=config.presupuestos||{}; const cats=Object.keys(pres); if(cats.length===0){c.innerHTML='<div style="text-align:center;font-size:0.8em;padding:10px;">Sin presupuestos.</div>';return;} cats.forEach(cat=>{const lim=pres[cat]; const gas=gm.filter(g=>g.categoria===cat).reduce((s,x)=>s+Number(x.valor),0); if(gas===0) return; const pct=(gas/lim)*100; let col='#6EE7B7'; if(pct>100)col='#FCA5A5'; else if(pct>70)col='#FCD34D'; c.innerHTML+=`<div class="budget-row"><div class="budget-row-header"><span>${cat}</span></div><div class="budget-visual-row"><div class="budget-list-track"><div class="budget-list-fill" style="width:${Math.min(pct,100)}%;background-color:${col};"></div></div><div class="budget-text-info">${formatearMonedaSinDecimales(gas)} / ${formatearMonedaSinDecimales(lim)} <strong>(${pct.toFixed(0)}%)</strong></div></div></div>`;}); }
 function renderizarTablaAnual(da){ const tb=document.querySelector('#tablaDetalleAnual tbody'); tb.innerHTML=''; let ti=0,tg=0; da.forEach(d=>{const s=d.ingreso-d.gasto; if(d.ingreso===0&&d.gasto===0)return; ti+=d.ingreso; tg+=d.gasto; const tr=document.createElement('tr'); tr.innerHTML=`<td>${MONTH_NAMES_FULL[config.idioma][d.mesIndex].substring(0,3)}</td><td class="text-right gasto-valor">${formatearMoneda(d.ingreso)}</td><td class="text-right gasto-valor">${formatearMoneda(d.gasto)}</td><td class="text-right gasto-valor" style="color:${s<0?'#EF4444':''}">${formatearMoneda(s)}</td>`; tb.appendChild(tr);}); document.getElementById('totalAnualIngreso').textContent=formatearMoneda(ti); document.getElementById('totalAnualGasto').textContent=formatearMoneda(tg); const ts=ti-tg; const el=document.getElementById('totalAnualSaldo'); el.textContent=formatearMoneda(ts); el.style.color=ts<0?'#EF4444':''; }
 function renderizarTablaResumen(l,id,tid){ const tb=document.querySelector(`#${id} tbody`); if(!tb)return; tb.innerHTML=''; const c={}; let t=0; l.forEach(g=>{c[g.categoria]=(c[g.categoria]||0)+Number(g.valor);t+=Number(g.valor)}); Object.entries(c).sort((a,b)=>b[1]-a[1]).forEach(([k,v])=>{const tr=document.createElement('tr'); const p=t>0?((v/t)*100).toFixed(1):'0.0'; tr.innerHTML=`<td>${k}</td><td class="gasto-valor">${formatearMoneda(v)}</td><td class="col-porcentaje">${p}%</td>`; tr.onclick=()=>abrirModalDetalle(k,l); tb.appendChild(tr);}); document.getElementById(tid).textContent=formatearMoneda(t); }
-function tecladoPress(k){ const isI=document.getElementById('ingreso').classList.contains('activa'); let v=isI?smartValorInputIngreso:smartValorInput; if(k==='back') v=v.length>1?v.slice(0,-1):"0"; else if(k==='.') {if(!v.includes('.'))v+='.'} else {if(v.includes('.')){if(v.split('.')[1].length>=2)return} if(v==="0")v=k; else if(v.length<10)v+=k;} if(isI){smartValorInputIngreso=v;actualizarDisplayValorIngreso()}else{smartValorInput=v;actualizarDisplayValor()} }
+function tecladoPress(k){ 
+    ocultarConfirmaciones(); // <--- AGREGAR ESTA LÍNEA AL INICIO
+
+    const isI=document.getElementById('ingreso').classList.contains('activa'); 
+    let v=isI?smartValorInputIngreso:smartValorInput; 
+
+    if(k==='back') v=v.length>1?v.slice(0,-1):"0"; 
+    else if(k==='.') {if(!v.includes('.'))v+='.'} 
+    else {
+        if(v.includes('.')){if(v.split('.')[1].length>=2)return} 
+        if(v==="0")v=k; else if(v.length<10)v+=k;
+    } 
+
+    if(isI){smartValorInputIngreso=v;actualizarDisplayValorIngreso()}
+    else{smartValorInput=v;actualizarDisplayValor()} 
+}
 function actualizarDisplayValor(){ 
     document.getElementById('smartValueDisplay').textContent=config.moneda+' '+smartValorInput; 
     document.getElementById('gastoValor').value=smartValorInput; 
@@ -1989,7 +2077,7 @@ function renderizarCategoriasSmart(s=null){
 }
 function toggleTablaGastos(){ const c=document.getElementById('contenedorUltimosGastos'), b=document.getElementById('btnToggleGastos'); if(c.style.display==='block'){c.style.display='none';b.innerHTML=`⬇️ ${TRADUCTIONS[config.idioma].titleGastosMes}`}else{c.style.display='block';b.innerHTML=`⬆️ ${TRADUCTIONS[config.idioma].titleGastosMes}`;setTimeout(()=>c.scrollIntoView({behavior:"smooth"}),100)} }
 function toggleTablaIngresos(){ const c=document.getElementById('contenedorUltimosIngresos'), b=document.getElementById('btnToggleIngresos'); if(c.style.display==='block'){c.style.display='none';b.innerHTML=`⬇️ ${TRADUCTIONS[config.idioma].titleIngresosMes}`}else{c.style.display='block';b.innerHTML=`⬆️ ${TRADUCTIONS[config.idioma].titleIngresosMes}`;setTimeout(()=>c.scrollIntoView({behavior:"smooth"}),100)} }
-function mostrarPantalla(id,btn){ window.scrollTo(0,0); document.querySelectorAll('.pantalla').forEach(p=>p.classList.remove('activa')); document.getElementById(id).classList.add('activa'); document.querySelectorAll('.nav-tabs button').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); 
+function mostrarPantalla(id,btn){ ocultarConfirmaciones(); window.scrollTo(0,0); document.querySelectorAll('.pantalla').forEach(p=>p.classList.remove('activa')); document.getElementById(id).classList.add('activa'); document.querySelectorAll('.nav-tabs button').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); 
     document.getElementById('budgetSummaryContainer').style.display = 'none';
     document.getElementById('budgetChevron').classList.replace('fa-chevron-up', 'fa-chevron-down');
     if(id==='gasto'){paginaActualGastosMes=1;renderizarGastosDelMes();actualizarSaldoHeader()} if(id==='ingreso'){if(smartValorInputIngreso==="0")actualizarDisplayValorIngreso();paginaActualIngresosMes=1;renderizarIngresosAnuales();actualizarSaldoHeader()} if(id==='mensual'){actualizarResumenMensual()} if(id==='historico'){actualizarResumenHistorico()} }
@@ -2249,6 +2337,12 @@ function cambiarIdioma(nuevoIdioma){
     actualizarCardsConfig(); // Actualizar la tarjetita "ES/EN"
     mostrarToast("Idioma actualizado", "success");
 }
+
+function ocultarConfirmaciones(){
+    document.getElementById('feedbackUltimoGasto').style.display = 'none';
+    document.getElementById('feedbackUltimoIngreso').style.display = 'none';
+}
+
 </script>
 </body>
 </html>
