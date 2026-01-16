@@ -443,7 +443,6 @@
         .last-action-title { font-size: 0.75em; color: var(--success-text); text-transform: uppercase; font-weight: bold; opacity: 0.8; margin-bottom: 2px; }
         .last-action-text { font-size: 0.95em; color: var(--text-main); font-weight: 500; }
         
-        .toggle-container { display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; padding: 10px; background-color: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px; }
         .toggle-switch { position: relative; display: inline-block; width: 50px; height: 26px; }
         .toggle-switch input { opacity: 0; width: 0; height: 0; }
         .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px; }
@@ -536,6 +535,318 @@
             background-color: #FEF2F2 !important;
             border-color: #FECACA !important;
             font-size: 1.3em !important;
+        }
+
+        /* --- GRID DE CONFIGURACIÓN (Tarjetas) --- */
+        .config-cat-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); /* 2 Columnas (50% c/u) */
+            gap: 12px; /* Espacio entre tarjetas */
+            margin-top: 10px;
+        }
+
+        .config-cat-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 12px 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+        .config-cat-card:active {
+            transform: scale(0.96);
+            background-color: var(--table-header-bg);
+        }
+
+        /* Avatar en la config (ligeramente más pequeño que en la lista) */
+        .config-avatar {
+            width: 42px; 
+            height: 42px;
+            background-color: var(--bg-body);
+            border: 1px solid var(--border-color);
+            border-radius: 50%;
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            font-size: 1.6em;
+            flex-shrink: 0;
+        }
+
+        .config-info {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            overflow: hidden; /* Evita que textos largos rompan la tarjeta */
+        }
+
+        .config-name {
+            font-weight: 600;
+            font-size: 0.95em;
+            color: var(--text-main);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis; /* Puntos suspensivos... */
+            line-height: 1.2;
+        }
+
+        .config-meta {
+            font-size: 0.85em;
+            color: var(--primary-color);
+            font-weight: 700;
+            margin-top: 2px;
+        }
+        
+/* --- NUEVO GRID SUPERIOR DE CONFIGURACIÓN (3 Tarjetas) --- */
+        .config-top-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        .config-mini-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 10px 5px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            cursor: pointer;
+            box-shadow: var(--shadow-sm);
+            height: 105px; /* Altura fija para uniformidad */
+            transition: transform 0.1s;
+        }
+        .config-mini-card:active { transform: scale(0.96); }
+
+        .mini-card-icon { 
+            font-size: 1.6em; 
+            color: var(--secondary-color);
+            margin-bottom: 2px;
+            transition: color 0.3s;
+        }
+        
+        /* Ajuste especial para que el switch quepa en la tarjeta */
+        .mini-switch { transform: scale(0.75); margin: 0; }
+
+        .mini-card-label { 
+            font-size: 0.75em; 
+            color: var(--secondary-color); 
+            font-weight: 600; 
+            text-align: center;
+            margin-top: 2px;
+        }
+
+        /* --- ESTILOS PARA LAS LISTAS DE LOS NUEVOS MODALES --- */
+        .option-list { list-style: none; padding: 0; margin: 10px 0 0 0; }
+        
+        .option-item {
+            padding: 15px;
+            border-bottom: 1px solid var(--border-color);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between; /* Texto izq, Check derecha */
+            font-size: 1.05em;
+            color: var(--text-main);
+        }
+        .option-item:last-child { border-bottom: none; }
+        .option-item:active { background-color: var(--table-header-bg); }
+        
+        /* Estado Seleccionado */
+        .option-item.selected { 
+            color: var(--primary-color); 
+            font-weight: 700; 
+            background-color: #EFF6FF; /* Azul muy suave */
+        }
+        
+        .option-check { 
+            color: var(--primary-color); 
+            visibility: hidden; /* Oculto por defecto */
+        }
+        .option-item.selected .option-check { visibility: visible; }        
+        /* Pequeña marca visual si tiene presupuesto */
+        .has-budget::after {
+            content: "";
+            position: absolute;
+            top: 0; right: 0;
+            width: 0; height: 0;
+            border-style: solid;
+            border-width: 0 10px 10px 0;
+            border-color: transparent var(--primary-color) transparent transparent;
+            opacity: 0.5;
+        }
+
+        /* --- GESTIÓN DE DATOS (NUEVO DISEÑO) --- */
+        .data-actions-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 15px;
+        }
+
+        .action-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.2s;
+            position: relative;
+        }
+        .action-card:active {
+            transform: scale(0.98);
+            background-color: #F8FAFC;
+        }
+
+        /* Iconos de las tarjetas (con fondo suave) */
+        .action-icon-box {
+            width: 45px;
+            height: 45px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4em;
+            flex-shrink: 0;
+        }
+        
+        .icon-backup { background-color: #ECFDF5; color: #10B981; } /* Verde suave */
+        .icon-restore { background-color: #EFF6FF; color: #3B82F6; } /* Azul suave */
+
+        .action-text-content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .action-title {
+            font-size: 1em;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 2px;
+        }
+
+        .action-subtitle {
+            font-size: 0.8em;
+            color: var(--secondary-color);
+        }
+
+        .action-arrow {
+            color: #CBD5E1;
+            font-size: 1.1em;
+        }
+
+        /* --- ZONA DE PELIGRO (BOTÓN BORRAR) --- */
+        .danger-zone {
+            margin-top: 40px; /* Separación generosa */
+            padding-top: 20px;
+            border-top: 1px dashed var(--border-color);
+            text-align: center;
+        }
+
+        .btn-danger-zone {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #EF4444 0%, #B91C1C 100%); /* Degradado Rojo */
+            color: white;
+            font-size: 1em;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(239, 68, 68, 0.25);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: transform 0.1s;
+        }
+        .btn-danger-zone:active {
+            transform: scale(0.97);
+            box-shadow: 0 2px 4px rgba(239, 68, 68, 0.2);
+        }
+        /* Estilo especial para la tarjeta de "Añadir Nueva" */
+        .config-cat-card.add-new {
+            border: 2px dashed var(--primary-color);
+            background-color: rgba(37, 99, 235, 0.03);
+            justify-content: center;
+            color: var(--primary-color);
+            opacity: 0.8;
+        }
+        .config-cat-card.add-new:active {
+            background-color: rgba(37, 99, 235, 0.1);
+            opacity: 1;
+        }
+        .config-cat-card.add-new .config-avatar {
+            background-color: transparent;
+            border: none;
+            color: var(--primary-color);
+            font-size: 1.4em;
+        }
+        .config-cat-card.add-new .config-name {
+            color: var(--primary-color);
+            font-weight: 700;
+        }
+
+        /* --- OPTIMIZACIÓN ESPACIO VERTICAL (MODO COMPACTO) --- */
+
+        /* 1. Teclado más bajo y compacto */
+        .keypad-grid-pro {
+            height: 200px !important; /* Bajamos de 240px a 200px */
+            gap: 5px !important;
+            margin-top: 5px !important;
+        }
+        .keypad-grid-pro .key-btn {
+            font-size: 1.4em !important; /* Texto un pelín más pequeño */
+            border-radius: 8px !important;
+        }
+
+        /* 2. Reducir márgenes de los inputs superiores */
+        .input-card { padding: 10px 15px !important; } /* Menos relleno en la tarjeta blanca */
+        .row-date-val { margin-bottom: 2px !important; } /* Pegar fecha al valor */
+        .payment-pills-row { margin: 2px 0 5px 0 !important; } /* Pegar pastillas de pago */
+        .smart-desc-input { padding: 4px 0 !important; font-size: 1em !important; } /* Input descripción más fino */
+        
+        /* Ocultar el título H2 en móviles pequeños si molesta */
+        #gasto h2, #ingreso h2 { margin: 0 0 5px 0 !important; font-size: 1em !important; }
+
+        /* 3. BARRA DE CONFIRMACIÓN "SLIM" */
+        .last-action-card {
+            margin-top: 5px !important;    /* Pegado al teclado */
+            padding: 6px 12px !important;  /* Relleno mínimo */
+            border-radius: 8px !important;
+            min-height: 36px;              /* Altura fija pequeña */
+            display: none;                 /* Oculto por defecto */
+        }
+
+        /* Ocultar el título "GASTO GUARDADO" para ahorrar una línea */
+        .last-action-title { display: none !important; } 
+
+        /* Icono más discreto */
+        .last-action-icon { font-size: 1.1em !important; margin-right: 8px; }
+
+        /* Texto en una sola línea con puntos suspensivos (...) */
+        .last-action-text {
+            font-size: 0.85em !important;
+            white-space: nowrap;      /* Obliga a una sola línea */
+            overflow: hidden;         /* Corta lo que sobra */
+            text-overflow: ellipsis;  /* Pone los ... al final */
+            display: block;
+            width: 100%;
+            font-weight: 600;
         }
     </style>
 </head>
@@ -884,50 +1195,77 @@
         </div>
     </div>
 
+
     <div id="configuracion" class="pantalla">
         <h2 data-i18n="menuConfig">Configuración</h2>
-        <div class="toggle-container">
-            <span><i class="fas fa-lock"></i> Proteger con PIN</span>
-            <label class="toggle-switch">
-                <input type="checkbox" id="togglePin" onchange="toggleSeguridad(this)">
-                <span class="slider"></span>
-            </label>
-        </div>
-        <div class="form-group">
-            <label data-i18n="lblMoneda">Moneda:</label>
-            <select id="configMoneda" onchange="cambiarConfig('moneda', this.value)">
-                <option value="$">$ USD</option><option value="€">€ EUR</option>
-                <option value="MXN$">MXN$</option><option value="S/">S/ PEN</option>
-                <option value="COL$">COL$</option><option value="Bs.">Bs.</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label data-i18n="lblIdioma">Idioma:</label>
-            <select id="configIdioma" onchange="cambiarConfig('idioma', this.value)">
-                <option value="es">Español</option><option value="en">English</option>
-            </select>
-        </div>
-        <h3 data-i18n="titleCategorias">Personaliza tus Categorías</h3>
-        <table id="tablaCategorias" class="tabla-gastos">
-            <thead>
-                <tr>
-                    <th data-i18n="colNombre">Nombre</th>
-                    <th style="text-align: right;" data-i18n="colMeta">Meta ($)</th> <th data-i18n="colAccion" style="text-align:center">Acción</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
-        <div style="display: flex; gap: 10px; margin-top: 15px;">
-            <input type="text" id="nuevaCategoria" data-i18n-ph="phNueva" placeholder="Nueva Categoría">
-            <button class="btn btn-primary" id="btnAddCategory" onclick="agregarCategoria()" style="margin-top:0; width:30%;">Añadir</button>
-        </div>
-        <h3 style="margin-top: 20px;" data-i18n="titleDatos">Datos</h3>
-        <button class="btn btn-success" onclick="compartirBackupJSON()" data-i18n="btnBackup">⬆️ Backup</button>
-        <input type="file" id="inputImportar" style="display: none;">
-        <button class="btn btn-primary" id="btnImportarTrigger" onclick="document.getElementById('inputImportar').click()" data-i18n="btnImportar">⬇️ Importar</button>
-        <button class="btn btn-danger" onclick="confirmarLimpiarTodosLosDatos()" data-i18n="btnBorrarTodo">⚠️ Borrar Todo</button>
-    </div>
+        
+        <div class="config-top-grid">
+            
+            <div class="config-mini-card" onclick="triggerTogglePin(event)">
+                <i class="fas fa-lock mini-card-icon" id="iconLockState"></i>
+                <label class="toggle-switch mini-switch" onclick="event.stopPropagation()">
+                    <input type="checkbox" id="togglePin" onchange="toggleSeguridad(this)">
+                    <span class="slider"></span>
+                </label>
+                <span class="mini-card-label">PIN</span>
+            </div>
 
+            <div class="config-mini-card" onclick="abrirModalMoneda()">
+                <div class="mini-card-icon" id="displayMonedaCard" style="font-weight:bold; font-family:sans-serif;">$</div>
+                <div style="font-size:0.8em; color:var(--secondary-color);">Cambiar</div>
+                <span class="mini-card-label" data-i18n="lblMoneda">Moneda</span>
+            </div>
+
+            <div class="config-mini-card" onclick="abrirModalIdioma()">
+                <i class="fas fa-globe mini-card-icon"></i>
+                <div id="displayIdiomaCard" style="font-size:0.8em; font-weight:bold; color:var(--text-main);">ES</div>
+                <span class="mini-card-label" data-i18n="lblIdioma">Idioma</span>
+            </div>
+        </div>
+        
+        <h3 data-i18n="titleCategorias" style="margin-top: 25px;">Personaliza tus Categorías</h3>
+        
+        <div id="gridCategoriasConfig" class="config-cat-grid"></div>
+
+        <h3 style="margin-top: 30px;" data-i18n="titleDatos">Gestión de Datos</h3>
+        
+        <div class="data-actions-container">
+            <div class="action-card" onclick="compartirBackupJSON()">
+                <div class="action-icon-box icon-backup">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                </div>
+                <div class="action-text-content">
+                    <span class="action-title" data-i18n="btnBackup">Crear Copia de Seguridad</span>
+                    <span class="action-subtitle">Descargar archivo .txt</span>
+                </div>
+                <i class="fas fa-chevron-right action-arrow"></i>
+            </div>
+
+            <input type="file" id="inputImportar" style="display: none;">
+            <div class="action-card" onclick="document.getElementById('inputImportar').click()">
+                <div class="action-icon-box icon-restore">
+                    <i class="fas fa-cloud-download-alt"></i>
+                </div>
+                <div class="action-text-content">
+                    <span class="action-title" data-i18n="btnImportar">Restaurar Datos</span>
+                    <span class="action-subtitle">Desde archivo local</span>
+                </div>
+                <i class="fas fa-chevron-right action-arrow"></i>
+            </div>
+        </div>
+
+        <div class="danger-zone">
+            <button class="btn-danger-zone" onclick="confirmarLimpiarTodosLosDatos()">
+                <i class="fas fa-exclamation-triangle"></i>
+                <span data-i18n="btnBorrarTodo">Eliminar Todos los Datos</span>
+            </button>
+            <p style="font-size: 0.75em; color: var(--secondary-color); margin-top: 10px;">
+                Esta acción no se puede deshacer.
+            </p>
+        </div>        
+
+    </div>
+    
     <div id="modalDetalleGastos" class="modal">
         <div class="modal-content">
             <span class="close-btn" onclick="cerrarModalDetalle()">&times;</span>
@@ -1097,6 +1435,32 @@
             </div>
         </div>
     </div>
+
+    <div id="modalSeleccionMoneda" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="document.getElementById('modalSeleccionMoneda').style.display='none'">&times;</span>
+            <h3 data-i18n="lblMoneda">Moneda</h3>
+            <ul class="option-list">
+                <li class="option-item" data-val="$" onclick="cambiarMoneda('$')"><span>$ Dólar (USD)</span> <i class="fas fa-check option-check"></i></li>
+                <li class="option-item" data-val="€" onclick="cambiarMoneda('€')"><span>€ Euro</span> <i class="fas fa-check option-check"></i></li>
+                <li class="option-item" data-val="MXN$" onclick="cambiarMoneda('MXN$')"><span>MXN$ Peso Mex</span> <i class="fas fa-check option-check"></i></li>
+                <li class="option-item" data-val="S/" onclick="cambiarMoneda('S/')"><span>S/ Sol Peruano</span> <i class="fas fa-check option-check"></i></li>
+                <li class="option-item" data-val="COL$" onclick="cambiarMoneda('COL$')"><span>COL$ Peso Col</span> <i class="fas fa-check option-check"></i></li>
+                <li class="option-item" data-val="Bs." onclick="cambiarMoneda('Bs.')"><span>Bs. Boliviano</span> <i class="fas fa-check option-check"></i></li>
+            </ul>
+        </div>
+    </div>
+
+    <div id="modalSeleccionIdioma" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="document.getElementById('modalSeleccionIdioma').style.display='none'">&times;</span>
+            <h3 data-i18n="lblIdioma">Idioma</h3>
+            <ul class="option-list">
+                <li class="option-item" onclick="cambiarIdioma('es')"><span>🇪🇸 Español</span> <i class="fas fa-check option-check"></i></li>
+                <li class="option-item" onclick="cambiarIdioma('en')"><span>🇺🇸 English</span> <i class="fas fa-check option-check"></i></li>
+            </ul>
+        </div>
+    </div>
     
     <div id="modalConfirmacion" class="modal">
         <div class="modal-content">
@@ -1139,7 +1503,7 @@
 // --- CONFIG Y TRADUCCIONES ---
 const MONTH_NAMES_FULL = { es: ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'], en: ['January','February','March','April','May','June','July','August','September','October','November','December'] };
 const TRADUCTIONS = {
-    es: { alertMissing:"Faltan campos.", alertGuardado:"¡Guardado!", alertMissingCat:"¡Seleccione una categoría!", confirmDelete:"¿Eliminar?", confirmDeleteAll:"¿BORRAR TODO?", alertNoExport:"Sin datos.", alertCSVEmpty:"Vacío.", alertImportSuccess:c=>`Importados ${c}.`, alertImportSuccessJSON:"¡Datos cargados!", alertImportErrorJSON:"Error archivo.", alertCatNombreExiste:n=>`"${n}" existe.`, alertCatNoSePuedeBorrar:n=>`"${n}" en uso.`, modalConfirmDeleteCat:n=>`¿Borrar "${n}"?`, toastGastoEliminado:"Eliminado.", toastCategoriaGuardada:"Guardada.", toastCategoriaEliminada:"Eliminada.", appTitle:"Control de Gastos", titleIngresoGasto:"Ingreso de Gasto", lblFecha:"Fecha:", lblCategoria:"Categoría:", lblDescripcion:"Descripción:", phEjCafe:"Ej: Café", lblValor:"Valor:", lblTipoPago:"Pago:", lblContado:"Efectivo", lblTarjeta:"Tarjeta", lblTransf:"Transf.", btnAddGasto:"➕", titleGastosMes:"Últimos Gastos", lblClicEditar:"Clic para editar", colFecha:"Fecha", colDesc:"Descripción", colValor:"Valor", lblTotal:"TOTAL", titleResumenMensual:"Resumen Mensual", titleTotalCategoria:"Total por Categoría", colTotal:"Total", colCategoria:"Categoría", titleDetalle:"Detalle", phBuscar:"Buscar...", lblTotalGeneral:"TOTAL GENERAL", btnAnterior:"Ant", btnSiguiente:"Sig", btnCsvMes:"Excel", titleResumenAnual:"Resumen Anual", titleTotalCatAnio:"Total Año", btnCsvAnio:"Excel", menuConfig:"Config", lblMoneda:"Moneda:", lblIdioma:"Idioma:", titleCategorias:"Personaliza tus Categorías", colNombre:"Nombre", colMeta: "Meta ($)", colAccion:"Acción", phNueva:"Nueva Categoría", titleDatos:"Datos", btnBackup:"⬆️ Backup", btnImportar:"⬇️ Import", btnBorrarTodo:"⚠️ Borrar Todo", titleEditar:"Editar", btnGuardar:"Guardar", btnBorrar:"Borrar", btnCancelar:"Cancelar", titleRenombrar:"Editar Categoría", titleConfirmar:"Confirmar", btnSi:"Sí", btnNo:"No", menuGasto:"Gasto", menuMes:"Mes", menuAnio:"Año", btnCargado:"¡Cargado!", msgGastoGuardado:"Gasto Guardado", btnVolver:"Volver", menuIngreso:"Ingreso", titleIngresoDinero:"Nuevo Ingreso", phDescIngreso:"Sueldo, Bono...", msgIngresoGuardado:"Ingreso Guardado", titleIngresosMes:"Últimos Ingresos", titleEditarIngreso:"Editar Ingreso", lblIngreso:"Ingreso", lblGasto:"Gasto", lblDisponible:"Disponible", lblDispCorto:"Disp:", lblFiltroPago:"Filtro por tipo de pago", lblVerTodos:"Todo", titleDetalleMensual:"Detalle Mensual", colMes:"Mes", colIngreso:"Ingreso", colSaldo:"Saldo", lblNombreCat:"Nombre:", lblMetaMensual:"Meta Mensual ($):", lblMeta:"Meta Mensual" },
+    es: { alertMissing:"Faltan campos.", alertGuardado:"¡Guardado!", alertMissingCat:"¡Seleccione una categoría!", confirmDelete:"¿Eliminar?", confirmDeleteAll:"¿BORRAR TODO?", alertNoExport:"Sin datos.", alertCSVEmpty:"Vacío.", alertImportSuccess:c=>`Importados ${c}.`, alertImportSuccessJSON:"¡Datos cargados!", alertImportErrorJSON:"Error archivo.", alertCatNombreExiste:n=>`"${n}" existe.`, alertCatNoSePuedeBorrar:n=>`"${n}" en uso.`, modalConfirmDeleteCat:n=>`¿Borrar "${n}"?`, toastGastoEliminado:"Eliminado.", toastCategoriaGuardada:"Guardada.", toastCategoriaEliminada:"Eliminada.", appTitle:"Control de Gastos", titleIngresoGasto:"Ingreso de Gasto", lblFecha:"Fecha:", lblCategoria:"Categoría:", lblDescripcion:"Descripción:", phEjCafe:"Ej: Café", lblValor:"Valor:", lblTipoPago:"Pago:", lblContado:"Efectivo", lblTarjeta:"Tarjeta", lblTransf:"Transf.", btnAddGasto:"➕", titleGastosMes:"Últimos Gastos", lblClicEditar:"Clic para editar", colFecha:"Fecha", colDesc:"Descripción", colValor:"Valor", lblTotal:"TOTAL", titleResumenMensual:"Resumen Mensual", titleTotalCategoria:"Total por Categoría", colTotal:"Total", colCategoria:"Categoría", titleDetalle:"Detalle", phBuscar:"Buscar...", lblTotalGeneral:"TOTAL GENERAL", btnAnterior:"Ant", btnSiguiente:"Sig", btnCsvMes:"Excel", titleResumenAnual:"Resumen Anual", titleTotalCatAnio:"Total Año", btnCsvAnio:"Excel", menuConfig:"Config", lblMoneda:"Moneda:", lblIdioma:"Idioma:", titleCategorias:"Personaliza tus Categorías", colNombre:"Nombre", colMeta: "Meta ($)", colAccion:"Acción", phNueva:"Nueva Categoría", titleDatos:"Gestión de Datos", btnBackup:"Crear Copia de Seguridad", btnImportar:"Restaurar Datos", btnBorrarTodo:"Eliminar Todos los Datos", titleEditar:"Editar", btnGuardar:"Guardar", btnBorrar:"Borrar", btnCancelar:"Cancelar", titleRenombrar:"Editar Categoría", titleConfirmar:"Confirmar", btnSi:"Sí", btnNo:"No", menuGasto:"Gasto", menuMes:"Mes", menuAnio:"Año", btnCargado:"¡Cargado!", msgGastoGuardado:"Gasto Guardado", btnVolver:"Volver", menuIngreso:"Ingreso", titleIngresoDinero:"Nuevo Ingreso", phDescIngreso:"Sueldo, Bono...", msgIngresoGuardado:"Ingreso Guardado", titleIngresosMes:"Últimos Ingresos", titleEditarIngreso:"Editar Ingreso", lblIngreso:"Ingreso", lblGasto:"Gasto", lblDisponible:"Disponible", lblDispCorto:"Disp:", lblFiltroPago:"Filtro por tipo de pago", lblVerTodos:"Todo", titleDetalleMensual:"Detalle Mensual", colMes:"Mes", colIngreso:"Ingreso", colSaldo:"Saldo", lblNombreCat:"Nombre:", lblMetaMensual:"Meta Mensual ($):", lblMeta:"Meta Mensual" },
     en: { alertMissing:"Missing fields.", alertGuardado:"Saved!", alertMissingCat:"Select category!", confirmDelete:"Delete?", confirmDeleteAll:"DELETE ALL?", alertNoExport:"No data.", alertCSVEmpty:"Empty.", alertImportSuccess:c=>`Imported ${c}.`, alertImportSuccessJSON:"Data Loaded!", alertImportErrorJSON:"Error.", alertCatNombreExiste:n=>`"${n}" exists.`, alertCatNoSePuedeBorrar:n=>`"${n}" used.`, modalConfirmDeleteCat:n=>`Delete "${n}"?`, toastGastoEliminado:"Deleted.", toastCategoriaGuardada:"Saved.", toastCategoriaEliminada:"Deleted.", appTitle:"Expense Tracker", titleIngresoGasto:"Add Expense", lblFecha:"Date:", lblCategoria:"Category:", lblDescripcion:"Description:", phEjCafe:"Ex: Coffee", lblValor:"Value:", lblTipoPago:"Payment:", lblContado:"Cash", lblTarjeta:"Card", lblTransf:"Transfer", btnAddGasto:"➕", titleGastosMes:"Recent Expenses", lblClicEditar:"Click to edit", colFecha:"Date", colDesc:"Description", colValor:"Value", lblTotal:"TOTAL", titleResumenMensual:"Monthly Summary", titleTotalCategoria:"Total by Category", colTotal:"Total", colCategoria:"Category", titleDetalle:"Detail", phBuscar:"Search...", lblTotalGeneral:"GRAND TOTAL", btnAnterior:"Prev", btnSiguiente:"Next", btnCsvMes:"Export", titleResumenAnual:"Annual Summary", titleTotalCatAnio:"Total Year", btnCsvAnio:"Export", menuConfig:"Config", lblMoneda:"Currency:", lblIdioma:"Language:", titleCategorias:"Customize Categories", colNombre:"Name", colMeta: "Goal ($)", colAccion:"Action", phNueva:"New Category", titleDatos:"Data", btnBackup:"⬆️ Backup", btnImportar:"⬇️ Import", btnBorrarTodo:"⚠️ Delete All", titleEditar:"Edit", btnGuardar:"Save", btnBorrar:"Delete", btnCancelar:"Cancel", titleRenombrar:"Edit Category", titleConfirmar:"Confirm", btnSi:"Yes", btnNo:"No", menuGasto:"Expense", menuMes:"Month", menuAnio:"Year", btnCargado:"Loaded!", msgGastoGuardado:"Saved", btnVolver:"Back", menuIngreso:"Income", titleIngresoDinero:"New Income", phDescIngreso:"Salary...", msgIngresoGuardado:"Saved", titleIngresosMes:"Recent Incomes", titleEditarIngreso:"Edit Income", lblIngreso:"Income", lblGasto:"Expense", lblDisponible:"Available", lblDispCorto:"Avail:", lblFiltroPago:"Filter Payment", lblVerTodos:"All", titleDetalleMensual:"Monthly Detail", colMes:"Month", colIngreso:"Income", colSaldo:"Balance", lblNombreCat:"Name:", lblMetaMensual:"Monthly Goal ($):", lblMeta:"Monthly Goal" }
 };
 
@@ -1173,8 +1537,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function cargarDatos(){
     try{
-        const def={moneda:'$', idioma:'es', categorias:['🍔 Comida','🚌 Transporte','🏠 Hogar','💊 Salud','🎉 Ocio','📦 Otros'], presupuestos:{}, pin:null, fechaUltimoBackup:null};        const loaded=JSON.parse(localStorage.getItem('config_v2'));
+        const def={
+            moneda:'$', idioma:'es', 
+            categorias:['🍔 Comida','🚌 Transporte','🏠 Hogar','💊 Salud','🎉 Ocio','📦 Otros'], 
+            presupuestos:{}, pin:null, fechaUltimoBackup:null
+        };        
+        const loaded=JSON.parse(localStorage.getItem('config_v2'));
         config=loaded?{...def,...loaded}:def;
+        
+        // REPARACIÓN DE EMERGENCIA: Si las categorías se borraron, restaurarlas
+        if(!config.categorias || config.categorias.length === 0){
+            config.categorias = def.categorias;
+        }
+
         if(!config.presupuestos) config.presupuestos={};
         
         gastos=JSON.parse(localStorage.getItem('gastos_v2'))||[];
@@ -1187,21 +1562,43 @@ function cargarDatos(){
         descripcionesUsadas=[...new Set(gastos.map(g=>g.descripcion))];
         descripcionesIngresosUsadas=[...new Set(ingresos.map(i=>i.descripcion))];
         
-        document.getElementById('configMoneda').value=config.moneda;
-        document.getElementById('configIdioma').value=config.idioma;
-        document.getElementById('togglePin').checked=!!config.pin;
+        // --- CORRECCIÓN CLAVE AQUÍ ---
+        // Usamos 'if' para que NO falle si ya borraste los selectores viejos
+        const selMoneda = document.getElementById('configMoneda');
+        if(selMoneda) selMoneda.value = config.moneda;
+
+        const selIdioma = document.getElementById('configIdioma');
+        if(selIdioma) selIdioma.value = config.idioma;
+
+        const toggle = document.getElementById('togglePin');
+        if(toggle) toggle.checked = !!config.pin;
         
-        establecerFechaHoy(); actualizarSelectCategorias(); renderizarTablaCategorias();
+        establecerFechaHoy(); 
+        
+        // Renderizamos ambos Grids (Gasto y Config)
+        actualizarSelectCategorias(); 
+        renderizarTablaCategorias(); 
+        renderizarCategoriasSmart(); 
+        
         actualizarSugerenciasDescripciones(descripcionesUsadas);
         actualizarSugerenciasIngresos(descripcionesIngresosUsadas);
-        
         renderizarSelectores();
         
-        renderizarCategoriasSmart(); actualizarDisplayValor(); actualizarDisplayValorIngreso();
-        renderizarGastosDelMes(); renderizarIngresosAnuales();
-        actualizarResumenMensual(); actualizarResumenHistorico(); actualizarSaldoHeader();
+        actualizarDisplayValor(); 
+        actualizarDisplayValorIngreso();
+        renderizarGastosDelMes(); 
+        renderizarIngresosAnuales();
+        actualizarResumenMensual(); 
+        actualizarResumenHistorico(); 
+        actualizarSaldoHeader();
         verificarRecordatorioBackup();
-    }catch(e){console.error(e);}
+        
+        // Actualizamos las nuevas tarjetas
+        if(typeof actualizarCardsConfig === 'function') actualizarCardsConfig();
+        
+    }catch(e){
+        console.error("Error en cargarDatos:", e);
+    }
 }
 
 // --- NUEVA FUNCIÓN DE AUTO-REPARACIÓN ---
@@ -1277,8 +1674,8 @@ function verificarPinInicio(){ if(config.pin){ document.getElementById('lockScre
 function ingresarPin(d){ if(d==='back') pinBuffer=pinBuffer.slice(0,-1); else if(pinBuffer.length<4) pinBuffer+=d; actualizarPinDisplay(); }
 function actualizarPinDisplay(){ document.getElementById('pinDisplay').textContent="•".repeat(pinBuffer.length); document.getElementById('pinError').style.display='none'; }
 function verificarPin(){ if(pinBuffer===config.pin){ document.getElementById('lockScreen').style.display='none'; pinBuffer=""; } else { document.getElementById('pinError').style.display='block'; pinBuffer=""; setTimeout(actualizarPinDisplay,500); navigator.vibrate?.(200); } }
-function toggleSeguridad(el){ if(el.checked){ document.getElementById('modalPinConfig').style.display='block'; document.getElementById('newPinInput').value=''; document.getElementById('newPinInput').focus(); } else { config.pin=null; localStorage.setItem('config_v2',JSON.stringify(config)); mostrarToast("PIN Desactivado","success"); } }
-function guardarNuevoPin(){ const p=document.getElementById('newPinInput').value; if(p.length===4&&!isNaN(p)){ config.pin=p; localStorage.setItem('config_v2',JSON.stringify(config)); document.getElementById('modalPinConfig').style.display='none'; mostrarToast("PIN Activado","success"); } else alert("PIN de 4 dígitos"); }
+function toggleSeguridad(el){ if(el.checked){ document.getElementById('modalPinConfig').style.display='block'; document.getElementById('newPinInput').value=''; document.getElementById('newPinInput').focus(); } else { config.pin=null; localStorage.setItem('config_v2',JSON.stringify(config)); mostrarToast("PIN Desactivado","success"); actualizarCardsConfig();} }
+function guardarNuevoPin(){ const p=document.getElementById('newPinInput').value; if(p.length===4&&!isNaN(p)){ config.pin=p; localStorage.setItem('config_v2',JSON.stringify(config)); document.getElementById('modalPinConfig').style.display='none'; mostrarToast("PIN Activado","success"); actualizarCardsConfig();} else alert("PIN de 4 dígitos"); }
 function cancelarPin(){ document.getElementById('modalPinConfig').style.display='none'; document.getElementById('togglePin').checked=false; }
 function verificarRecordatorioBackup(){ if(!config.fechaUltimoBackup){ document.getElementById('backupBadge').style.display='block'; return; } const diff=Math.ceil(Math.abs(new Date()-new Date(config.fechaUltimoBackup))/(1000*60*60*24)); document.getElementById('backupBadge').style.display=(diff>7)?'block':'none'; }
 function insertarEmoji(e){ const i=document.getElementById('modalCategoriaNombre'); i.value=e+" "+i.value; i.focus(); }
@@ -1305,14 +1702,112 @@ function inicializarUI(){
 
 function actualizarSaldoHeader(){ const m=new Date().getMonth()+1, a=new Date().getFullYear(); const i=ingresos.filter(x=>{const[y,mm]=x.fecha.split('-');return parseInt(y)==a&&parseInt(mm)==m}).reduce((s,x)=>s+Number(x.valor),0); const g=gastos.filter(x=>{const[y,mm]=x.fecha.split('-');return parseInt(y)==a&&parseInt(mm)==m}).reduce((s,x)=>s+Number(x.valor),0); const s=i-g; const el=document.getElementById('headerSaldoValor'); el.textContent=formatearMoneda(s); const p=(i>0)?(s/i)*100:(s>=0?100:-1); el.style.color=(s<0||p<10)?'#FCA5A5':(p<30?'#FCD34D':'#6EE7B7'); }
 function cambiarAnioIngreso(d){ anioSeleccionadoIngreso+=d; document.getElementById('displayAnioIngreso').textContent=anioSeleccionadoIngreso; paginaActualIngresosMes=1; renderizarIngresosAnuales(); }
-function agregarGasto(){ const f=document.getElementById('gastoFecha').value, c=document.getElementById('gastoCategoria').value, d=sanitizar(document.getElementById('gastoDescripcion').value.trim()), v=parsearValor(document.getElementById('gastoValor').value), p=document.querySelector('input[name="tipoPago"]:checked').value; if(!c) return mostrarToast(TRADUCTIONS[config.idioma].alertMissingCat,'error'); if(!f||!d||isNaN(v)||v<=0) return mostrarToast(TRADUCTIONS[config.idioma].alertMissing,'error'); gastos.push({id:Date.now(),fecha:f,categoria:c,descripcion:d,valor:v,tipoPago:p}); gastos.sort(sortData); guardarGastos(); 
-    // RESTAURADO AVISO ORIGINAL
+function agregarGasto(){ 
+    const f=document.getElementById('gastoFecha').value;
+    const c=document.getElementById('gastoCategoria').value;
+    const d=sanitizar(document.getElementById('gastoDescripcion').value.trim());
+    const v=parsearValor(document.getElementById('gastoValor').value);
+    const p=document.querySelector('input[name="tipoPago"]:checked').value; 
+    
+    if(!c) return mostrarToast(TRADUCTIONS[config.idioma].alertMissingCat,'error'); 
+    if(!f||!d||isNaN(v)||v<=0) return mostrarToast(TRADUCTIONS[config.idioma].alertMissing,'error'); 
+    
+    gastos.push({id:Date.now(),fecha:f,categoria:c,descripcion:d,valor:v,tipoPago:p}); 
+    gastos.sort(sortData); 
+    guardarGastos(); 
+
+    // --- NUEVO FORMATO DE CONFIRMACIÓN (UNA LÍNEA) ---
+    // Ej: "Guardado: Almuerzo... $4.50"
+    const textoCorto = `✅ Guardado: ${d} • ${formatearMoneda(v)}`;
+    document.getElementById('feedbackTexto').textContent = textoCorto; 
+    document.getElementById('feedbackUltimoGasto').style.display = 'flex'; 
+    // --------------------------------------------------
+
+    document.getElementById('gastoDescripcion').value=''; 
+    document.getElementById('gastoCategoria').value=''; 
+    smartValorInput="0"; 
+    actualizarDisplayValor(); 
+    renderizarCategoriasSmart(null); 
+    document.getElementById('budgetProgressContainer').style.display='none'; 
+    renderizarSelectores(); 
+    renderizarGastosDelMes(); 
+    actualizarResumenMensual(); 
+    actualizarResumenHistorico(); 
+    actualizarSaldoHeader(); 
+}
+
+function agregarIngreso(){ 
+    const f=document.getElementById('ingresoFecha').value;
+    const d=sanitizar(document.getElementById('ingresoDescripcion').value.trim());
+    const v=parsearValor(document.getElementById('ingresoValor').value); 
+    
+    if(!f||!d||isNaN(v)||v<=0) return mostrarToast(TRADUCTIONS[config.idioma].alertMissing,'error'); 
+    
+    ingresos.push({id:Date.now(),fecha:f,descripcion:d,valor:v}); 
+    ingresos.sort(sortData); 
+    guardarIngresos(); 
+    
+    if(!descripcionesIngresosUsadas.includes(d)){
+        descripcionesIngresosUsadas.push(d);
+        actualizarSugerenciasIngresos(descripcionesIngresosUsadas);
+    } 
+
+    // --- NUEVO FORMATO DE CONFIRMACIÓN (UNA LÍNEA) ---
+    const textoCorto = `✅ Guardado: ${d} • ${formatearMoneda(v)}`;
+    document.getElementById('feedbackTextoIngreso').textContent = textoCorto; 
+    document.getElementById('feedbackUltimoIngreso').style.display = 'flex';
+    // --------------------------------------------------
+
+    document.getElementById('ingresoDescripcion').value=''; 
+    smartValorInputIngreso="0"; 
+    actualizarDisplayValorIngreso(); 
+    if(parseInt(f.split('-')[0])===anioSeleccionadoIngreso){
+        paginaActualIngresosMes=1; 
+        renderizarIngresosAnuales();
+    } 
+    actualizarSaldoHeader(); 
+    renderizarSelectores(); 
+    actualizarResumenMensual(); 
+}    
+// RESTAURADO AVISO ORIGINAL
     document.getElementById('feedbackTexto').textContent=`${c} - ${d}: ${formatearMoneda(v)}`; document.getElementById('feedbackUltimoGasto').style.display='flex'; 
-    document.getElementById('gastoDescripcion').value=''; document.getElementById('gastoCategoria').value=''; smartValorInput="0"; actualizarDisplayValor(); renderizarCategoriasSmart(null); document.getElementById('budgetProgressContainer').style.display='none'; renderizarSelectores(); renderizarGastosDelMes(); actualizarResumenMensual(); actualizarResumenHistorico(); actualizarSaldoHeader(); }
-function agregarIngreso(){ const f=document.getElementById('ingresoFecha').value, d=sanitizar(document.getElementById('ingresoDescripcion').value.trim()), v=parsearValor(document.getElementById('ingresoValor').value); if(!f||!d||isNaN(v)||v<=0) return mostrarToast(TRADUCTIONS[config.idioma].alertMissing,'error'); ingresos.push({id:Date.now(),fecha:f,descripcion:d,valor:v}); ingresos.sort(sortData); guardarIngresos(); if(!descripcionesIngresosUsadas.includes(d)){descripcionesIngresosUsadas.push(d);actualizarSugerenciasIngresos(descripcionesIngresosUsadas);} 
+    document.getElementById('gastoDescripcion').value=''; document.getElementById('gastoCategoria').value=''; smartValorInput="0"; actualizarDisplayValor(); renderizarCategoriasSmart(null); document.getElementById('budgetProgressContainer').style.display='none'; renderizarSelectores(); renderizarGastosDelMes(); actualizarResumenMensual(); actualizarResumenHistorico(); actualizarSaldoHeader(); 
+function agregarIngreso(){ 
+    const f=document.getElementById('ingresoFecha').value;
+    const d=sanitizar(document.getElementById('ingresoDescripcion').value.trim());
+    const v=parsearValor(document.getElementById('ingresoValor').value); 
+    
+    if(!f||!d||isNaN(v)||v<=0) return mostrarToast(TRADUCTIONS[config.idioma].alertMissing,'error'); 
+    
+    ingresos.push({id:Date.now(),fecha:f,descripcion:d,valor:v}); 
+    ingresos.sort(sortData); 
+    guardarIngresos(); 
+    
+    if(!descripcionesIngresosUsadas.includes(d)){
+        descripcionesIngresosUsadas.push(d);
+        actualizarSugerenciasIngresos(descripcionesIngresosUsadas);
+    } 
+
+    // --- NUEVO FORMATO DE CONFIRMACIÓN (UNA LÍNEA) ---
+    const textoCorto = `✅ Guardado: ${d} • ${formatearMoneda(v)}`;
+    document.getElementById('feedbackTextoIngreso').textContent = textoCorto; 
+    document.getElementById('feedbackUltimoIngreso').style.display = 'flex';
+    // --------------------------------------------------
+
+    document.getElementById('ingresoDescripcion').value=''; 
+    smartValorInputIngreso="0"; 
+    actualizarDisplayValorIngreso(); 
+    if(parseInt(f.split('-')[0])===anioSeleccionadoIngreso){
+        paginaActualIngresosMes=1; 
+        renderizarIngresosAnuales();
+    } 
+    actualizarSaldoHeader(); 
+    renderizarSelectores(); 
+    actualizarResumenMensual(); 
+}
     // RESTAURADO AVISO ORIGINAL
     document.getElementById('feedbackTextoIngreso').textContent=`${d}: ${formatearMoneda(v)}`; document.getElementById('feedbackUltimoIngreso').style.display='flex';
-    document.getElementById('ingresoDescripcion').value=''; smartValorInputIngreso="0"; actualizarDisplayValorIngreso(); if(parseInt(f.split('-')[0])===anioSeleccionadoIngreso){paginaActualIngresosMes=1; renderizarIngresosAnuales();} actualizarSaldoHeader(); renderizarSelectores(); actualizarResumenMensual(); }
+    document.getElementById('ingresoDescripcion').value=''; smartValorInputIngreso="0"; actualizarDisplayValorIngreso(); if(parseInt(f.split('-')[0])===anioSeleccionadoIngreso){paginaActualIngresosMes=1; renderizarIngresosAnuales();} actualizarSaldoHeader(); renderizarSelectores(); actualizarResumenMensual(); 
 function guardarIngresos(){ localStorage.setItem('ingresos_v2',JSON.stringify(ingresos)); descripcionesIngresosUsadas=[...new Set(ingresos.map(i=>i.descripcion))]; actualizarSugerenciasIngresos(descripcionesIngresosUsadas); }
 function actualizarDisplayValorIngreso(){ 
     document.getElementById('smartValueDisplayIngreso').textContent=config.moneda+' '+smartValorInputIngreso; 
@@ -1533,55 +2028,135 @@ function confirmarEliminarIngreso(){ mostrarModalConfirmacion(TRADUCTIONS[config
 function agregarCategoria(){ const n=sanitizar(document.getElementById('nuevaCategoria').value.trim()); if(!n)return; if(config.categorias.includes(n))return mostrarToast(TRADUCTIONS[config.idioma].alertCatNombreExiste(n),'error'); config.categorias.push(n); config.categorias.sort(); localStorage.setItem('config_v2',JSON.stringify(config)); document.getElementById('nuevaCategoria').value=''; actualizarSelectCategorias(); renderizarTablaCategorias(); renderizarCategoriasSmart(); }
 function actualizarSelectCategorias(){ const s=config.categorias.map(c=>`<option value="${c}">${c}</option>`).join(''); document.getElementById('modalCategoria').innerHTML=s; }
 function renderizarTablaCategorias(){ 
-    const tb = document.querySelector('#tablaCategorias tbody'); 
-    tb.innerHTML = ''; 
+    const contenedor = document.getElementById('gridCategoriasConfig'); 
+    if(!contenedor) return; 
     
+    contenedor.innerHTML = ''; 
+    
+    // 1. Renderizar las categorías existentes
     config.categorias.forEach((c, i) => {
-        // --- 1. Lógica de Separación Visual (Emoji vs Texto) ---
-        // Asumimos formato "EMOJI ESPACIO NOMBRE"
         let emoji = c.split(' ')[0]; 
         let nombre = c.substring(emoji.length).trim();
-        
-        // Fallback: Si por alguna razón no hay emoji o espacio, manejamos el error visual
         if(!nombre) { nombre = emoji; emoji = '🏷️'; }
-
-        // --- 2. Lógica del Presupuesto ---
-        let metaVisual = '<span style="color:var(--secondary-color); opacity:0.3;">-</span>';
-        let estiloMeta = '';
         
+        let metaHTML = ''; 
+        let claseExtra = '';
         if(config.presupuestos && config.presupuestos[c] > 0){
-            metaVisual = formatearMonedaSinDecimales(config.presupuestos[c]);
-            estiloMeta = 'font-weight:700; color:var(--primary-color); font-size: 1em;';
+            metaHTML = `<div class="config-meta">${formatearMonedaSinDecimales(config.presupuestos[c])}</div>`;
+            claseExtra = 'has-budget'; 
         }
-
-        const tr = document.createElement('tr');
-        tr.className = "tr-clickable";
-        tr.onclick = () => abrirModalCategoria(i);
         
-        // --- 3. HTML con Diseño Avatar ---
-        tr.innerHTML = `
-            <td style="padding-top:12px; padding-bottom:12px;">
-                <div class="cat-row-wrapper">
-                    <div class="cat-avatar">${emoji}</div>
-                    <div class="cat-name-styled">${nombre}</div>
-                </div>
-            </td>
-            <td style="text-align: right; vertical-align: middle; ${estiloMeta}">
-                ${metaVisual}
-            </td>
-            <td class="acciones-container" style="text-align:center; vertical-align: middle;">
-                <button class="btn-accion-tabla btn-accion-borrar" onclick="event.stopPropagation(); confirmarEliminarCategoria(${i})">
-                    <i class="fas fa-trash"></i>
-                </button>
-                <i class="fas fa-chevron-right" style="color:var(--secondary-color);font-size:0.8em;margin-left:15px;"></i>
-            </td>`;
-            
-        tb.appendChild(tr);
-    }); 
+        const card = document.createElement('div');
+        card.className = `config-cat-card ${claseExtra}`;
+        card.onclick = () => abrirModalCategoria(i); // Modo Edición
+        
+        card.innerHTML = `
+            <div class="config-avatar">${emoji}</div>
+            <div class="config-info">
+                <div class="config-name">${nombre}</div>
+                ${metaHTML}
+            </div>
+        `;
+        contenedor.appendChild(card);
+    });
+
+    // 2. Renderizar la Tarjeta Especial "AÑADIR NUEVA" al final
+    const addCard = document.createElement('div');
+    addCard.className = 'config-cat-card add-new';
+    addCard.onclick = abrirModalNuevaCategoria; // Modo Creación
+    addCard.innerHTML = `
+        <div class="config-avatar"><i class="fas fa-plus"></i></div>
+        <div class="config-name">Nueva Categoría</div>
+    `;
+    contenedor.appendChild(addCard);
 }
-function abrirModalCategoria(i){ categoriaEditandoNombreAntiguo=config.categorias[i]; document.getElementById('modalCategoriaNombre').value=categoriaEditandoNombreAntiguo; const p=(config.presupuestos&&config.presupuestos[categoriaEditandoNombreAntiguo])?config.presupuestos[categoriaEditandoNombreAntiguo]:''; document.getElementById('modalCategoriaPresupuesto').value=p; document.getElementById('modalEdicionCategoria').style.display='block'; }
+// Abre el modal en modo "Crear" (limpio)
+function abrirModalNuevaCategoria(){
+    categoriaEditandoNombreAntiguo = null; // NULL indica que es nueva
+    document.getElementById('modalCategoriaNombre').value = '';
+    document.getElementById('modalCategoriaPresupuesto').value = '';
+    
+    // Ocultar botón de borrar (no puedes borrar algo que no existe aún)
+    const btnBorrar = document.getElementById('btnBorrarCategoriaModal');
+    if(btnBorrar) btnBorrar.style.display = 'none';
+    
+    document.getElementById('modalEdicionCategoria').style.display = 'block';
+    setTimeout(() => document.getElementById('modalCategoriaNombre').focus(), 100);
+}
+function abrirModalCategoria(i){ 
+    categoriaEditandoNombreAntiguo = config.categorias[i]; 
+    document.getElementById('modalCategoriaNombre').value = categoriaEditandoNombreAntiguo; 
+    
+    const p = (config.presupuestos && config.presupuestos[categoriaEditandoNombreAntiguo]) 
+              ? config.presupuestos[categoriaEditandoNombreAntiguo] : ''; 
+    document.getElementById('modalCategoriaPresupuesto').value = p; 
+    
+    // Mostrar botón de borrar
+    const btnBorrar = document.getElementById('btnBorrarCategoriaModal');
+    if(btnBorrar) {
+        btnBorrar.style.display = 'block';
+        // Actualizamos el onclick para pasar el índice correcto
+        btnBorrar.onclick = () => confirmarEliminarCategoria(i);
+    }
+    
+    document.getElementById('modalEdicionCategoria').style.display = 'block'; 
+}
 function cerrarModalCategoria(){ document.getElementById('modalEdicionCategoria').style.display='none'; }
-function guardarEdicionCategoria(){ const n=sanitizar(document.getElementById('modalCategoriaNombre').value.trim()); const p=parsearValor(document.getElementById('modalCategoriaPresupuesto').value); if(n&&n!==categoriaEditandoNombreAntiguo){if(config.categorias.includes(n))return mostrarToast(TRADUCTIONS[config.idioma].alertCatNombreExiste(n),'error'); config.categorias[config.categorias.indexOf(categoriaEditandoNombreAntiguo)]=n; gastos.forEach(g=>{if(g.categoria===categoriaEditandoNombreAntiguo)g.categoria=n}); if(config.presupuestos&&config.presupuestos[categoriaEditandoNombreAntiguo]){config.presupuestos[n]=config.presupuestos[categoriaEditandoNombreAntiguo]; delete config.presupuestos[categoriaEditandoNombreAntiguo];}} const nf=(n&&n!==categoriaEditandoNombreAntiguo)?n:categoriaEditandoNombreAntiguo; if(!config.presupuestos)config.presupuestos={}; if(p>0)config.presupuestos[nf]=p; else delete config.presupuestos[nf]; localStorage.setItem('config_v2',JSON.stringify(config)); guardarGastos(); renderizarTablaCategorias(); renderizarCategoriasSmart(); actualizarSelectCategorias(); cerrarModalCategoria(); mostrarToast("Categoría guardada","success"); }
+function guardarEdicionCategoria(){ 
+    const n = sanitizar(document.getElementById('modalCategoriaNombre').value.trim()); 
+    const p = parsearValor(document.getElementById('modalCategoriaPresupuesto').value); 
+    
+    if(!n) return mostrarToast(TRADUCTIONS[config.idioma].alertMissing, 'error');
+
+    // CASO 1: ES UNA NUEVA CATEGORÍA
+    if(categoriaEditandoNombreAntiguo === null){
+        if(config.categorias.includes(n)) return mostrarToast(TRADUCTIONS[config.idioma].alertCatNombreExiste(n),'error');
+        config.categorias.push(n);
+        config.categorias.sort();
+        // Guardar presupuesto si se puso
+        if(p > 0) {
+            if(!config.presupuestos) config.presupuestos = {};
+            config.presupuestos[n] = p;
+        }
+    } 
+    // CASO 2: ES UNA EDICIÓN
+    else {
+        // Si cambió el nombre, actualizamos referencias
+        if(n !== categoriaEditandoNombreAntiguo){
+            if(config.categorias.includes(n)) return mostrarToast(TRADUCTIONS[config.idioma].alertCatNombreExiste(n),'error');
+            
+            // Actualizar lista
+            const idx = config.categorias.indexOf(categoriaEditandoNombreAntiguo);
+            if(idx > -1) config.categorias[idx] = n;
+            config.categorias.sort(); // Reordenar alfabéticamente
+            
+            // Actualizar gastos históricos
+            gastos.forEach(g => { if(g.categoria === categoriaEditandoNombreAntiguo) g.categoria = n });
+            
+            // Migrar presupuesto al nuevo nombre
+            if(config.presupuestos && config.presupuestos[categoriaEditandoNombreAntiguo]){
+                config.presupuestos[n] = config.presupuestos[categoriaEditandoNombreAntiguo];
+                delete config.presupuestos[categoriaEditandoNombreAntiguo];
+            }
+        }
+        
+        // Actualizar valor del presupuesto (para el nombre final 'n')
+        if(!config.presupuestos) config.presupuestos = {};
+        if(p > 0) config.presupuestos[n] = p;
+        else delete config.presupuestos[n];
+    }
+
+    // Guardar todo y refrescar
+    localStorage.setItem('config_v2', JSON.stringify(config)); 
+    guardarGastos(); 
+    
+    renderizarTablaCategorias(); 
+    renderizarCategoriasSmart(); 
+    actualizarSelectCategorias(); 
+    cerrarModalCategoria(); 
+    
+    mostrarToast("Categoría guardada", "success"); 
+}
 function confirmarEliminarCategoria(i){ const c=config.categorias[i]; if(gastos.some(g=>g.categoria===c))return mostrarToast(TRADUCTIONS[config.idioma].alertCatNoSePuedeBorrar(c),'error'); mostrarModalConfirmacion(TRADUCTIONS[config.idioma].modalConfirmDeleteCat(c),()=>{config.categorias.splice(i,1); if(config.presupuestos&&config.presupuestos[c])delete config.presupuestos[c]; localStorage.setItem('config_v2',JSON.stringify(config)); guardarGastos(); renderizarTablaCategorias(); renderizarCategoriasSmart(); actualizarSelectCategorias(); cerrarModalConfirmacion(); mostrarToast(TRADUCTIONS[config.idioma].toastCategoriaEliminada,"success");}); }
 function mostrarModalConfirmacion(t,c){ document.getElementById('modalConfirmBody').textContent=t; confirmCallback=c; document.getElementById('modalConfirmacion').style.display='block'; }
 function ejecutarConfirmacion(){ if(confirmCallback){try{confirmCallback()}catch(e){console.error(e)}} cerrarModalConfirmacion(); }
@@ -1589,6 +2164,91 @@ function cerrarModalConfirmacion(){ document.getElementById('modalConfirmacion')
 function inicializarSelectoresMesAnio(){ const sm=document.getElementById('filtroMes'), sa=document.getElementById('filtroAnioMensual'), sh=document.getElementById('filtroAnioHistorico'); if(!sm||!sa||!sh)return; sm.innerHTML=''; sa.innerHTML=''; sh.innerHTML=''; const d=gastos.map(g=>parseInt(g.fecha.split('-')[0])); const c=new Date().getFullYear(); const min=d.length?Math.min(...d,c):c; const max=Math.max(...d,2030); for(let y=max;y>=min;y--){sa.add(new Option(y,y)); sh.add(new Option(y,y));} MONTH_NAMES_FULL[config.idioma].forEach((m,i)=>sm.add(new Option(m,i+1))); const h=new Date(); sm.value=h.getMonth()+1; sa.value=h.getFullYear(); sh.value=h.getFullYear(); }
 function actualizarGraficoCategorias(l,c,k,t=''){ const ctx=document.getElementById(c).getContext('2d'); const d={}; let tot=0; l.forEach(g=>{d[g.categoria]=(d[g.categoria]||0)+Number(g.valor);tot+=Number(g.valor)}); if(chartInstances[k]) chartInstances[k].destroy(); chartInstances[k]=new Chart(ctx,{type:'doughnut',data:{labels:Object.keys(d),datasets:[{data:Object.values(d),backgroundColor:PALETA_COLORES,borderWidth:1}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},datalabels:{color:'white',font:{weight:'bold',size:12},display:ctx=>(ctx.dataset.data[ctx.dataIndex]/tot)>0.04,formatter:v=>(v*100/tot).toFixed(0)+"%"},title:{display:!!t,text:t,font:{size:14}}}}}); }
 function actualizarGraficoEvolucionAnual(da){ const ctx=document.getElementById('chartHistoricoMesesCanvas').getContext('2d'); const i=da.map(d=>d.ingreso), g=da.map(d=>d.gasto); if(chartInstances.historicoMeses) chartInstances.historicoMeses.destroy(); chartInstances.historicoMeses=new Chart(ctx,{type:'bar',data:{labels:MONTH_NAMES_FULL[config.idioma].map(m=>m.substr(0,3)),datasets:[{label:'Ingreso',data:i,backgroundColor:'#2563EB',borderRadius:4},{label:'Gasto',data:g,backgroundColor:'#F87171',borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},datalabels:{display:false}},scales:{x:{grid:{display:false}},y:{beginAtZero:true,grid:{color:'#f0f0f0'}}}}}); }
+// --- NUEVAS FUNCIONES PARA CONFIGURACIÓN VISUAL ---
+
+function actualizarCardsConfig(){
+    // 1. Actualizar Tarjeta Moneda
+    const dispMoneda = document.getElementById('displayMonedaCard');
+    if(dispMoneda) dispMoneda.textContent = config.moneda;
+    
+    // 2. Actualizar Tarjeta Idioma
+    const dispIdioma = document.getElementById('displayIdiomaCard');
+    if(dispIdioma) dispIdioma.textContent = config.idioma.toUpperCase();
+    
+    // 3. Actualizar Icono PIN
+    const lockIcon = document.getElementById('iconLockState');
+    if(lockIcon) {
+        if(config.pin) {
+            lockIcon.style.color = 'var(--success-color)'; // Verde si está activo
+            lockIcon.className = 'fas fa-lock mini-card-icon';
+        } else {
+            lockIcon.style.color = 'var(--secondary-color)'; // Gris si está inactivo
+            lockIcon.className = 'fas fa-lock-open mini-card-icon';
+        }
+    }
+}
+
+// Helper para activar el switch del PIN al tocar la tarjeta entera
+function triggerTogglePin(e){
+    // Evitamos doble disparo si se toca directamente el switch
+    if(e.target.tagName !== 'INPUT' && e.target.className !== 'slider'){
+        document.getElementById('togglePin').click();
+    }
+}
+
+
+// --- LÓGICA MODAL MONEDA (CORREGIDA) ---
+function abrirModalMoneda(){
+    const modal = document.getElementById('modalSeleccionMoneda');
+    modal.style.display='block';
+    
+    // Resaltar la opción seleccionada actualmente
+    const items = modal.querySelectorAll('.option-item');
+    items.forEach(item => {
+        item.classList.remove('selected');
+        // AHORA COMPARAMOS EXACTAMENTE EL VALOR (data-val)
+        if(item.getAttribute('data-val') === config.moneda){
+            item.classList.add('selected');
+        }
+    });
+}
+
+function cambiarMoneda(nuevaMoneda){
+    config.moneda = nuevaMoneda;
+    localStorage.setItem('config_v2', JSON.stringify(config));
+    
+    // Cerrar modal y refrescar todo
+    document.getElementById('modalSeleccionMoneda').style.display='none';
+    cargarDatos(); // Recarga la app para aplicar el símbolo en todos lados
+    mostrarToast("Moneda actualizada", "success");
+}
+
+// --- LÓGICA MODAL IDIOMA ---
+function abrirModalIdioma(){
+    const modal = document.getElementById('modalSeleccionIdioma');
+    modal.style.display='block';
+    
+    // Resaltar selección
+    const codigoBusqueda = config.idioma === 'es' ? 'Español' : 'English';
+    const items = modal.querySelectorAll('.option-item');
+    items.forEach(item => {
+        item.classList.remove('selected');
+        if(item.textContent.includes(codigoBusqueda)){
+            item.classList.add('selected');
+        }
+    });
+}
+
+function cambiarIdioma(nuevoIdioma){
+    config.idioma = nuevoIdioma;
+    localStorage.setItem('config_v2', JSON.stringify(config));
+    
+    // Aplicar cambios
+    aplicarIdioma(); 
+    document.getElementById('modalSeleccionIdioma').style.display='none';
+    actualizarCardsConfig(); // Actualizar la tarjetita "ES/EN"
+    mostrarToast("Idioma actualizado", "success");
+}
 </script>
 </body>
 </html>
