@@ -2095,7 +2095,29 @@ function parsearValor(s){ return parseFloat(s?.toString().replace(',','.')||0); 
 function formatearMoneda(v){ return `${config.moneda} ${(v||0).toLocaleString('es-EC',{minimumFractionDigits:2})}`; }
 function mostrarToast(m,t){ const x=document.getElementById('toast'); x.textContent=m; x.className=`show ${t}`; clearTimeout(toastTimeout); toastTimeout=setTimeout(()=>x.className='',3000); }
 function sanitizar(s){ if(!s)return''; const m={'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}; return s.replace(/[&<>"']/g,k=>m[k]); }
-function inicializarListenerTecladoFisico(){ document.addEventListener('keydown',e=>{const g=document.getElementById('gasto').classList.contains('activa'), i=document.getElementById('ingreso').classList.contains('activa'); if((!g&&!i)||(e.target.tagName==='INPUT'&&e.target.type==='text'))return; if(e.key>='0'&&e.key<='9')tecladoPress(e.key); else if(e.key==='.'||e.key===',')tecladoPress('.'); else if(e.key==='Backspace')tecladoPress('back'); else if(e.key==='Enter'){e.preventDefault(); if(g)agregarGasto(); if(i)agregarIngreso();} }); }
+function inicializarListenerTecladoFisico(){ 
+    document.addEventListener('keydown', e => {
+        // 1. SEGURIDAD: Si el bloqueo está activo, ignorar todo el teclado físico
+        if(document.getElementById('lockScreen').style.display === 'flex') return;
+
+        // 2. Comportamiento normal de la app
+        const g = document.getElementById('gasto').classList.contains('activa');
+        const i = document.getElementById('ingreso').classList.contains('activa'); 
+        
+        // Si no estamos en Gasto ni Ingreso, o si el foco está en un campo de texto (descripción), ignorar
+        if((!g && !i) || (e.target.tagName === 'INPUT' && e.target.type === 'text')) return; 
+        
+        // Procesar teclas
+        if(e.key >= '0' && e.key <= '9') tecladoPress(e.key); 
+        else if(e.key === '.' || e.key === ',') tecladoPress('.'); 
+        else if(e.key === 'Backspace') tecladoPress('back'); 
+        else if(e.key === 'Enter'){
+            e.preventDefault(); 
+            if(g) agregarGasto(); 
+            if(i) agregarIngreso();
+        } 
+    }); 
+}
 function inicializarScrollCategoriasMouse(){const s=document.getElementById('smartCategories');s.addEventListener('wheel',e=>{if(!s.classList.contains('expanded')){e.preventDefault();s.scrollLeft+=e.deltaY}})}
 function actualizarSugerenciasDescripciones(l){document.getElementById('sugerenciasDescripciones').innerHTML=l.map(d=>`<option value="${d}">`).join('');}
 function actualizarSugerenciasIngresos(l){document.getElementById('sugerenciasIngresos').innerHTML=l.map(d=>`<option value="${d}">`).join('');}
