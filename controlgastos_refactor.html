@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title id="appTitle">Control de Gastos</title> 
+    <meta name="theme-color" content="#1E3A8A">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+    
+        <link rel="stylesheet" href="controlgastos.refactor.css">
+
+
+</head>
+<body>
+    <div id="lockScreen">
+        <div style="font-size: 4em; margin-bottom: 20px;"><i class="fas fa-lock"></i></div>
+        <h2 style="color: white; margin-top:0;">Seguridad</h2>
+        <div id="pinDisplay" class="pin-display"></div>
+        <div class="pin-keypad">
+            <div class="pin-btn" onclick="ingresarPin('1')">1</div>
+            <div class="pin-btn" onclick="ingresarPin('2')">2</div>
+            <div class="pin-btn" onclick="ingresarPin('3')">3</div>
+            <div class="pin-btn" onclick="ingresarPin('4')">4</div>
+            <div class="pin-btn" onclick="ingresarPin('5')">5</div>
+            <div class="pin-btn" onclick="ingresarPin('6')">6</div>
+            <div class="pin-btn" onclick="ingresarPin('7')">7</div>
+            <div class="pin-btn" onclick="ingresarPin('8')">8</div>
+            <div class="pin-btn" onclick="ingresarPin('9')">9</div>
+            <div class="pin-btn" onclick="ingresarPin('back')"><i class="fas fa-backspace" style="font-size: 0.7em;"></i></div>
+            <div class="pin-btn" onclick="ingresarPin('0')">0</div>
+            <div class="pin-btn" onclick="verificarPin()">🆗</div>
+        </div>
+        <p id="pinError" style="color: #FCA5A5; margin-top: 15px; display: none;">PIN Incorrecto</p>
+    </div>
+
+    <div class="header">
+        <span id="appLogo"><i class="fas fa-wallet"></i> <span data-i18n="appTitle">Control de Gastos</span></span>
+        <div id="headerSaldoContainer">
+            <span data-i18n="lblDispCorto">Disp:</span> <span id="headerSaldoValor">...</span>
+        </div>
+    </div>
+
+    <div id="gasto" class="pantalla activa">
+        <div class="input-card">
+            <div id="formulario-gasto" class="smart-input-container">
+                <div class="row-date-val">
+                    <button class="fecha-pill" id="smartFechaBtn" onclick="cambiarFechaSmart('gastoFecha')">
+                        <i class="far fa-calendar-alt"></i> <span id="smartFechaTexto">Hoy</span>
+                    </button>
+                    <input type="date" id="gastoFecha" style="display:none;">
+                    <div class="smart-value-display">
+                        <span id="smartValueDisplay" style="width: 100%; text-align: right; margin-right: 10px;">0.00</span>
+                        <div class="cursor-blink" id="cursorGasto"></div>
+                    </div>
+                </div>
+                <div class="payment-pills-row">
+                    <input type="radio" id="pagoContado" name="tipoPago" value="Contado" checked>
+                    <label for="pagoContado"><i class="fas fa-coins"></i> <span data-i18n="lblContado">Contado</span></label>
+                    <input type="radio" id="pagoTarjeta" name="tipoPago" value="Tarjeta">
+                    <label for="pagoTarjeta"><i class="far fa-credit-card"></i> <span data-i18n="lblTarjeta">Tarjeta</span></label>
+                    <input type="radio" id="pagoTransferencia" name="tipoPago" value="Transferencia">
+                    <label for="pagoTransferencia"><i class="fas fa-mobile-alt"></i> <span data-i18n="lblTransf">Transf.</span></label>
+                </div>
+                <input type="text" id="gastoDescripcion" class="smart-desc-input" placeholder="¿En qué gastaste?" autocomplete="off" list="sugerenciasDescripciones" onkeyup="predecirCategoria()">
+                <datalist id="sugerenciasDescripciones"></datalist>
+                <div id="smartCategories" class="smart-cat-grid"></div>
+                <input type="hidden" id="gastoCategoria" value=""> 
+                <div id="budgetProgressContainer" style="display:none;">
+                    <div class="budget-info">
+                        <span id="budgetLabel" data-i18n="lblMeta">Meta Mensual</span>
+                        <span id="budgetValue"></span>
+                    </div>
+                    <div class="budget-bar-bg">
+                        <div id="budgetProgressBar" class="budget-bar-fill"></div>
+                    </div>
+                </div>
+                    <div id="keypadContainer" class="keypad-container-gasto">
+                        <div class="keypad-grid-pro">
+                            <button class="key-btn" onclick="tecladoPress('1')">1</button>
+                            <button class="key-btn" onclick="tecladoPress('2')">2</button>
+                            <button class="key-btn" onclick="tecladoPress('3')">3</button>
+                            
+                            <button class="key-btn" id="btnAddGasto" onclick="agregarGasto()">
+                                <i class="fas fa-check"></i>
+                            </button>
+
+                            <button class="key-btn" onclick="tecladoPress('4')">4</button>
+                            <button class="key-btn" onclick="tecladoPress('5')">5</button>
+                            <button class="key-btn" onclick="tecladoPress('6')">6</button>
+                            
+                            <button class="key-btn" onclick="tecladoPress('7')">7</button>
+                            <button class="key-btn" onclick="tecladoPress('8')">8</button>
+                            <button class="key-btn" onclick="tecladoPress('9')">9</button>
+                            
+                            <button class="key-btn key-zero-span" onclick="tecladoPress('0')">0</button>
+                            <button class="key-btn key-dot" onclick="tecladoPress('.')">.</button>
+                            <button class="key-btn key-back-pos" onclick="tecladoPress('back')">
+                                <i class="fas fa-backspace"></i>
+                            </button>
+                        </div>
+                    </div>
+                <div id="feedbackUltimoGasto" class="last-action-card" onclick="toggleTablaGastos()">
+                    <div class="last-action-icon"><i class="fas fa-check-circle"></i></div>
+                    <div class="last-action-details">
+                        <span class="last-action-title" data-i18n="msgGastoGuardado">Gasto Guardado</span>
+                        <span id="feedbackTexto" class="last-action-text"></span>
+                    </div>
+                    <div style="color: var(--secondary-color); font-size: 0.8em;"><i class="fas fa-chevron-down"></i></div>
+                </div>
+                <input type="hidden" id="gastoValor">
+            </div>
+        </div>
+
+        <button class="btn btn-ghost" id="btnToggleGastos" onclick="toggleTablaGastos()">
+            ⬇️ <span data-i18n="titleGastosMes">Últimos Gastos</span>
+        </button>
+        <div id="emptyStateGasto" class="empty-state">
+            <div class="empty-icon">🍃</div>
+            <div class="empty-text">Aún no tienes gastos este mes.<br>¡Buen trabajo!</div>
+        </div>
+        <div id="contenedorUltimosGastos">
+            <table id="tablaUltimosGastos" class="tabla-gastos">
+                <thead><tr><th data-i18n="colFecha">Fecha</th><th data-i18n="colDesc">Descripción</th><th style="text-align: right;" data-i18n="colValor">Valor</th></tr></thead>
+                <tbody></tbody>
+                <tfoot><tr><td colspan="2" data-i18n="lblTotal">TOTAL</td><td id="totalUltimosGastos" class="gasto-valor"></td></tr></tfoot>
+            </table>
+            <div class="pagination-controls" style="margin-bottom: 20px;">
+                <button class="btn btn-secondary" onclick="cambiarPaginaPrincipal(-1)">Ant</button>
+                <span id="pageInfoPrincipal">Pág 1</span>
+                <button class="btn btn-secondary" onclick="cambiarPaginaPrincipal(1)">Sig</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="ingreso" class="pantalla">
+        <div class="input-card">
+            <div id="formulario-ingreso" class="smart-input-container">
+                <h2 data-i18n="titleIngresoDinero" style="text-align:left; margin-bottom:10px; font-size:1.1em;">Nuevo Ingreso</h2> 
+                <div class="row-date-val">
+                    <button class="fecha-pill" id="smartFechaIngresoBtn" onclick="cambiarFechaSmart('ingresoFecha')">
+                        <i class="far fa-calendar-alt"></i> <span id="smartFechaIngresoTexto">Hoy</span>
+                    </button>
+                    <input type="date" id="ingresoFecha" style="display:none;">
+                    <div class="smart-value-display">
+                        <span id="smartValueDisplayIngreso" style="width: 100%; text-align: right; margin-right: 10px;">0.00</span>
+                        <div class="cursor-blink" id="cursorIngreso"></div>
+                    </div>
+                </div>
+                <input type="text" id="ingresoDescripcion" class="smart-desc-input" data-i18n-ph="phDescIngreso" placeholder="¿Origen del ingreso?" autocomplete="off" style="margin-top:10px; margin-bottom:10px;" list="sugerenciasIngresos">
+                <datalist id="sugerenciasIngresos"></datalist>
+                <div class="keypad-grid-pro">
+                    <button class="key-btn" onclick="tecladoPress('1')">1</button>
+                    <button class="key-btn" onclick="tecladoPress('2')">2</button>
+                    <button class="key-btn" onclick="tecladoPress('3')">3</button>
+                    
+                    <button class="key-btn" id="btnAddIngreso" onclick="agregarIngreso()">
+                        <i class="fas fa-check"></i>
+                    </button>
+
+                    <button class="key-btn" onclick="tecladoPress('4')">4</button>
+                    <button class="key-btn" onclick="tecladoPress('5')">5</button>
+                    <button class="key-btn" onclick="tecladoPress('6')">6</button>
+                    
+                    <button class="key-btn" onclick="tecladoPress('7')">7</button>
+                    <button class="key-btn" onclick="tecladoPress('8')">8</button>
+                    <button class="key-btn" onclick="tecladoPress('9')">9</button>
+                    
+                    <button class="key-btn key-zero-span" onclick="tecladoPress('0')">0</button>
+                    <button class="key-btn key-dot" onclick="tecladoPress('.')">.</button>
+                    <button class="key-btn key-back-pos" onclick="tecladoPress('back')">
+                        <i class="fas fa-backspace"></i>
+                    </button>
+                </div>
+                <div id="feedbackUltimoIngreso" class="last-action-card" onclick="toggleTablaIngresos()">
+                    <div class="last-action-icon"><i class="fas fa-piggy-bank"></i></div>
+                    <div class="last-action-details">
+                        <span class="last-action-title" data-i18n="msgIngresoGuardado">Ingreso Guardado</span>
+                        <span id="feedbackTextoIngreso" class="last-action-text"></span>
+                    </div>
+                    <div style="color: var(--secondary-color); font-size: 0.8em;"><i class="fas fa-chevron-down"></i></div>
+                </div>
+                <input type="hidden" id="ingresoValor">
+            </div>
+        </div>
+        
+        <button class="btn btn-ghost" id="btnToggleIngresos" onclick="toggleTablaIngresos()">
+            ⬇️ <span data-i18n="titleIngresosMes">Últimos Ingresos</span>
+        </button>
+        <div id="emptyStateIngreso" class="empty-state">
+            <div class="empty-icon">💰</div>
+            <div class="empty-text">Sin ingresos registrados este año.</div>
+        </div>
+        <div id="contenedorUltimosIngresos">
+            <div class="year-selector-container">
+                <button class="btn-year-nav" onclick="cambiarAnioIngreso(-1)"><i class="fas fa-chevron-left"></i></button>
+                <span id="displayAnioIngreso" class="year-display">2025</span>
+                <button class="btn-year-nav" onclick="cambiarAnioIngreso(1)"><i class="fas fa-chevron-right"></i></button>
+            </div>
+            <table id="tablaUltimosIngresos" class="tabla-gastos">
+                <thead><tr><th data-i18n="colFecha">Fecha</th><th data-i18n="colDesc">Descripción</th><th style="text-align: right;" data-i18n="colValor">Valor</th></tr></thead>
+                <tbody></tbody>
+                <tfoot><tr><td colspan="2" data-i18n="lblTotal">TOTAL</td><td id="totalUltimosIngresos" class="gasto-valor"></td></tr></tfoot>
+            </table>
+            <div class="pagination-controls" style="margin-bottom: 20px;">
+                <button class="btn btn-secondary" onclick="cambiarPaginaIngresos(-1)">Ant</button>
+                <span id="pageInfoIngresos">Pág 1</span>
+                <button class="btn btn-secondary" onclick="cambiarPaginaIngresos(1)">Sig</button>
+            </div>
+            <div class="export-buttons-container">
+                <button class="btn btn-secondary" onclick="generarYCompartirCSV('ingresos_mes')" style="flex:1;">
+                    <i class="fas fa-file-excel" style="color: #10B981; margin-right: 5px;"></i> <span data-i18n="btnCsvMes">Excel</span>
+                </button> 
+                <button class="btn btn-secondary" onclick="generarPDF('ingresos_mes')" style="flex:1;">
+                    <i class="fas fa-file-pdf" style="color: #EF4444; margin-right: 5px;"></i> PDF
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="mensual" class="pantalla">
+        <h2 data-i18n="titleResumenMensual">Resumen Mensual</h2>
+        <div class="filtro-container-inline">
+            <select id="filtroMes" onchange="actualizarResumenMensual()"></select>
+            <select id="filtroAnioMensual" onchange="actualizarResumenMensual()"></select>
+        </div>
+        <div class="dashboard-resumen">
+            <div class="card-resumen">
+                <span class="lbl-resumen" data-i18n="lblIngreso">Ingreso</span>
+                <span id="dashIngreso" class="val-resumen">0</span>
+            </div>
+            <div class="card-resumen">
+                <span class="lbl-resumen" data-i18n="lblGasto">Gasto</span>
+                <span id="dashGasto" class="val-resumen">0</span>
+            </div>
+            <div class="card-resumen">
+                <span class="lbl-resumen" data-i18n="lblDisponible">Disponible</span>
+                <span id="dashBalance" class="val-resumen">0</span>
+            </div>
+        </div>
+        <button class="btn-accordion" onclick="togglePresupuestos()">
+            <span>🎯 Ver Estado de Presupuestos</span>
+            <i class="fas fa-chevron-down" id="budgetChevron"></i>
+        </button>
+        <div id="budgetSummaryContainer" class="budget-list-container"></div>
+        <fieldset class="filtro-wrapper">
+            <legend class="filtro-titulo" data-i18n="lblFiltroPago">filtro por tipo de pago</legend>
+            <div class="payment-type-group payment-filters-grid">
+                <input type="radio" id="filtroPagoTotalMensual" name="filtroTipoPagoMensual" value="TODOS" checked>
+                <label for="filtroPagoTotalMensual" class="label-todos">
+                    <div class="filter-header"><i class="fas fa-list-ul"></i></div>
+                    <div class="filter-value" data-i18n="lblVerTodos">Todo</div>
+                </label>
+                <input type="radio" id="filtroPagoContadoMensual" name="filtroTipoPagoMensual" value="Contado">
+                <label for="filtroPagoContadoMensual">
+                    <div class="filter-header"><i class="fas fa-coins"></i> <span data-i18n="lblContado">Efectivo</span></div>
+                    <div class="filter-value" id="sum-contado-mensual">$0</div>
+                </label>
+                <input type="radio" id="filtroPagoTarjetaMensual" name="filtroTipoPagoMensual" value="Tarjeta">
+                <label for="filtroPagoTarjetaMensual">
+                    <div class="filter-header"><i class="far fa-credit-card"></i> <span data-i18n="lblTarjeta">Tarjeta</span></div>
+                    <div class="filter-value" id="sum-tarjeta-mensual">$0</div>
+                </label>
+                <input type="radio" id="filtroPagoTransfMensual" name="filtroTipoPagoMensual" value="Transferencia">
+                <label for="filtroPagoTransfMensual">
+                    <div class="filter-header"><i class="fas fa-mobile-alt"></i> <span data-i18n="lblTransf">Transf.</span></div>
+                    <div class="filter-value" id="sum-transf-mensual">$0</div>
+                </label>
+            </div>
+        </fieldset>
+        <h3 data-i18n="titleTotalCategoria">Total por Categoría</h3>
+        <div id="emptyStateMensual" class="empty-state">
+            <div class="empty-icon">📊</div>
+            <div class="empty-text">Sin datos para este mes.</div>
+        </div>
+        <table id="tablaResumenMensual" class="tabla-gastos">
+            <thead><tr><th data-i18n="colCategoria">Categoría</th><th style="text-align: right;" data-i18n="colTotal">Total</th><th class="col-porcentaje">%</th></tr></thead>
+            <tbody></tbody>
+            <tfoot><tr><td data-i18n="lblTotal">TOTAL</td><td></td><td id="totalResumenMensual" class="gasto-valor"></td></tr></tfoot>
+        </table>
+        <div class="chart-container" id="chartMensualContainer"><canvas id="chartMensualCanvas"></canvas></div>
+        <div class="export-buttons-container">
+            <button class="btn btn-secondary" id="btnExportMes" onclick="generarYCompartirCSV('mensual')" style="flex:1;">
+                <i class="fas fa-file-excel" style="color: #10B981; margin-right: 5px;"></i> <span data-i18n="btnCsvMes">Excel</span>
+            </button> 
+            <button class="btn btn-secondary" onclick="generarPDF('mensual')" style="flex:1;">
+                <i class="fas fa-file-pdf" style="color: #EF4444; margin-right: 5px;"></i> PDF
+            </button>
+        </div>
+    </div>
+
+    <div id="historico" class="pantalla">
+        <h2 data-i18n="titleResumenAnual">Resumen Anual</h2>
+        <div class="filtro-container-inline">
+            <select id="filtroAnioHistorico" onchange="actualizarResumenHistorico(true)"></select>
+        </div>
+        <div class="dashboard-resumen">
+            <div class="card-resumen">
+                <span class="lbl-resumen" data-i18n="lblIngreso">Ingreso</span>
+                <span id="dashIngresoHistorico" class="val-resumen">0</span>
+            </div>
+            <div class="card-resumen">
+                <span class="lbl-resumen" data-i18n="lblGasto">Gasto</span>
+                <span id="dashGastoHistorico" class="val-resumen">0</span>
+            </div>
+            <div class="card-resumen">
+                <span class="lbl-resumen" data-i18n="lblDisponible">Disponible</span>
+                <span id="dashBalanceHistorico" class="val-resumen">0</span>
+            </div>
+        </div>
+        <fieldset class="filtro-wrapper">
+            <legend class="filtro-titulo" data-i18n="lblFiltroPago">filtro por tipo de pago</legend>
+            <div class="payment-type-group payment-filters-grid">
+                <input type="radio" id="filtroPagoTotalHistorico" name="filtroTipoPagoHistorico" value="TODOS" checked>
+                <label for="filtroPagoTotalHistorico" class="label-todos">
+                    <div class="filter-header"><i class="fas fa-list-ul"></i></div>
+                    <div class="filter-value" data-i18n="lblVerTodos">Todo</div>
+                </label>
+                <input type="radio" id="filtroPagoContadoHistorico" name="filtroTipoPagoHistorico" value="Contado">
+                <label for="filtroPagoContadoHistorico">
+                    <div class="filter-header"><i class="fas fa-coins"></i> <span data-i18n="lblContado">Efectivo</span></div>
+                    <div class="filter-value" id="sum-contado-historico">$0</div>
+                </label>
+                <input type="radio" id="filtroPagoTarjetaHistorico" name="filtroTipoPagoHistorico" value="Tarjeta">
+                <label for="filtroPagoTarjetaHistorico">
+                    <div class="filter-header"><i class="far fa-credit-card"></i> <span data-i18n="lblTarjeta">Tarjeta</span></div>
+                    <div class="filter-value" id="sum-tarjeta-historico">$0</div>
+                </label>
+                <input type="radio" id="filtroPagoTransfHistorico" name="filtroTipoPagoHistorico" value="Transferencia">
+                <label for="filtroPagoTransfHistorico">
+                    <div class="filter-header"><i class="fas fa-mobile-alt"></i> <span data-i18n="lblTransf">Transf.</span></div>
+                    <div class="filter-value" id="sum-transf-historico">$0</div>
+                </label>
+            </div>
+        </fieldset>
+        <h3 data-i18n="titleTotalCatAnio">Total Categorías (Año)</h3>
+        <table id="tablaResumenHistorico" class="tabla-gastos">
+            <thead><tr><th data-i18n="colCategoria">Categoría</th><th style="text-align: right;" data-i18n="colTotal">Total</th><th class="col-porcentaje">%</th></tr></thead>
+            <tbody></tbody>
+            <tfoot><tr><td data-i18n="lblTotal">TOTAL</td><td></td><td id="totalResumenHistorico" class="gasto-valor"></td></tr></tfoot>
+        </table>
+        <div class="chart-container" id="chartHistoricoContainer"><canvas id="chartHistoricoCanvas"></canvas></div>
+        <h3 style="margin-top: 20px;">Evolución Ingresos vs Gastos</h3>
+        <div class="chart-container" id="chartHistoricoMesesContainer"><canvas id="chartHistoricoMesesCanvas"></canvas></div>
+        <div style="margin-top: 20px;">
+            <button class="btn btn-secondary" onclick="abrirModalTablaAnual()">
+                📄 <span data-i18n="titleDetalleMensual">Ver Detalle Mensual</span>
+            </button>
+        </div>
+        <div class="export-buttons-container">
+            <button class="btn btn-secondary" id="btnExportYear" onclick="generarYCompartirCSV('historico')" style="flex:1;">
+                <i class="fas fa-file-excel" style="color: #10B981; margin-right: 5px;"></i> <span data-i18n="btnCsvAnio">Excel</span>
+            </button> 
+            <button class="btn btn-secondary" onclick="generarPDF('historico')" style="flex:1;">
+                <i class="fas fa-file-pdf" style="color: #EF4444; margin-right: 5px;"></i> PDF
+            </button>
+        </div>
+    </div>
+
+
+    <div id="configuracion" class="pantalla">
+        <h2 data-i18n="menuConfig">Configuración</h2>
+        
+        <div class="config-top-grid">
+            
+            <div class="config-mini-card" onclick="triggerTogglePin(event)">
+                <i class="fas fa-lock mini-card-icon" id="iconLockState"></i>
+                <label class="toggle-switch mini-switch" onclick="event.stopPropagation()">
+                    <input type="checkbox" id="togglePin" onchange="toggleSeguridad(this)">
+                    <span class="slider"></span>
+                </label>
+                <span class="mini-card-label">PIN</span>
+            </div>
+
+            <div class="config-mini-card" onclick="abrirModalMoneda()">
+                <div class="mini-card-icon" id="displayMonedaCard" style="font-weight:bold; font-family:sans-serif;">$</div>
+                <div style="font-size:0.8em; color:var(--secondary-color);">Cambiar</div>
+                <span class="mini-card-label" data-i18n="lblMoneda">Moneda</span>
+            </div>
+
+            <div class="config-mini-card" onclick="abrirModalIdioma()">
+                <i class="fas fa-globe mini-card-icon"></i>
+                <div id="displayIdiomaCard" style="font-size:0.8em; font-weight:bold; color:var(--text-main);">ES</div>
+                <span class="mini-card-label" data-i18n="lblIdioma">Idioma</span>
+            </div>
+        </div>
+        
+        <h3 data-i18n="titleCategorias" style="margin-top: 25px;">Personaliza tus Categorías</h3>
+        
+        <div id="gridCategoriasConfig" class="config-cat-grid"></div>
+
+        <h3 style="margin-top: 30px;" data-i18n="titleDatos">Gestión de Datos</h3>
+        
+        <div class="data-actions-container">
+            <div class="action-card" onclick="compartirBackupJSON()">
+                <div class="action-icon-box icon-backup">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                </div>
+                <div class="action-text-content">
+                    <span class="action-title" data-i18n="btnBackup">Crear Copia de Seguridad</span>
+                    <span class="action-subtitle">Descargar archivo .txt</span>
+                </div>
+                <i class="fas fa-chevron-right action-arrow"></i>
+            </div>
+
+            <input type="file" id="inputImportar" style="display: none;">
+            <div class="action-card" onclick="document.getElementById('inputImportar').click()">
+                <div class="action-icon-box icon-restore">
+                    <i class="fas fa-cloud-download-alt"></i>
+                </div>
+                <div class="action-text-content">
+                    <span class="action-title" data-i18n="btnImportar">Restaurar Datos</span>
+                    <span class="action-subtitle">Desde archivo local</span>
+                </div>
+                <i class="fas fa-chevron-right action-arrow"></i>
+            </div>
+        </div>
+
+        <div class="danger-zone">
+            <button class="btn-danger-zone" onclick="confirmarLimpiarTodosLosDatos()">
+                <i class="fas fa-exclamation-triangle"></i>
+                <span data-i18n="btnBorrarTodo">Eliminar Todos los Datos</span>
+            </button>
+            <p style="font-size: 0.75em; color: var(--secondary-color); margin-top: 10px;">
+                Esta acción no se puede deshacer.
+            </p>
+        </div>        
+
+    </div>
+    
+    <div id="modalDetalleGastos" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="cerrarModalDetalle()">&times;</span>
+            <h3 style="margin-top:0; margin-bottom:15px;"><span data-i18n="titleDetalle">Detalle</span>: <span id="modalDetalleCategoriaTitulo" style="color: var(--primary-color);"></span></h3>
+            <div class="modal-chart-scroll-container" id="modalChartContainer">
+                <div class="modal-chart-wrapper">
+                    <canvas id="modalChartCanvas"></canvas>
+                </div>
+            </div>
+            <input type="text" id="buscarDetalleModal" class="input-buscar" data-i18n-ph="phBuscar" placeholder="Buscar..." onkeyup="filtrarTablaDetalle()">
+            <table id="tablaDetalleModal" class="tabla-gastos">
+                <thead><tr><th data-i18n="colFecha">Fecha</th><th data-i18n="colDesc">Descripción</th><th data-i18n="colValor">Valor</th></tr></thead>
+                <tbody></tbody>
+                <tfoot><tr><td colspan="2" data-i18n="lblTotalGeneral">TOTAL GENERAL</td><td id="totalDetalleModal" class="gasto-valor"></td></tr></tfoot>
+            </table>
+            <div class="pagination-controls" id="paginacionDetalleModal">
+                <button class="btn btn-secondary" onclick="cambiarPagina(-1)">Ant</button>
+                <span id="pageInfoModal">Pág 1</span>
+                <button class="btn btn-secondary" onclick="cambiarPagina(1)">Sig</button>
+            </div>
+            <button class="btn btn-secondary" style="margin-top:15px;" onclick="cerrarModalDetalle()" data-i18n="btnVolver">Volver</button>
+        </div>
+    </div>
+
+    <div id="modalTablaAnual" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="cerrarModalTablaAnual()">&times;</span>
+            <h3 style="margin-top:0; margin-bottom:15px;" data-i18n="titleDetalleMensual">Detalle Mensual</h3>
+            <table id="tablaDetalleAnual" class="tabla-gastos">
+                <thead>
+                    <tr>
+                        <th data-i18n="colMes">Mes</th>
+                        <th class="text-right" data-i18n="colIngreso">Ingreso</th>
+                        <th class="text-right" data-i18n="colGasto">Gasto</th>
+                        <th class="text-right" data-i18n="colSaldo">Saldo</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+                <tfoot>
+                    <tr>
+                        <td data-i18n="lblTotal">TOTAL</td>
+                        <td id="totalAnualIngreso" class="gasto-valor"></td>
+                        <td id="totalAnualGasto" class="gasto-valor"></td>
+                        <td id="totalAnualSaldo" class="gasto-valor"></td>
+                    </tr>
+                </tfoot>
+            </table>
+            <button class="btn btn-secondary" style="margin-top:20px;" onclick="cerrarModalTablaAnual()" data-i18n="btnVolver">Volver</button>
+        </div>
+    </div>
+
+    <div id="modalEdicion" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="cerrarModal()">&times;</span>
+            <h2 data-i18n="titleEditar">Editar</h2>
+            <div class="form-group"><input type="date" id="modalFecha"></div>
+            <div class="form-group"><select id="modalCategoria"></select></div>
+            <div class="form-group"><input type="text" id="modalDescripcion"></div>
+            <div class="form-group"><input type="text" id="modalValor" inputmode="decimal"></div>
+            <div class="payment-type-group">
+                <input type="radio" id="modalPagoContado" name="modalTipoPago" value="Contado">
+                <label for="modalPagoContado"><i class="fas fa-coins"></i> <span data-i18n="lblContado">Contado</span></label>
+                <input type="radio" id="modalPagoTarjeta" name="modalTipoPago" value="Tarjeta">
+                <label for="modalPagoTarjeta"><i class="far fa-credit-card"></i> <span data-i18n="lblTarjeta">Tarjeta</span></label>
+                <input type="radio" id="modalPagoTransferencia" name="modalTipoPago" value="Transferencia">
+                <label for="modalPagoTransferencia"><i class="fas fa-mobile-alt"></i> <span data-i18n="lblTransf">Transf.</span></label>
+            </div>
+            <div class="modal-botones-row">
+                <button class="btn btn-success" onclick="guardarEdicionDesdeModal()" data-i18n="btnGuardar">Guardar</button>
+                <button class="btn btn-danger" onclick="confirmarEliminarGasto()" data-i18n="btnBorrar">Borrar</button>
+                <button class="btn btn-secondary" onclick="cerrarModal()" data-i18n="btnCancelar">Cancelar</button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="modalEdicionIngreso" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="cerrarModalEdicionIngreso()">&times;</span>
+            <h2 data-i18n="titleEditarIngreso">Editar Ingreso</h2>
+            <div class="form-group"><input type="date" id="modalFechaIngreso"></div>
+            <div class="form-group"><input type="text" id="modalDescripcionIngreso"></div>
+            <div class="form-group"><input type="text" id="modalValorIngreso" inputmode="decimal"></div>
+            <div class="modal-botones-row">
+                <button class="btn btn-success" onclick="guardarEdicionIngreso()" data-i18n="btnGuardar">Guardar</button>
+                <button class="btn btn-danger" onclick="confirmarEliminarIngreso()" data-i18n="btnBorrar">Borrar</button>
+                <button class="btn btn-secondary" onclick="cerrarModalEdicionIngreso()" data-i18n="btnCancelar">Cancelar</button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="modalEdicionCategoria" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="cerrarModalCategoria()">&times;</span>
+            <h2 data-i18n="titleRenombrar">Editar Categoría</h2>
+            <div class="form-group">
+                <label data-i18n="lblNombreCat">Nombre:</label>
+                <input type="text" id="modalCategoriaNombre">
+                <div class="emoji-bar">
+                    <button class="emoji-btn" onclick="insertarEmoji('🏠')">🏠</button>
+                    <button class="emoji-btn" onclick="insertarEmoji('🏦')">🏦</button>
+                    <button class="emoji-btn" onclick="insertarEmoji('💡')">💡</button>
+                    <button class="emoji-btn" onclick="insertarEmoji('🚿')">🚿</button>
+                    <button class="emoji-btn" onclick="insertarEmoji('📱')">📱</button>
+                    <button class="emoji-btn" onclick="insertarEmoji('📶')">📶</button>
+                    
+                    <button class="emoji-btn" onclick="insertarEmoji('🛒')">🛒</button>
+                    <button class="emoji-btn" onclick="insertarEmoji('🧺')">🧺</button>
+                    <button class="emoji-btn" onclick="insertarEmoji('🍽️')">🍽️</button>
+                    <button class="emoji-btn" onclick="insertarEmoji('🍔')">🍔</button>
+                    <button class="emoji-btn" onclick="insertarEmoji('🍕')">🍕</button>
+                    <button class="emoji-btn" onclick="insertarEmoji('☕')">☕</button>
+                    <button class="emoji-btn" onclick="insertarEmoji('🛵')">🛵</button>
+                    
+                    <button class="emoji-btn" onclick="insertarEmoji('⛽')">⛽</button>
+                    <button class="emoji-btn" onclick="insertarEmoji('🚗')">🚗</button>
+                    <button class="emoji-btn" onclick="insertarEmoji('🚌')">🚌</button>
+                    <button class="emoji-btn" onclick="insertarEmoji('🚇')">🚇</button>
+                    <button class="emoji-btn" onclick="insertarEmoji('🚕')">🚕</button>
+                    <button class="emoji-btn" onclick="insertarEmoji('🔧')">🔧</button>
+                    <button class="emoji-btn" onclick="insertarEmoji('🅿️')">🅿️</button>
+                    
+                    <button class="emoji-btn" onclick="insertarEmoji('👕')">👕</button>
+                    <button class="emoji-btn" onclick="insertarEmoji('👟')">👟</button>
+                    <button class="emoji-btn" onclick="insertarEmoji('💻')">💻</button>
+                    <button class="emoji-btn" onclick="insertarEmoji('🎧')">🎧</button>
+                    <button class="emoji-btn" onclick="insertarEmoji('🎁')">🎁</button>
+                    <button class="emoji-btn" onclick="insertarEmoji('💳')">💳</button>
+                    
+                    <button class="emoji-btn" onclick="insertarEmoji('🏥')">🏥</button>
+                    <button class="emoji-btn" onclick="insertarEmoji('💊')">💊</button>
+                    <button class="emoji-btn" onclick="insertarEmoji('🩺')">🩺</button>
+                    <button class="emoji-btn" onclick="insertarEmoji('🏋️‍♀️')">🏋️‍♀️</button>
+                    <button class="emoji-btn" onclick="insertarEmoji('🎓')">🎓</button>
+                    <button class="emoji-btn" onclick="insertarEmoji('📚')">📚</button>
+                    
+                    <button class="emoji-btn" onclick="insertarEmoji('🎮')">🎮</button>
+                    <button class="emoji-btn" onclick="insertarEmoji('🎬')">🎬</button>
+                    <button class="emoji-btn" onclick="insertarEmoji('🎵')">🎵</button>
+                    <button class="emoji-btn" onclick="insertarEmoji('✈️')">✈️</button>
+                    <button class="emoji-btn" onclick="insertarEmoji('🧳')">🧳</button>
+                    <button class="emoji-btn" onclick="insertarEmoji('🏖️')">🏖️</button>
+                    <button class="emoji-btn" onclick="insertarEmoji('🎫')">🎫</button>
+                    
+                    <button class="emoji-btn" onclick="insertarEmoji('💰')">💰</button>
+                    <button class="emoji-btn" onclick="insertarEmoji('🐷')">🐷</button>
+                    <button class="emoji-btn" onclick="insertarEmoji('📈')">📈</button>
+                    <button class="emoji-btn" onclick="insertarEmoji('🧾')">🧾</button>
+                    <button class="emoji-btn" onclick="insertarEmoji('💼')">💼</button>
+                    <button class="emoji-btn" onclick="insertarEmoji('🗂️')">🗂️</button>
+                    
+                    <button class="emoji-btn" onclick="insertarEmoji('👶')">👶</button>
+                    <button class="emoji-btn" onclick="insertarEmoji('🐾')">🐾</button>
+                    <button class="emoji-btn" onclick="insertarEmoji('🐶')">🐶</button>
+                    <button class="emoji-btn" onclick="insertarEmoji('🎯')">🎯</button>
+                    <button class="emoji-btn" onclick="insertarEmoji('🤝')">🤝</button>
+                    <button class="emoji-btn" onclick="insertarEmoji('🎉')">🎉</button>
+                    <button class="emoji-btn" onclick="insertarEmoji('📦')">📦</button>
+                </div>
+            </div>
+            <div class="form-group">
+                <label data-i18n="lblMetaMensual">Meta Mensual ($):</label>
+                <input type="number" id="modalCategoriaPresupuesto" placeholder="0 (Sin límite)" inputmode="decimal">
+            </div>
+            <div class="modal-botones-row">
+                <button class="btn btn-success" onclick="guardarEdicionCategoria()" data-i18n="btnGuardar">Guardar</button>
+                <button class="btn btn-secondary" onclick="cerrarModalCategoria()" data-i18n="btnCancelar">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modalSeleccionMoneda" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="document.getElementById('modalSeleccionMoneda').style.display='none'">&times;</span>
+            <h3 data-i18n="lblMoneda">Moneda</h3>
+            <ul class="option-list">
+                <li class="option-item" data-val="$" onclick="cambiarMoneda('$')"><span>$ Dólar (USD)</span> <i class="fas fa-check option-check"></i></li>
+                <li class="option-item" data-val="€" onclick="cambiarMoneda('€')"><span>€ Euro</span> <i class="fas fa-check option-check"></i></li>
+                <li class="option-item" data-val="MXN$" onclick="cambiarMoneda('MXN$')"><span>MXN$ Peso Mex</span> <i class="fas fa-check option-check"></i></li>
+                <li class="option-item" data-val="S/" onclick="cambiarMoneda('S/')"><span>S/ Sol Peruano</span> <i class="fas fa-check option-check"></i></li>
+                <li class="option-item" data-val="COL$" onclick="cambiarMoneda('COL$')"><span>COL$ Peso Col</span> <i class="fas fa-check option-check"></i></li>
+                <li class="option-item" data-val="Bs." onclick="cambiarMoneda('Bs.')"><span>Bs. Boliviano</span> <i class="fas fa-check option-check"></i></li>
+            </ul>
+        </div>
+    </div>
+
+    <div id="modalSeleccionIdioma" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="document.getElementById('modalSeleccionIdioma').style.display='none'">&times;</span>
+            <h3 data-i18n="lblIdioma">Idioma</h3>
+            <ul class="option-list">
+                <li class="option-item" onclick="cambiarIdioma('es')"><span>🇪🇸 Español</span> <i class="fas fa-check option-check"></i></li>
+                <li class="option-item" onclick="cambiarIdioma('en')"><span>🇺🇸 English</span> <i class="fas fa-check option-check"></i></li>
+            </ul>
+        </div>
+    </div>
+    
+    <div id="modalConfirmacion" class="modal">
+        <div class="modal-content">
+            <h2 data-i18n="titleConfirmar">Confirmar</h2>
+            <p id="modalConfirmBody" style="text-align: center; margin-bottom: 20px;"></p>
+            <div class="modal-botones-row">
+                <button class="btn btn-danger" onclick="ejecutarConfirmacion()" data-i18n="btnSi">Sí</button>
+                <button class="btn btn-secondary" onclick="cerrarModalConfirmacion()" data-i18n="btnNo">No</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modalPinConfig" class="modal">
+        <div class="modal-content">
+            <h2 style="margin-top:0;">Crear PIN</h2>
+            <p style="text-align:center; color:var(--secondary-color);">Ingresa 4 dígitos</p>
+            <input type="tel" id="newPinInput" maxlength="4" style="font-size: 2em; letter-spacing: 10px; text-align: center; margin: 20px 0;">
+            <div class="modal-botones-row">
+                <button class="btn btn-primary" onclick="guardarNuevoPin()">Aceptar</button>
+                <button class="btn btn-secondary" onclick="cancelarPin()">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast">Notificación</div>
+
+    <div class="nav-tabs">
+        <button onclick="mostrarPantalla('gasto', this)" class="active"><i class="fas fa-plus-circle"></i><span data-i18n="menuGasto">Gasto</span></button>
+        <button onclick="mostrarPantalla('ingreso', this)"><i class="fas fa-money-bill-wave"></i><span data-i18n="menuIngreso">Ingreso</span></button>
+        <button onclick="mostrarPantalla('mensual', this)"><i class="fas fa-chart-pie"></i><span data-i18n="menuMes">Mes</span></button>
+        <button onclick="mostrarPantalla('historico', this)"><i class="fas fa-calendar-alt"></i><span data-i18n="menuAnio">Año</span></button>
+        <button onclick="mostrarPantalla('configuracion', this)">
+            <i class="fas fa-cog"></i>
+            <span data-i18n="menuConfig">Config</span>
+            <div id="backupBadge" class="backup-dot"></div>
+        </button>
+    </div>
+
+    <script src="controlgastos.refactor.js"></script>
+
+</body>
+</html>

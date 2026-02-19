@@ -1,0 +1,901 @@
+        /* --- VARIABLES --- */
+        :root {
+            --primary-gradient: linear-gradient(135deg, #1E3A8A 0%, #2563EB 100%);
+            --primary-color: #2563EB;
+            --primary-dark: #1E3A8A;
+            --success-color: #10B981;
+            --success-bg: #F0FDF4;
+            --success-border: #BBF7D0;
+            --success-text: #15803D;
+            --danger-color: #EF4444;
+            --danger-soft: #F87171;
+            --warning-color: #F59E0B;
+            --secondary-color: #64748B;
+            --bg-body: #F1F5F9;
+            --bg-card: #FFFFFF;
+            --text-main: #1E293B;
+            --text-light: #FFFFFF;
+            --border-color: #E2E8F0;
+            --table-header-bg: #F8FAFC;
+            --table-header-text: #475569;
+            --table-zebra-bg: #F8FAFC;
+            --color-cash: #10B981;
+            --color-card: #2563EB;
+            --color-transfer: #F59E0B;
+            --nav-bg: #FFFFFF;
+            --nav-active: #2563EB;
+            --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-body: #0F172A; --bg-card: #1E293B; --text-main: #F8FAFC;
+                --border-color: #334155; --nav-bg: #1E293B; --nav-active: #60A5FA;
+                --table-header-bg: #1E293B; --table-header-text: #CBD5E1; --table-zebra-bg: #0F172A;
+                --success-bg: #064E3B; --success-border: #065F46; --success-text: #D1FAE5;
+                --secondary-color: #94A3B8;
+            }
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+            margin: 0; padding: 0;
+            background-color: var(--bg-body); color: var(--text-main);
+            max-width: 450px; margin: 0 auto; min-height: 100vh;
+            padding-bottom: calc(65px + var(--safe-area-bottom)); 
+            overscroll-behavior-y: contain; 
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* CURSOR TITILANTE */
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+        .cursor-blink {
+            display: inline-block; width: 2px; height: 1em; background-color: var(--primary-color);
+            margin-left: 1px; animation: blink 1s step-end infinite; vertical-align: text-bottom;
+        }
+
+        /* --- PANTALLA DE BLOQUEO (PIN) --- */
+        #lockScreen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--primary-gradient); z-index: 1000;
+            display: none; flex-direction: column; align-items: center; justify-content: center;
+            color: white;
+        }
+        .pin-display {
+            font-size: 2em; margin: 20px 0; letter-spacing: 10px; font-weight: bold;
+            min-height: 40px;
+        }
+        .pin-keypad {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px;
+        }
+        .pin-btn {
+            background: rgba(255, 255, 255, 0.2); border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white; font-size: 1.5em; width: 70px; height: 70px;
+            border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center;
+        }
+        .pin-btn:active { background: rgba(255, 255, 255, 0.4); }
+
+        /* --- ESTADOS VACÍOS (EMPTY STATES) --- */
+        .empty-state {
+            text-align: center; padding: 40px 20px; color: var(--secondary-color);
+            display: none; animation: fadeIn 0.5s ease;
+        }
+        .empty-icon { font-size: 4em; margin-bottom: 15px; opacity: 0.7; }
+        .empty-text { font-size: 1em; font-weight: 500; }
+
+        /* --- ESTILOS GENERALES --- */
+        h2, h3 { color: var(--text-main); text-align: center; }
+        h2 { font-size: 1.3em; margin-top: 20px; color: var(--primary-color); font-weight: 700; }
+        
+        .header {
+            display: flex; align-items: center; padding: 10px 15px;
+            background: var(--primary-gradient); color: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 50;
+            justify-content: space-between;
+        }
+        #appLogo { font-size: 1em; font-weight: bold; color: white; display: flex; align-items: center; gap: 8px; }
+        
+        #headerSaldoContainer {
+            background-color: rgba(255, 255, 255, 0.2); padding: 4px 10px;
+            border-radius: 12px; font-size: 0.9em; font-weight: 600;
+            display: flex; align-items: center; gap: 5px;
+            border: 1px solid rgba(255,255,255,0.1); transition: all 0.3s ease;
+        }
+        
+        .pantalla { display: none; padding: 15px; }
+        .pantalla.activa { display: block; animation: fadeIn 0.3s ease-out forwards; }
+
+        .form-group { margin-bottom: 10px; }
+        label { display: block; margin-bottom: 3px; font-weight: 600; font-size: 0.9em; color: var(--secondary-color); }
+        
+        input[type="date"], input[type="text"], input[type="number"], select {
+            width: 100%; padding: 10px; border: 1px solid var(--border-color);
+            border-radius: 8px; box-sizing: border-box; font-size: 1em;
+            background-color: var(--bg-card); color: var(--text-main); transition: border-color 0.2s;
+        }
+        input:focus, select:focus { outline: none; border-color: var(--primary-color); }
+
+        button.btn {
+            width: 100%; padding: 12px; border: none; border-radius: 8px;
+            font-size: 1em; cursor: pointer; margin-top: 8px; font-weight: 600; transition: opacity 0.2s;
+        }
+        button.btn:active { opacity: 0.8; }
+        .btn-primary { background: var(--primary-gradient); color: white; }
+        .btn-danger { background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%); color: white; margin-top: 20px; }
+        .btn-success { background-color: var(--success-color); color: white; }
+        .btn-secondary { background-color: var(--bg-card); color: var(--text-main); border: 1px solid var(--border-color); }
+        .btn-ghost { background: transparent; border: 1px dashed var(--border-color); color: var(--secondary-color); margin-top: 15px; font-size: 0.9em;}
+
+        .export-buttons-container { display: flex; gap: 10px; margin-top: 15px; }
+        .export-buttons-container button { margin-top: 0; }
+
+        button.btn-accion-tabla { 
+            width: auto; padding: 5px 10px; font-size: 0.9em; margin: 0 2px; border-radius: 6px;
+            background-color: transparent !important; border: 1px solid; 
+        }
+        .btn-accion-editar { color: var(--primary-color); border-color: var(--primary-color); }
+        .btn-accion-borrar { color: var(--danger-color); border-color: var(--danger-color); }
+
+        .tabla-gastos {
+            width: 100%; border-collapse: collapse; margin-top: 15px; 
+            background-color: var(--bg-card); box-shadow: var(--shadow-sm); border-radius: 8px; overflow: hidden;
+        }
+        .tabla-gastos th, .tabla-gastos td { padding: 12px 10px; text-align: left; font-size: 0.9em; }
+        .tabla-gastos th { background-color: var(--table-header-bg); font-weight: 600; border-bottom: 2px solid var(--border-color); color: var(--table-header-text); }
+        .tabla-gastos td { border-bottom: 1px solid var(--border-color); font-size: 0.95em; } 
+        .tabla-gastos .gasto-categoria-subtexto { font-size: 0.75em; color: var(--secondary-color); margin-top: 2px; }
+        .tabla-gastos tbody tr:nth-child(even) { background-color: var(--table-zebra-bg); }
+        .tabla-gastos tr:hover:not(tfoot tr) { background-color: rgba(37, 99, 235, 0.05); cursor: pointer; }
+        .tabla-gastos .gasto-valor { text-align: right; white-space: nowrap; font-weight: 600; }
+        .tabla-gastos tfoot tr { font-weight: bold; background-color: var(--table-header-bg); border-top: 2px solid var(--border-color); }
+        #tablaDetalleAnual tbody .gasto-valor { font-weight: normal; }
+
+        .col-porcentaje { text-align: right !important; padding-right: 15px !important; }
+        .text-right { text-align: right !important; }
+
+        .payment-type-group { display: flex; justify-content: space-around; gap: 5px; }
+        .payment-type-group input { display: none; }
+        .payment-type-group label {
+            flex-grow: 1; text-align: center; padding: 10px 5px;
+            border: 1px solid var(--border-color); border-radius: 8px;
+            cursor: pointer; font-size: 0.9em; background-color: var(--bg-card);
+            display: flex; align-items: center; justify-content: center; gap: 5px; transition: all 0.2s;
+        }
+        .payment-type-group input:checked + label {
+            background-color: #EFF6FF; border-color: var(--primary-color); font-weight: bold; color: var(--primary-color);
+        }
+        label[for*="Contado"] i { color: var(--color-cash) !important; }
+        label[for*="Tarjeta"] i { color: var(--color-card) !important; }
+        label[for*="Transf"] i { color: var(--color-transfer) !important; }
+
+        .payment-filters-grid { display: flex; flex-wrap: nowrap; gap: 3px; width: 100%; }
+        .payment-filters-grid label { 
+            margin-bottom: 0; white-space: nowrap; padding: 2px 2px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            height: auto; min-height: 46px; border-radius: 6px;
+        }
+        .payment-filters-grid input:first-child + label { flex: 0 0 18%; width: 18%; }
+        .payment-filters-grid input:not(:first-child) + label { flex: 0 0 26%; width: 26%; }
+        .filter-header { font-size: 0.85em; display: flex; align-items: center; gap: 3px; opacity: 0.9; margin-bottom: 2px; font-weight: 600; }
+        .filter-header i { font-size: 1.3em; }
+        .filter-value { font-size: 1em; font-weight: 800; color: var(--primary-color); line-height: 1.1; }
+        .label-todos .filter-header { font-size: 1.3em; margin-bottom: 1px; } 
+        .label-todos .filter-value { font-size: 0.85em; font-weight: 600; opacity: 0.9; color: var(--text-main); }
+
+        .nav-tabs {
+            position: fixed; bottom: 0; left: 0; right: 0;
+            display: flex; justify-content: space-around;
+            background-color: var(--nav-bg); border-top: 1px solid var(--border-color);
+            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.05);
+            max-width: 450px; margin: 0 auto; z-index: 100;
+            height: 55px; padding-bottom: var(--safe-area-bottom);
+        }
+        .nav-tabs button {
+            flex-grow: 1; border: none; background: transparent; position: relative;
+            color: var(--secondary-color); font-size: 0.7em; cursor: pointer;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
+        .nav-tabs button i { font-size: 1.4em; margin-bottom: 2px; }
+        .nav-tabs button.active { color: var(--nav-active); font-weight: bold; }
+        
+        .backup-dot {
+            position: absolute; top: 5px; right: 30%; width: 8px; height: 8px;
+            background-color: var(--danger-color); border-radius: 50%;
+            display: none; box-shadow: 0 0 0 2px var(--nav-bg);
+        }
+
+        .chart-container {
+            background-color: var(--bg-card); padding: 15px; border-radius: 8px;
+            box-shadow: var(--shadow-sm); margin-top: 20px; border: 1px solid var(--border-color);
+            height: 350px; position: relative;
+        }
+        .filtro-container-inline { display: flex; gap: 10px; margin-bottom: 8px; }
+        
+        .pagination-controls {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border-color);
+            font-size: 0.85em; white-space: nowrap;
+        }
+        .pagination-controls button { width: auto; margin: 0; padding: 4px 10px; font-size: 0.9em; }
+        
+        .modal { display: none; position: fixed; z-index: 200; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); padding-top: 40px; }
+        .modal-content {
+            background-color: var(--bg-card); margin: 0 auto; padding: 20px;
+            border: 1px solid var(--secondary-color); width: 90%; max-width: 400px; border-radius: 10px;
+            max-height: 85vh; overflow-y: auto; 
+        }
+        .close-btn { color: #aaa; float: right; font-size: 28px; font-weight: bold; cursor: pointer; }
+        .modal-botones-row { display: flex; gap: 10px; margin-top: 15px; }
+
+        #toast { display: none; position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); padding: 12px 20px; border-radius: 25px; background-color: #1E293B; color: white; z-index: 300; }
+        #toast.show { display: block; }
+        #toast.success { background-color: var(--success-color); }
+        #toast.error { background-color: var(--danger-color); }
+
+        .dashboard-resumen { display: flex; gap: 10px; margin-bottom: 15px; margin-top: 5px; }
+        .card-resumen {
+            flex: 1; padding: 10px 5px; border-radius: 8px; text-align: center;
+            background-color: var(--bg-card); box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-color); position: relative; overflow: hidden;
+        }
+        .lbl-resumen { font-size: 0.85em; color: var(--secondary-color); display: block; text-transform: none; font-weight: 600; margin-bottom: 3px; }
+        .val-resumen { font-size: 0.95em; font-weight: 700; white-space: nowrap; color: var(--text-main); }
+
+        .filtro-wrapper { margin-top: 15px; padding: 5px 8px 8px 8px; border: 1px solid var(--border-color); border-radius: 8px; background-color: transparent; box-sizing: border-box; width: 100%; }
+        .filtro-titulo { font-size: 0.75em; color: var(--secondary-color); padding: 0 5px; margin-left: 5px; font-weight: normal; text-transform: lowercase; }
+        .filtro-titulo::first-letter { text-transform: uppercase; }
+
+        .year-selector-container { display: flex; justify-content: center; align-items: center; gap: 15px; margin-top: 10px; margin-bottom: 10px; background-color: var(--bg-card); padding: 8px 15px; border-radius: 12px; border: 1px solid var(--border-color); box-shadow: var(--shadow-sm); }
+        .year-display { font-size: 1.1em; font-weight: 800; color: var(--primary-color); }
+        .btn-year-nav { background: transparent; border: none; color: var(--secondary-color); font-size: 1.1em; cursor: pointer; padding: 5px 10px; margin: 0; width: auto; }
+        .btn-year-nav:active { color: var(--primary-color); }
+
+        #budgetProgressContainer { margin: 10px 0 15px 0; padding: 8px 10px; background-color: var(--table-header-bg); border-radius: 8px; border: 1px dashed var(--border-color); animation: fadeIn 0.3s ease; }
+        .budget-bar-bg { background-color: #E2E8F0; height: 10px; border-radius: 5px; overflow: hidden; margin-top: 5px; }
+        .budget-bar-fill { height: 100%; width: 0%; transition: width 0.5s ease-out, background-color 0.3s; }
+        .budget-info { display: flex; justify-content: space-between; font-size: 0.8em; font-weight: 600; color: var(--secondary-color); }
+        .presupuesto-tag { font-size: 0.75em; background-color: #EFF6FF; color: var(--primary-color); padding: 2px 6px; border-radius: 4px; margin-left: 6px; border: 1px solid #BFDBFE; vertical-align: middle; }
+
+        .btn-accordion { width: 100%; background-color: var(--bg-card); border: 1px solid var(--border-color); padding: 12px 15px; border-radius: 8px; margin-top: 15px; display: flex; justify-content: space-between; align-items: center; font-weight: 600; color: var(--text-main); cursor: pointer; box-shadow: var(--shadow-sm); transition: background-color 0.2s; }
+        .btn-accordion:active { background-color: #F8FAFC; }
+        .budget-list-container { display: none; background-color: var(--bg-card); border: 1px solid var(--border-color); border-top: none; border-bottom-left-radius: 8px; border-bottom-right-radius: 8px; padding: 15px; animation: fadeIn 0.2s ease-out; }
+        .budget-row { margin-bottom: 12px; }
+        .budget-row:last-child { margin-bottom: 0; }
+        .budget-row-header { margin-bottom: 3px; font-size: 0.85em; color: var(--text-main); font-weight: 600; }
+        .budget-visual-row { display: flex; align-items: center; gap: 8px; width: 100%; }
+        .budget-list-track { flex: 0 0 65%; height: 8px; background-color: #E2E8F0; border-radius: 4px; overflow: hidden; }
+        .budget-list-fill { height: 100%; border-radius: 4px; }
+        /* AHORA: */
+        .budget-text-info { 
+            flex: 0 0 35%; 
+            text-align: right; 
+            font-size: 0.75em; 
+            color: var(--text-main); /* <--- SOLUCIÓN (Color adaptable) */
+            font-weight: normal; 
+            white-space: nowrap; 
+            overflow: hidden; 
+            text-overflow: ellipsis; 
+        }
+        .tr-clickable { cursor: pointer; transition: background-color 0.1s; }
+        .tr-clickable:active { background-color: rgba(37, 99, 235, 0.05); }
+        .cat-row-content { display: flex; align-items: center; gap: 5px; }
+
+        .modal-chart-scroll-container { width: 100%; margin-bottom: 15px; display: none; border: 1px solid var(--border-color); border-radius: 8px; background: var(--bg-body); }
+        .modal-chart-wrapper { width: 100%; height: 220px; padding: 10px; background-color: var(--bg-card); }
+
+        #gasto, #ingreso { padding: 15px; } 
+        .input-card { background-color: var(--bg-card); border-radius: 16px; padding: 15px; box-shadow: var(--shadow-md); margin-bottom: 15px; }
+        .smart-input-container { display: flex; flex-direction: column; gap: 8px; } 
+        #gasto h2, #ingreso h2 { font-size: 1.1em; margin: 0 0 10px 0; text-align: left; }
+        .row-date-val { display: flex; gap: 8px; align-items: center; margin-bottom: 5px; }
+        .fecha-pill { background-color: var(--bg-body); border: 1px solid var(--border-color); color: var(--primary-color); font-weight: 600; padding: 0 12px; border-radius: 12px; white-space: nowrap; cursor: pointer; display: flex; align-items: center; gap: 6px; font-size: 0.85em; height: 42px; }
+        .smart-value-display { flex-grow: 1; font-size: 2.2em; font-weight: bold; color: var(--primary-color); background-color: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 12px; padding: 0 12px; margin: 0; letter-spacing: 0.5px; display: flex; justify-content: space-between; align-items: center; min-height: 42px; }
+        .btn-backspace-inline { background: transparent; border: none; color: var(--danger-color); font-size: 0.5em; cursor: pointer; padding: 5px; opacity: 0.6; }
+        .payment-pills-row { display: flex; gap: 6px; margin: 4px 0 8px 0; }
+        .payment-pills-row input { display: none; }
+        .payment-pills-row label { flex: 1; font-size: 0.75em; padding: 4px 0; border: 1px solid var(--border-color); border-radius: 20px; color: var(--secondary-color); text-align: center; background-color: var(--bg-body); cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; }
+        .payment-pills-row input:checked + label { background-color: #EFF6FF; border-color: var(--primary-color); color: var(--primary-color); font-weight: bold; }
+        .smart-desc-input { flex-grow: 1; border: none; border-bottom: 1px dashed var(--border-color); border-radius: 0; padding: 8px 0; font-size: 1.05em; background: transparent; color: var(--text-main); }
+        .smart-desc-input:focus { outline: none; border-color: var(--primary-color); border-bottom-style: solid; }
+        
+/* --- GRID DE CATEGORÍAS (Diseño Apps) --- */
+        .smart-cat-grid { 
+            display: grid; 
+            grid-auto-flow: column; 
+            grid-template-rows: repeat(2, 1fr); 
+            grid-auto-columns: calc(25% - 5px); /* 4 Columnas exactas */
+            gap: 8px 4px; /* Gap Vertical 8px, Horizontal 4px */
+            overflow-x: auto; 
+            overflow-y: hidden; 
+            max-height: 135px; /* Altura ajustada para 2 filas de iconos */
+            padding: 5px 2px; 
+            margin-bottom: 5px; 
+            scrollbar-width: none; 
+        }
+        .smart-cat-grid::-webkit-scrollbar { display: none; }
+        
+        .smart-cat-grid.expanded { 
+            grid-template-rows: auto; 
+            grid-auto-flow: row; 
+            grid-template-columns: repeat(4, 1fr); 
+            max-height: 250px; 
+        }
+        
+        
+/* CONTENEDOR DEL BOTÓN (Transparente, solo estructura) */
+        .cat-btn { 
+            background-color: transparent; 
+            border: none; 
+            padding: 0; 
+            height: auto; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: flex-start; 
+            cursor: pointer; 
+            transition: transform 0.1s;
+        }
+        .cat-btn:active { transform: scale(0.95); }
+
+/* EL AVATAR (Círculo) */
+        .cat-btn-icon { 
+            width: 44px;
+            height: 44px;
+            background-color: #F1F5F9; /* Gris muy claro por defecto */
+            border: 1px solid var(--border-color);
+            border-radius: 50%; /* Círculo perfecto */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8em; /* Emoji grande */
+            margin-bottom: 4px;
+            transition: all 0.2s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        /* EL TEXTO (Limpio, sin negrilla) */
+        .cat-btn-text { 
+            font-size: 0.75em; 
+            color: var(--secondary-color);
+            font-weight: 400; /* Texto ligero */
+            text-align: center;
+            line-height: 1.1;
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+/* ESTADO SELECCIONADO (El círculo se pinta, no el cuadrado entero) */
+        .cat-btn.selected .cat-btn-icon { 
+            background-color: var(--primary-color); 
+            border-color: var(--primary-color);
+            color: white; /* Emoji sobre azul */
+            box-shadow: 0 3px 8px rgba(37, 99, 235, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .cat-btn.selected .cat-btn-text {
+            color: var(--primary-color);
+            font-weight: 600; /* Un poco de peso solo al seleccionar para destacar */
+        }
+
+        @keyframes pulse-blue { 0% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.7); transform: scale(1); } 50% { box-shadow: 0 0 0 6px rgba(37, 99, 235, 0); transform: scale(1.05); } 100% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0); transform: scale(1); } }
+
+        /* Animación Flash */
+        .cat-btn.flash .cat-btn-icon { animation: pulse-blue 0.4s ease-out; background-color: var(--primary-color); color: white; }
+        .keypad-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 5px; }
+        .key-btn { background-color: var(--bg-body); border: 1px solid var(--border-color); font-size: 1.3em; padding: 12px 0; border-radius: 12px; color: var(--text-main); cursor: pointer; box-shadow: 0 1px 1px rgba(0,0,0,0.05); font-weight: 500; }
+        .key-btn:active { transform: translateY(1px); box-shadow: none; background-color: #E2E8F0; }
+        .key-btn-success { background-color: var(--success-color); color: white; border-color: var(--success-color); }
+        
+        /* EMOJI BARRA MEJORADA */
+        .emoji-bar {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
+            gap: 8px;
+            margin-top: 10px;
+            max-height: 150px;
+            overflow-y: auto;
+            padding: 5px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background-color: var(--bg-body);
+        }
+        .emoji-btn {
+            font-size: 2.5em; /* EMOJIS MAS GRANDES */
+            border: 1px solid var(--border-color);
+            background: var(--bg-card);
+            border-radius: 8px;
+            cursor: pointer;
+            padding: 5px;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .emoji-btn:hover { background-color: #E2E8F0; }
+        
+        /* CARD FEEDBACK RESTAURADA */
+        .last-action-card {
+            background-color: var(--success-bg);
+            border: 1px solid var(--success-border);
+            border-radius: 12px;
+            padding: 10px 15px;
+            margin-top: 15px; /* Separacion del teclado */
+            display: none; /* Oculto por defecto */
+            align-items: center;
+            gap: 12px;
+            animation: slideIn 0.3s ease-out;
+            cursor: pointer;
+        }
+        .last-action-icon { font-size: 1.5em; color: var(--success-text); }
+        .last-action-details { display: flex; flex-direction: column; flex-grow: 1; }
+        .last-action-title { font-size: 0.75em; color: var(--success-text); text-transform: uppercase; font-weight: bold; opacity: 0.8; margin-bottom: 2px; }
+        .last-action-text { font-size: 0.95em; color: var(--text-main); font-weight: 500; }
+        
+        .toggle-switch { position: relative; display: inline-block; width: 50px; height: 26px; }
+        .toggle-switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px; }
+        .slider:before { position: absolute; content: ""; height: 20px; width: 20px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: var(--primary-color); }
+        input:checked + .slider:before { transform: translateX(24px); }
+
+        /* --- ESTILOS AVATAR CATEGORÍAS --- */
+        .cat-row-wrapper { 
+            display: flex; 
+            align-items: center; 
+            gap: 15px; /* Separación entre emoji y texto */
+        }
+        .cat-avatar {
+            width: 50px; 
+            height: 50px;
+            background-color: var(--bg-body); /* Fondo adaptable (claro/oscuro) */
+            border: 1px solid var(--border-color);
+            border-radius: 50%; /* Círculo perfecto */
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            font-size: 2.2em; /* Emoji GRANDE */
+            flex-shrink: 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            padding-bottom: 4px; /* Pequeño ajuste visual para centrar emojis verticalmente */
+        }
+        .cat-name-styled {
+            font-weight: 400;
+            font-size: 1em;
+            color: var(--text-main);
+        }
+
+
+/* --- TECLADO NUMPAD PRO (Diseño Final) --- */
+        .keypad-grid-pro {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr); /* 4 Columnas iguales */
+            grid-template-rows: repeat(4, 1fr);    /* 4 Filas iguales */
+            gap: 8px;
+            height: 240px; /* Altura cómoda y fija */
+            margin-top: 5px;
+        }
+
+        /* Estilo base de botones */
+        /* AHORA: */
+        .keypad-grid-pro .key-btn {
+            height: 100%;
+            width: 100%;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            border-radius: 10px;
+            background-color: var(--bg-body); /* <--- SOLUCIÓN: Variable adaptable */
+            border: 1px solid var(--border-color);
+        }
+
+        /* Tecla CERO (Ocupa 2 espacios a la izquierda) */
+        .key-zero-span {
+            grid-column: 1 / 3; /* Ocupa columnas 1 y 2 */
+            grid-row: 4;        /* Fila 4 */
+        }
+
+        /* Tecla PUNTO */
+        .key-dot {
+            grid-column: 3;
+            grid-row: 4;
+        }
+
+
+        /* Botón GUARDAR (Columna derecha, ocupa 3 filas) - APLICA A GASTO E INGRESO */
+        #btnAddGasto, #btnAddIngreso {
+            grid-column: 4;
+            grid-row: 1 / 4; /* Desde fila 1 hasta el final de la 3 */
+            background-color: transparent !important; 
+            border: 2px solid var(--success-color) !important;
+            color: var(--success-color) !important;
+            font-size: 2.2em;
+        }
+        #btnAddGasto:active, #btnAddIngreso:active {
+            background-color: rgba(16, 185, 129, 0.1) !important;
+        }
+ 
+        /* AHORA: */
+        .key-back-pos {
+            background-color: var(--bg-body) !important; /* <--- SOLUCIÓN: Variable adaptable */
+            border-color: var(--border-color) !important;
+            color: var(--danger-color) !important;
+        }
+        /* --- GRID DE CONFIGURACIÓN (Tarjetas) --- */
+        .config-cat-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); /* 2 Columnas (50% c/u) */
+            gap: 12px; /* Espacio entre tarjetas */
+            margin-top: 10px;
+        }
+
+        .config-cat-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 12px 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+        .config-cat-card:active {
+            transform: scale(0.96);
+            background-color: var(--table-header-bg);
+        }
+
+        /* Avatar en la config (ligeramente más pequeño que en la lista) */
+        .config-avatar {
+            width: 42px; 
+            height: 42px;
+            background-color: var(--bg-body);
+            border: 1px solid var(--border-color);
+            border-radius: 50%;
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            font-size: 1.6em;
+            flex-shrink: 0;
+        }
+
+        .config-info {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            overflow: hidden; /* Evita que textos largos rompan la tarjeta */
+        }
+
+        .config-name {
+            font-weight: 600;
+            font-size: 0.95em;
+            color: var(--text-main);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis; /* Puntos suspensivos... */
+            line-height: 1.2;
+        }
+
+        .config-meta {
+            font-size: 0.85em;
+            color: var(--primary-color);
+            font-weight: 700;
+            margin-top: 2px;
+        }
+        
+/* --- NUEVO GRID SUPERIOR DE CONFIGURACIÓN (3 Tarjetas) --- */
+        .config-top-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        .config-mini-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 10px 5px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            cursor: pointer;
+            box-shadow: var(--shadow-sm);
+            height: 105px; /* Altura fija para uniformidad */
+            transition: transform 0.1s;
+        }
+        .config-mini-card:active { transform: scale(0.96); }
+
+        .mini-card-icon { 
+            font-size: 1.6em; 
+            color: var(--secondary-color);
+            margin-bottom: 2px;
+            transition: color 0.3s;
+        }
+        
+        /* Ajuste especial para que el switch quepa en la tarjeta */
+        .mini-switch { transform: scale(0.75); margin: 0; }
+
+        .mini-card-label { 
+            font-size: 0.75em; 
+            color: var(--secondary-color); 
+            font-weight: 600; 
+            text-align: center;
+            margin-top: 2px;
+        }
+
+        /* --- ESTILOS PARA LAS LISTAS DE LOS NUEVOS MODALES --- */
+        .option-list { list-style: none; padding: 0; margin: 10px 0 0 0; }
+        
+        .option-item {
+            padding: 15px;
+            border-bottom: 1px solid var(--border-color);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between; /* Texto izq, Check derecha */
+            font-size: 1.05em;
+            color: var(--text-main);
+        }
+        .option-item:last-child { border-bottom: none; }
+        .option-item:active { background-color: var(--table-header-bg); }
+        
+        /* Estado Seleccionado */
+        .option-item.selected { 
+            color: var(--primary-color); 
+            font-weight: 700; 
+            background-color: #EFF6FF; /* Azul muy suave */
+        }
+        
+        .option-check { 
+            color: var(--primary-color); 
+            visibility: hidden; /* Oculto por defecto */
+        }
+        .option-item.selected .option-check { visibility: visible; }        
+        /* Pequeña marca visual si tiene presupuesto */
+        .has-budget::after {
+            content: "";
+            position: absolute;
+            top: 0; right: 0;
+            width: 0; height: 0;
+            border-style: solid;
+            border-width: 0 10px 10px 0;
+            border-color: transparent var(--primary-color) transparent transparent;
+            opacity: 0.5;
+        }
+
+        /* --- GESTIÓN DE DATOS (NUEVO DISEÑO) --- */
+        .data-actions-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 15px;
+        }
+
+        .action-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.2s;
+            position: relative;
+        }
+        .action-card:active {
+            transform: scale(0.98);
+            background-color: #F8FAFC;
+        }
+
+        /* Iconos de las tarjetas (con fondo suave) */
+        .action-icon-box {
+            width: 45px;
+            height: 45px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4em;
+            flex-shrink: 0;
+        }
+        
+        .icon-backup { background-color: #ECFDF5; color: #10B981; } /* Verde suave */
+        .icon-restore { background-color: #EFF6FF; color: #3B82F6; } /* Azul suave */
+
+        .action-text-content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .action-title {
+            font-size: 1em;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 2px;
+        }
+
+        .action-subtitle {
+            font-size: 0.8em;
+            color: var(--secondary-color);
+        }
+
+        .action-arrow {
+            color: #CBD5E1;
+            font-size: 1.1em;
+        }
+
+        /* --- ZONA DE PELIGRO (BOTÓN BORRAR) --- */
+        .danger-zone {
+            margin-top: 40px; /* Separación generosa */
+            padding-top: 20px;
+            border-top: 1px dashed var(--border-color);
+            text-align: center;
+        }
+
+        .btn-danger-zone {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #EF4444 0%, #B91C1C 100%); /* Degradado Rojo */
+            color: white;
+            font-size: 1em;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(239, 68, 68, 0.25);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: transform 0.1s;
+        }
+        .btn-danger-zone:active {
+            transform: scale(0.97);
+            box-shadow: 0 2px 4px rgba(239, 68, 68, 0.2);
+        }
+        /* Estilo especial para la tarjeta de "Añadir Nueva" */
+        .config-cat-card.add-new {
+            border: 2px dashed var(--primary-color);
+            background-color: rgba(37, 99, 235, 0.03);
+            justify-content: center;
+            color: var(--primary-color);
+            opacity: 0.8;
+        }
+        .config-cat-card.add-new:active {
+            background-color: rgba(37, 99, 235, 0.1);
+            opacity: 1;
+        }
+        .config-cat-card.add-new .config-avatar {
+            background-color: transparent;
+            border: none;
+            color: var(--primary-color);
+            font-size: 1.4em;
+        }
+        .config-cat-card.add-new .config-name {
+            color: var(--primary-color);
+            font-weight: 700;
+        }
+
+        /* --- OPTIMIZACIÓN ESPACIO VERTICAL (MODO COMPACTO) --- */
+
+        /* 1. Teclado más bajo y compacto */
+        .keypad-grid-pro {
+            height: 200px !important; /* Bajamos de 240px a 200px */
+            gap: 5px !important;
+            margin-top: 5px !important;
+        }
+        .keypad-grid-pro .key-btn {
+            font-size: 1.4em !important; /* Texto un pelín más pequeño */
+            border-radius: 8px !important;
+        }
+
+        /* 2. Reducir márgenes de los inputs superiores */
+        .input-card { padding: 10px 15px !important; } /* Menos relleno en la tarjeta blanca */
+        .row-date-val { margin-bottom: 2px !important; } /* Pegar fecha al valor */
+        .payment-pills-row { margin: 2px 0 5px 0 !important; } /* Pegar pastillas de pago */
+        .smart-desc-input { padding: 4px 0 !important; font-size: 1em !important; } /* Input descripción más fino */
+        
+        /* Ocultar el título H2 en móviles pequeños si molesta */
+        #gasto h2, #ingreso h2 { margin: 0 0 5px 0 !important; font-size: 1em !important; }
+
+        /* 3. BARRA DE CONFIRMACIÓN "SLIM" */
+        .last-action-card {
+            margin-top: 5px !important;    /* Pegado al teclado */
+            padding: 6px 12px !important;  /* Relleno mínimo */
+            border-radius: 8px !important;
+            min-height: 36px;              /* Altura fija pequeña */
+            display: none;                 /* Oculto por defecto */
+        }
+
+        /* Ocultar el título "GASTO GUARDADO" para ahorrar una línea */
+        .last-action-title { display: none !important; } 
+
+        /* Icono más discreto */
+        .last-action-icon { font-size: 1.1em !important; margin-right: 8px; }
+
+        /* Texto en una sola línea con puntos suspensivos (...) */
+        .last-action-text {
+            font-size: 0.85em !important;
+            white-space: nowrap;      /* Obliga a una sola línea */
+            overflow: hidden;         /* Corta lo que sobra */
+            text-overflow: ellipsis;  /* Pone los ... al final */
+            display: block;
+            width: 100%;
+            font-weight: 600;
+        }
+        /* --- AJUSTES FINALES DE ESPACIO (INPUT CÓMODO + TARJETA DESPEJADA) --- */
+
+        /* 1. Input de Descripción: Recuperamos su altura cómoda */
+        .smart-desc-input { 
+            padding: 8px 0 !important;    /* Volvemos a 8px (antes era 4px) */
+            font-size: 1.05em !important; /* Letra un poco más grande y legible */
+        }
+
+        /* 2. Tarjeta de Confirmación: Más separada del teclado */
+        .last-action-card {
+            margin-top: 15px !important;   /* Aumentamos de 5px a 15px para que no "pise" botones */
+            padding: 8px 15px !important;  /* Un poco más de cuerpo */
+            min-height: 40px;              /* Altura mínima asegurada */
+            border-radius: 10px !important;
+        }
+
+        /* Mantenemos el teclado compacto para compensar */
+        .keypad-grid-pro {
+            height: 200px !important;
+            gap: 5px !important;
+            margin-top: 5px !important;
+        }
+        
+        /* Ajuste de márgenes internos */
+        .input-card { padding: 12px 15px !important; }
+        .row-date-val { margin-bottom: 5px !important; }
+        /* --- AJUSTES FINALES (Teclado, Categorías y Espacios) --- */
+
+        /* 1. Categorías Expandidas: Altura inteligente y "colchón" abajo */
+        .smart-cat-grid.expanded {
+            max-height: 45vh !important;    /* Puede crecer hasta casi la mitad de la pantalla */
+            padding-bottom: 30px !important; /* Espacio EXTRA abajo para que se lea el texto de la última fila */
+        }
+
+        /* 2. Botón BACK (Unificado: Gris igual que los números) */
+        .key-back-pos {
+            background-color: #F8FAFC !important; /* Mismo color que las teclas numéricas */
+            border-color: var(--border-color) !important;
+            color: var(--danger-color) !important; /* Solo el ícono queda rojo */
+        }
+        .key-back-pos:active {
+            background-color: #E2E8F0 !important; /* Efecto pulsado estándar */
+        }
+
+        /* 3. Botón GUARDAR (Borde más fino) */
+        #btnAddGasto, #btnAddIngreso {
+            border-width: 1px !important; /* Más elegante */
+        }
+
+        /* 4. Ajustes de Espacio (Para que la tarjeta no pise el teclado) */
+        .keypad-grid-pro {
+            height: 210px !important;       /* Altura cómoda */
+            margin-top: 10px !important;
+        }
+        .last-action-card {
+            margin-top: 15px !important;    /* Separación clara del teclado */
+            margin-bottom: 5px !important;
+        }
+        .smart-desc-input {
+            padding: 8px 0 !important;      /* Input con altura cómoda */
+        }
+    
