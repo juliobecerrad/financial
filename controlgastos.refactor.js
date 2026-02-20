@@ -29,6 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
     cargarDatos();
     verificarPinInicio();
     inicializarUI();
+    inicializarAccionesDeclarativas();
     inicializarListenerTecladoFisico();
     inicializarScrollCategoriasMouse();
     if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');
@@ -232,6 +233,29 @@ async function guardarNuevoPin(){ const p=document.getElementById('newPinInput')
 function cancelarPin(){ document.getElementById('modalPinConfig').style.display='none'; document.getElementById('togglePin').checked=false; }
 function verificarRecordatorioBackup(){ if(!config.fechaUltimoBackup){ document.getElementById('backupBadge').style.display='block'; return; } const diff=Math.ceil(Math.abs(new Date()-new Date(config.fechaUltimoBackup))/(1000*60*60*24)); document.getElementById('backupBadge').style.display=(diff>7)?'block':'none'; }
 function insertarEmoji(e){ const i=document.getElementById('modalCategoriaNombre'); i.value=e+" "+i.value; i.focus(); }
+
+function inicializarAccionesDeclarativas(){
+    document.addEventListener('click',(e)=>{
+        const pinBtn=e.target.closest('[data-pin]');
+        if(pinBtn){ ingresarPin(pinBtn.dataset.pin); return; }
+
+        const pinSubmit=e.target.closest('[data-pin-submit]');
+        if(pinSubmit){ verificarPin(); return; }
+
+        const keypad=e.target.closest('[data-keypad]');
+        if(keypad){ tecladoPress(keypad.dataset.keypad); return; }
+
+        const actionEl=e.target.closest('[data-action]');
+        if(!actionEl) return;
+
+        const action=actionEl.dataset.action;
+        if(action==='agregar-gasto') agregarGasto();
+        else if(action==='agregar-ingreso') agregarIngreso();
+        else if(action==='toggle-gastos') toggleTablaGastos();
+        else if(action==='toggle-ingresos') toggleTablaIngresos();
+        else if(action==='cambiar-fecha') cambiarFechaSmart(actionEl.dataset.target);
+    });
+}
 
 function inicializarUI(){ 
     mostrarPantalla('gasto',document.querySelector('.nav-tabs button.active')); 

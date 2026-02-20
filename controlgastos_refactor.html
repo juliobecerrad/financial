@@ -24,18 +24,18 @@
         <h2 style="color: white; margin-top:0;">Seguridad</h2>
         <div id="pinDisplay" class="pin-display"></div>
         <div class="pin-keypad">
-            <div class="pin-btn" onclick="ingresarPin('1')">1</div>
-            <div class="pin-btn" onclick="ingresarPin('2')">2</div>
-            <div class="pin-btn" onclick="ingresarPin('3')">3</div>
-            <div class="pin-btn" onclick="ingresarPin('4')">4</div>
-            <div class="pin-btn" onclick="ingresarPin('5')">5</div>
-            <div class="pin-btn" onclick="ingresarPin('6')">6</div>
-            <div class="pin-btn" onclick="ingresarPin('7')">7</div>
-            <div class="pin-btn" onclick="ingresarPin('8')">8</div>
-            <div class="pin-btn" onclick="ingresarPin('9')">9</div>
-            <div class="pin-btn" onclick="ingresarPin('back')"><i class="fas fa-backspace" style="font-size: 0.7em;"></i></div>
-            <div class="pin-btn" onclick="ingresarPin('0')">0</div>
-            <div class="pin-btn" onclick="verificarPin()">🆗</div>
+            <div class="pin-btn" data-pin="1">1</div>
+            <div class="pin-btn" data-pin="2">2</div>
+            <div class="pin-btn" data-pin="3">3</div>
+            <div class="pin-btn" data-pin="4">4</div>
+            <div class="pin-btn" data-pin="5">5</div>
+            <div class="pin-btn" data-pin="6">6</div>
+            <div class="pin-btn" data-pin="7">7</div>
+            <div class="pin-btn" data-pin="8">8</div>
+            <div class="pin-btn" data-pin="9">9</div>
+            <div class="pin-btn" data-pin="back"><i class="fas fa-backspace" style="font-size: 0.7em;"></i></div>
+            <div class="pin-btn" data-pin="0">0</div>
+            <div class="pin-btn" data-pin-submit="1">🆗</div>
         </div>
         <p id="pinError" style="color: #FCA5A5; margin-top: 15px; display: none;">PIN Incorrecto</p>
     </div>
@@ -51,7 +51,7 @@
         <div class="input-card">
             <div id="formulario-gasto" class="smart-input-container">
                 <div class="row-date-val">
-                    <button class="fecha-pill" id="smartFechaBtn" onclick="cambiarFechaSmart('gastoFecha')">
+                    <button class="fecha-pill" id="smartFechaBtn" data-action="cambiar-fecha" data-target="gastoFecha">
                         <i class="far fa-calendar-alt"></i> <span id="smartFechaTexto">Hoy</span>
                     </button>
                     <input type="date" id="gastoFecha" style="display:none;">
@@ -68,7 +68,7 @@
                     <input type="radio" id="pagoTransferencia" name="tipoPago" value="Transferencia">
                     <label for="pagoTransferencia"><i class="fas fa-mobile-alt"></i> <span data-i18n="lblTransf">Transf.</span></label>
                 </div>
-                <input type="text" id="gastoDescripcion" class="smart-desc-input" placeholder="¿En qué gastaste?" autocomplete="off" list="sugerenciasDescripciones" onkeyup="predecirCategoria()">
+                <input type="text" id="gastoDescripcion" class="smart-desc-input" placeholder="¿En qué gastaste?" autocomplete="off" list="sugerenciasDescripciones">
                 <datalist id="sugerenciasDescripciones"></datalist>
                 <div id="smartCategories" class="smart-cat-grid"></div>
                 <input type="hidden" id="gastoCategoria" value=""> 
@@ -83,30 +83,30 @@
                 </div>
                     <div id="keypadContainer" class="keypad-container-gasto">
                         <div class="keypad-grid-pro">
-                            <button class="key-btn" onclick="tecladoPress('1')">1</button>
-                            <button class="key-btn" onclick="tecladoPress('2')">2</button>
-                            <button class="key-btn" onclick="tecladoPress('3')">3</button>
+                            <button class="key-btn" data-keypad="1">1</button>
+                            <button class="key-btn" data-keypad="2">2</button>
+                            <button class="key-btn" data-keypad="3">3</button>
                             
-                            <button class="key-btn" id="btnAddGasto" onclick="agregarGasto()">
+                            <button class="key-btn" id="btnAddGasto" data-action="agregar-gasto">
                                 <i class="fas fa-check"></i>
                             </button>
 
-                            <button class="key-btn" onclick="tecladoPress('4')">4</button>
-                            <button class="key-btn" onclick="tecladoPress('5')">5</button>
-                            <button class="key-btn" onclick="tecladoPress('6')">6</button>
+                            <button class="key-btn" data-keypad="4">4</button>
+                            <button class="key-btn" data-keypad="5">5</button>
+                            <button class="key-btn" data-keypad="6">6</button>
                             
-                            <button class="key-btn" onclick="tecladoPress('7')">7</button>
-                            <button class="key-btn" onclick="tecladoPress('8')">8</button>
-                            <button class="key-btn" onclick="tecladoPress('9')">9</button>
+                            <button class="key-btn" data-keypad="7">7</button>
+                            <button class="key-btn" data-keypad="8">8</button>
+                            <button class="key-btn" data-keypad="9">9</button>
                             
-                            <button class="key-btn key-zero-span" onclick="tecladoPress('0')">0</button>
-                            <button class="key-btn key-dot" onclick="tecladoPress('.')">.</button>
-                            <button class="key-btn key-back-pos" onclick="tecladoPress('back')">
+                            <button class="key-btn key-zero-span" data-keypad="0">0</button>
+                            <button class="key-btn key-dot" data-keypad=".">.</button>
+                            <button class="key-btn key-back-pos" data-keypad="back">
                                 <i class="fas fa-backspace"></i>
                             </button>
                         </div>
                     </div>
-                <div id="feedbackUltimoGasto" class="last-action-card" onclick="toggleTablaGastos()">
+                <div id="feedbackUltimoGasto" class="last-action-card" data-action="toggle-gastos">
                     <div class="last-action-icon"><i class="fas fa-check-circle"></i></div>
                     <div class="last-action-details">
                         <span class="last-action-title" data-i18n="msgGastoGuardado">Gasto Guardado</span>
@@ -118,7 +118,7 @@
             </div>
         </div>
 
-        <button class="btn btn-ghost" id="btnToggleGastos" onclick="toggleTablaGastos()">
+        <button class="btn btn-ghost" id="btnToggleGastos" data-action="toggle-gastos">
             ⬇️ <span data-i18n="titleGastosMes">Últimos Gastos</span>
         </button>
         <div id="emptyStateGasto" class="empty-state">
@@ -144,7 +144,7 @@
             <div id="formulario-ingreso" class="smart-input-container">
                 <h2 data-i18n="titleIngresoDinero" style="text-align:left; margin-bottom:10px; font-size:1.1em;">Nuevo Ingreso</h2> 
                 <div class="row-date-val">
-                    <button class="fecha-pill" id="smartFechaIngresoBtn" onclick="cambiarFechaSmart('ingresoFecha')">
+                    <button class="fecha-pill" id="smartFechaIngresoBtn" data-action="cambiar-fecha" data-target="ingresoFecha">
                         <i class="far fa-calendar-alt"></i> <span id="smartFechaIngresoTexto">Hoy</span>
                     </button>
                     <input type="date" id="ingresoFecha" style="display:none;">
@@ -156,29 +156,29 @@
                 <input type="text" id="ingresoDescripcion" class="smart-desc-input" data-i18n-ph="phDescIngreso" placeholder="¿Origen del ingreso?" autocomplete="off" style="margin-top:10px; margin-bottom:10px;" list="sugerenciasIngresos">
                 <datalist id="sugerenciasIngresos"></datalist>
                 <div class="keypad-grid-pro">
-                    <button class="key-btn" onclick="tecladoPress('1')">1</button>
-                    <button class="key-btn" onclick="tecladoPress('2')">2</button>
-                    <button class="key-btn" onclick="tecladoPress('3')">3</button>
+                    <button class="key-btn" data-keypad="1">1</button>
+                    <button class="key-btn" data-keypad="2">2</button>
+                    <button class="key-btn" data-keypad="3">3</button>
                     
-                    <button class="key-btn" id="btnAddIngreso" onclick="agregarIngreso()">
+                    <button class="key-btn" id="btnAddIngreso" data-action="agregar-ingreso">
                         <i class="fas fa-check"></i>
                     </button>
 
-                    <button class="key-btn" onclick="tecladoPress('4')">4</button>
-                    <button class="key-btn" onclick="tecladoPress('5')">5</button>
-                    <button class="key-btn" onclick="tecladoPress('6')">6</button>
+                    <button class="key-btn" data-keypad="4">4</button>
+                    <button class="key-btn" data-keypad="5">5</button>
+                    <button class="key-btn" data-keypad="6">6</button>
                     
-                    <button class="key-btn" onclick="tecladoPress('7')">7</button>
-                    <button class="key-btn" onclick="tecladoPress('8')">8</button>
-                    <button class="key-btn" onclick="tecladoPress('9')">9</button>
+                    <button class="key-btn" data-keypad="7">7</button>
+                    <button class="key-btn" data-keypad="8">8</button>
+                    <button class="key-btn" data-keypad="9">9</button>
                     
-                    <button class="key-btn key-zero-span" onclick="tecladoPress('0')">0</button>
-                    <button class="key-btn key-dot" onclick="tecladoPress('.')">.</button>
-                    <button class="key-btn key-back-pos" onclick="tecladoPress('back')">
+                    <button class="key-btn key-zero-span" data-keypad="0">0</button>
+                    <button class="key-btn key-dot" data-keypad=".">.</button>
+                    <button class="key-btn key-back-pos" data-keypad="back">
                         <i class="fas fa-backspace"></i>
                     </button>
                 </div>
-                <div id="feedbackUltimoIngreso" class="last-action-card" onclick="toggleTablaIngresos()">
+                <div id="feedbackUltimoIngreso" class="last-action-card" data-action="toggle-ingresos">
                     <div class="last-action-icon"><i class="fas fa-piggy-bank"></i></div>
                     <div class="last-action-details">
                         <span class="last-action-title" data-i18n="msgIngresoGuardado">Ingreso Guardado</span>
@@ -190,7 +190,7 @@
             </div>
         </div>
         
-        <button class="btn btn-ghost" id="btnToggleIngresos" onclick="toggleTablaIngresos()">
+        <button class="btn btn-ghost" id="btnToggleIngresos" data-action="toggle-ingresos">
             ⬇️ <span data-i18n="titleIngresosMes">Últimos Ingresos</span>
         </button>
         <div id="emptyStateIngreso" class="empty-state">
