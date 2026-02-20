@@ -600,7 +600,50 @@ function actualizarSugerenciasDescripciones(l){document.getElementById('sugerenc
 function actualizarSugerenciasIngresos(l){document.getElementById('sugerenciasIngresos').innerHTML=l.map(d=>`<option value="${d}">`).join('');}
 async function compartirBackupJSON(){ const t=JSON.stringify({gastos_v2:gastos,ingresos_v2:ingresos,config_v2:config},null,2); const d=new Date(); config.fechaUltimoBackup=d.toISOString(); localStorage.setItem('config_v2',JSON.stringify(config)); verificarRecordatorioBackup(); const n=`Backup_${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}.txt`; const f=new File([new Blob([t],{type:'text/plain'})],n,{type:'text/plain'}); descargar(f); if(navigator.canShare&&navigator.canShare({files:[f]})){try{setTimeout(async()=>{await navigator.share({files:[f],title:'Backup'})},500)}catch{}} }
 function descargar(f){ const a=document.createElement('a'); a.href=URL.createObjectURL(f); a.download=f.name; a.click(); }
-function importarDatos(e){ const f=e.target.files[0]; if(!f)return; const r=new FileReader(); r.onload=ev=>{try{const d=JSON.parse(ev.target.result); if(d.gastos_v2){localStorage.setItem('gastos_v2',JSON.stringify(d.gastos_v2)); localStorage.setItem('config_v2',JSON.stringify(d.config_v2)); if(d.ingresos_v2)localStorage.setItem('ingresos_v2',JSON.stringify(d.ingresos_v2)); mostrarToast(TRADUCTIONS[config.idioma].alertImportSuccessJSON,'success'); setTimeout(()=>location.reload(),1500);}}catch{mostrarToast(TRADUCTIONS[config.idioma].alertImportErrorJSON,'error')}}; r.readAsText(f); e.target.value=''; }
+function normalizarConfigImportado(configImportada){
+    const base={
+        moneda:'$', idioma:'es',
+        categorias:['🍔 Comida','🚌 Transporte','🏠 Hogar','💊 Salud','🎉 Ocio','📦 Otros'],
+        presupuestos:{}, pin:null, pinHash:null, pinSalt:null, fechaUltimoBackup:null, pinIntentos:0, pinBloqueadoHasta:null
+    };
+    const out=(configImportada&&typeof configImportada==='object')?{...base,...configImportada}:base;
+    if(!Array.isArray(out.categorias)||!out.categorias.length) out.categorias=base.categorias;
+    if(!out.presupuestos||typeof out.presupuestos!=='object') out.presupuestos={};
+    if(!out.pinHash || !out.pinSalt){ out.pinHash=null; out.pinSalt=null; }
+    if(out.pinIntentos==null || Number.isNaN(Number(out.pinIntentos))) out.pinIntentos=0;
+    return out;
+}
+function importarDatos(e){
+    const f=e.target.files[0];
+    if(!f) return;
+
+    const r=new FileReader();
+    r.onload=ev=>{
+        try{
+            const d=JSON.parse(ev.target.result);
+            if(!d || !Array.isArray(d.gastos_v2)){
+                mostrarToast(TRADUCTIONS[config.idioma].alertImportErrorJSON,'error');
+                return;
+            }
+
+            const gastosImportados=d.gastos_v2;
+            const ingresosImportados=Array.isArray(d.ingresos_v2)?d.ingresos_v2:[];
+            const configImportada=normalizarConfigImportado(d.config_v2);
+
+            localStorage.setItem('gastos_v2',JSON.stringify(gastosImportados));
+            localStorage.setItem('ingresos_v2',JSON.stringify(ingresosImportados));
+            localStorage.setItem('config_v2',JSON.stringify(configImportada));
+
+            mostrarToast(TRADUCTIONS[config.idioma].alertImportSuccessJSON,'success');
+            setTimeout(()=>location.reload(),1500);
+        }catch{
+            mostrarToast(TRADUCTIONS[config.idioma].alertImportErrorJSON,'error');
+        }
+    };
+
+    r.readAsText(f);
+    e.target.value='';
+}
 function confirmarLimpiarTodosLosDatos(){ mostrarModalConfirmacion(TRADUCTIONS[config.idioma].confirmDeleteAll,()=>{localStorage.clear();location.reload()}); }
 function generarYCompartirCSV(t){ let n='',d=[],ti=''; if(t==='ingresos_mes'){const h=new Date(),m=h.getMonth()+1,a=h.getFullYear(); d=ingresos.filter(x=>{const[y,mm]=x.fecha.split('-');return parseInt(y)==a&&parseInt(mm)==m}); n=`Ingresos_${MONTH_NAMES_FULL[config.idioma][m-1]}_${a}`; ti=`Reporte Ingresos ${MONTH_NAMES_FULL[config.idioma][m-1]} ${a}`;} else if(t==='mensual'){const m=document.getElementById('filtroMes').value,a=document.getElementById('filtroAnioMensual').value; d=gastos.filter(x=>{const[y,mm]=x.fecha.split('-');return parseInt(y)==a&&parseInt(mm)==m}); n=`Gastos_${MONTH_NAMES_FULL[config.idioma][m-1]}_${a}`; ti=`Reporte ${MONTH_NAMES_FULL[config.idioma][m-1]} ${a}`;} else {const a=document.getElementById('filtroAnioHistorico').value; d=gastos.filter(g=>g.fecha.startsWith(a)); n=`Gastos_${a}`; ti=`Reporte ${a}`;} if(!d.length)return mostrarToast(TRADUCTIONS[config.idioma].alertNoExport,'error'); let c="\uFEFFFecha;Descripción;Valor"; if(t!=='ingresos_mes')c+=";Categoría;TipoPago"; c+="\n"; d.forEach(g=>{let de=g.descripcion.replace(/;/g,","), v=g.valor.toString().replace('.',','); if(t==='ingresos_mes')c+=`${g.fecha};${de};${v}\n`; else c+=`${g.fecha};${de};${v};${g.categoria};${g.tipoPago}\n`;}); const f=new File([new Blob([c],{type:'text/csv;charset=utf-8;'})],`${n}.csv`,{type:'text/csv'}); const a=document.createElement('a'); a.href=URL.createObjectURL(f); a.download=f.name; a.click(); if(navigator.canShare&&navigator.canShare({files:[f]}))setTimeout(async()=>{try{await navigator.share({files:[f],title:'Control',text:ti})}catch{}},500); }
 function generarPDF(t){ const{jsPDF}=window.jspdf; let d=[],ti='',cid=''; if(t==='ingresos_mes'){const h=new Date(),m=h.getMonth()+1,a=h.getFullYear(); d=ingresos.filter(g=>{const[y,mm]=g.fecha.split('-');return parseInt(y)==a&&parseInt(mm)==m}); ti=`Ingresos ${MONTH_NAMES_FULL[config.idioma][m-1]} ${a}`;} else if(t==='mensual'){const m=document.getElementById('filtroMes').value,a=document.getElementById('filtroAnioMensual').value; d=gastos.filter(g=>{const[y,mm]=g.fecha.split('-');return parseInt(y)==a&&parseInt(mm)==m}); ti=`Gastos ${MONTH_NAMES_FULL[config.idioma][m-1]} ${a}`; cid='chartMensualCanvas';} else {const a=document.getElementById('filtroAnioHistorico').value; d=gastos.filter(g=>g.fecha.startsWith(a)); ti=`Reporte Anual ${a}`; cid='chartHistoricoCanvas';} if(!d.length)return mostrarToast(TRADUCTIONS[config.idioma].alertNoExport,'error'); const doc=new jsPDF(); doc.setFontSize(18); doc.setTextColor(30,58,138); doc.text("Control de Gastos",14,20); doc.setFontSize(14); doc.setTextColor(100); doc.text(ti,14,30); let tot=0; d.forEach(g=>tot+=Number(g.valor)); doc.setFillColor(241,245,249); doc.rect(14,42,180,15,'F'); doc.setFontSize(12); doc.setTextColor(0); doc.text(`TOTAL: ${formatearMoneda(tot)}`,20,51); if(cid){const c=document.getElementById(cid); if(c){const i=c.toDataURL("image/png"); doc.addImage(i,'PNG',15,65,70,70)}} let h=[],b=[]; if(t==='ingresos_mes'){h=[['Fecha','Desc','Valor']]; b=d.map(g=>[g.fecha,g.descripcion,formatearMoneda(g.valor)])} else {h=[['Fecha','Cat','Desc','Valor','Pago']]; b=d.map(g=>[g.fecha,g.categoria,g.descripcion,formatearMoneda(g.valor),g.tipoPago])} doc.autoTable({startY:cid?145:65,head:h,body:b,theme:'grid',headStyles:{fillColor:[71,85,105]},styles:{fontSize:9},columnStyles:t==='ingresos_mes'?{2:{halign:'right'}}:{3:{halign:'right',cellWidth:40}}}); doc.save(`${ti.replace(/ /g,'_')}.pdf`); }
