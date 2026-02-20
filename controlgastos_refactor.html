@@ -132,9 +132,9 @@
                 <tfoot><tr><td colspan="2" data-i18n="lblTotal">TOTAL</td><td id="totalUltimosGastos" class="gasto-valor"></td></tr></tfoot>
             </table>
             <div class="pagination-controls" style="margin-bottom: 20px;">
-                <button class="btn btn-secondary" onclick="cambiarPaginaPrincipal(-1)">Ant</button>
+                <button class="btn btn-secondary" data-action="pagina-gastos" data-dir="-1">Ant</button>
                 <span id="pageInfoPrincipal">Pág 1</span>
-                <button class="btn btn-secondary" onclick="cambiarPaginaPrincipal(1)">Sig</button>
+                <button class="btn btn-secondary" data-action="pagina-gastos" data-dir="1">Sig</button>
             </div>
         </div>
     </div>
@@ -199,9 +199,9 @@
         </div>
         <div id="contenedorUltimosIngresos">
             <div class="year-selector-container">
-                <button class="btn-year-nav" onclick="cambiarAnioIngreso(-1)"><i class="fas fa-chevron-left"></i></button>
+                <button class="btn-year-nav" data-action="anio-ingreso" data-dir="-1"><i class="fas fa-chevron-left"></i></button>
                 <span id="displayAnioIngreso" class="year-display">2025</span>
-                <button class="btn-year-nav" onclick="cambiarAnioIngreso(1)"><i class="fas fa-chevron-right"></i></button>
+                <button class="btn-year-nav" data-action="anio-ingreso" data-dir="1"><i class="fas fa-chevron-right"></i></button>
             </div>
             <table id="tablaUltimosIngresos" class="tabla-gastos">
                 <thead><tr><th data-i18n="colFecha">Fecha</th><th data-i18n="colDesc">Descripción</th><th style="text-align: right;" data-i18n="colValor">Valor</th></tr></thead>
@@ -209,15 +209,15 @@
                 <tfoot><tr><td colspan="2" data-i18n="lblTotal">TOTAL</td><td id="totalUltimosIngresos" class="gasto-valor"></td></tr></tfoot>
             </table>
             <div class="pagination-controls" style="margin-bottom: 20px;">
-                <button class="btn btn-secondary" onclick="cambiarPaginaIngresos(-1)">Ant</button>
+                <button class="btn btn-secondary" data-action="pagina-ingresos" data-dir="-1">Ant</button>
                 <span id="pageInfoIngresos">Pág 1</span>
-                <button class="btn btn-secondary" onclick="cambiarPaginaIngresos(1)">Sig</button>
+                <button class="btn btn-secondary" data-action="pagina-ingresos" data-dir="1">Sig</button>
             </div>
             <div class="export-buttons-container">
-                <button class="btn btn-secondary" onclick="generarYCompartirCSV('ingresos_mes')" style="flex:1;">
+                <button class="btn btn-secondary" data-action="export-csv" data-kind="ingresos_mes" style="flex:1;">
                     <i class="fas fa-file-excel" style="color: #10B981; margin-right: 5px;"></i> <span data-i18n="btnCsvMes">Excel</span>
                 </button> 
-                <button class="btn btn-secondary" onclick="generarPDF('ingresos_mes')" style="flex:1;">
+                <button class="btn btn-secondary" data-action="export-pdf" data-kind="ingresos_mes" style="flex:1;">
                     <i class="fas fa-file-pdf" style="color: #EF4444; margin-right: 5px;"></i> PDF
                 </button>
             </div>
@@ -244,7 +244,7 @@
                 <span id="dashBalance" class="val-resumen">0</span>
             </div>
         </div>
-        <button class="btn-accordion" onclick="togglePresupuestos()">
+        <button class="btn-accordion" data-action="toggle-presupuestos">
             <span>🎯 Ver Estado de Presupuestos</span>
             <i class="fas fa-chevron-down" id="budgetChevron"></i>
         </button>
@@ -286,10 +286,10 @@
         </table>
         <div class="chart-container" id="chartMensualContainer"><canvas id="chartMensualCanvas"></canvas></div>
         <div class="export-buttons-container">
-            <button class="btn btn-secondary" id="btnExportMes" onclick="generarYCompartirCSV('mensual')" style="flex:1;">
+            <button class="btn btn-secondary" id="btnExportMes" data-action="export-csv" data-kind="mensual" style="flex:1;">
                 <i class="fas fa-file-excel" style="color: #10B981; margin-right: 5px;"></i> <span data-i18n="btnCsvMes">Excel</span>
             </button> 
-            <button class="btn btn-secondary" onclick="generarPDF('mensual')" style="flex:1;">
+            <button class="btn btn-secondary" data-action="export-pdf" data-kind="mensual" style="flex:1;">
                 <i class="fas fa-file-pdf" style="color: #EF4444; margin-right: 5px;"></i> PDF
             </button>
         </div>
@@ -349,15 +349,15 @@
         <h3 style="margin-top: 20px;">Evolución Ingresos vs Gastos</h3>
         <div class="chart-container" id="chartHistoricoMesesContainer"><canvas id="chartHistoricoMesesCanvas"></canvas></div>
         <div style="margin-top: 20px;">
-            <button class="btn btn-secondary" onclick="abrirModalTablaAnual()">
+            <button class="btn btn-secondary" data-action="abrir-modal-anual">
                 📄 <span data-i18n="titleDetalleMensual">Ver Detalle Mensual</span>
             </button>
         </div>
         <div class="export-buttons-container">
-            <button class="btn btn-secondary" id="btnExportYear" onclick="generarYCompartirCSV('historico')" style="flex:1;">
+            <button class="btn btn-secondary" id="btnExportYear" data-action="export-csv" data-kind="historico" style="flex:1;">
                 <i class="fas fa-file-excel" style="color: #10B981; margin-right: 5px;"></i> <span data-i18n="btnCsvAnio">Excel</span>
             </button> 
-            <button class="btn btn-secondary" onclick="generarPDF('historico')" style="flex:1;">
+            <button class="btn btn-secondary" data-action="export-pdf" data-kind="historico" style="flex:1;">
                 <i class="fas fa-file-pdf" style="color: #EF4444; margin-right: 5px;"></i> PDF
             </button>
         </div>
@@ -460,7 +460,7 @@
 
     <div id="modalTablaAnual" class="modal">
         <div class="modal-content">
-            <span class="close-btn" onclick="cerrarModalTablaAnual()">&times;</span>
+            <span class="close-btn" data-action="cerrar-modal-anual">&times;</span>
             <h3 style="margin-top:0; margin-bottom:15px;" data-i18n="titleDetalleMensual">Detalle Mensual</h3>
             <table id="tablaDetalleAnual" class="tabla-gastos">
                 <thead>
@@ -481,7 +481,7 @@
                     </tr>
                 </tfoot>
             </table>
-            <button class="btn btn-secondary" style="margin-top:20px;" onclick="cerrarModalTablaAnual()" data-i18n="btnVolver">Volver</button>
+            <button class="btn btn-secondary" style="margin-top:20px;" data-action="cerrar-modal-anual" data-i18n="btnVolver">Volver</button>
         </div>
     </div>
 

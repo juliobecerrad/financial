@@ -272,6 +272,14 @@ function inicializarAccionesDeclarativas(){
         else if(action==='guardar-edicion-ingreso') guardarEdicionIngreso();
         else if(action==='eliminar-ingreso') confirmarEliminarIngreso();
         else if(action==='cerrar-modal-categoria') cerrarModalCategoria();
+        else if(action==='pagina-gastos') cambiarPaginaPrincipal(Number(actionEl.dataset.dir||0));
+        else if(action==='anio-ingreso') cambiarAnioIngreso(Number(actionEl.dataset.dir||0));
+        else if(action==='pagina-ingresos') cambiarPaginaIngresos(Number(actionEl.dataset.dir||0));
+        else if(action==='export-csv') generarYCompartirCSV(actionEl.dataset.kind);
+        else if(action==='export-pdf') generarPDF(actionEl.dataset.kind);
+        else if(action==='toggle-presupuestos') togglePresupuestos();
+        else if(action==='abrir-modal-anual') abrirModalTablaAnual();
+        else if(action==='cerrar-modal-anual') cerrarModalTablaAnual();
     });
 }
 
