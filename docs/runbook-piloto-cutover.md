@@ -6,6 +6,8 @@ Este runbook convierte el plan de `docs/migracion-refactor.md` en una ejecución
 
 - Checklist operativo Día 1: `docs/piloto-dia1-checklist.md`.
 - Checklist de día de cutover: `docs/cutover-dia-checklist.md`.
+- Bitácora de piloto: `docs/bitacora-piloto-template.md`.
+- Acta Go/No-Go: `docs/acta-go-no-go-template.md`.
 
 ## 1) Pre-flight (antes de mover usuarios)
 

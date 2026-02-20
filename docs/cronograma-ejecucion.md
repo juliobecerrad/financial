@@ -40,6 +40,9 @@ Este cronograma continúa el plan aprobado asumiendo que la aplicación refactor
 
 - Comunicación operativa: usar `docs/plantillas-comunicacion.md`.
 
+- Gobernanza de decisión: usar `docs/acta-go-no-go-template.md`.
+- Registro operativo: usar `docs/bitacora-piloto-template.md`.
+
 ## Entregables por fase
 - Piloto: bitácora diaria + decisión Go/No-Go.
 - Cutover: checklist de día de cambio completado.
