@@ -18,9 +18,11 @@ Comandos rápidos:
 
 ```bash
 cd /workspace/financial
-scripts/smoke-refactor.sh
+scripts/preflight-piloto.sh
 scripts/start-beta-local.sh 4173
 ```
+
+> Nota: `scripts/preflight-piloto.sh` ejecuta smoke técnico y valida documentos/referencias operativas mínimas.
 
 ## 2) Arranque del piloto (T0)
 
