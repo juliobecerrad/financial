@@ -290,6 +290,7 @@ function inicializarAccionesDeclarativas(){
         else if(action==='guardar-nuevo-pin') guardarNuevoPin();
         else if(action==='cancelar-pin') cancelarPin();
         else if(action==='mostrar-pantalla') mostrarPantalla(actionEl.dataset.screen, actionEl);
+        else if(action==='insertar-emoji') insertarEmoji(actionEl.dataset.value);
     });
 }
 
