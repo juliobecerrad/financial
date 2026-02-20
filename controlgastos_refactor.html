@@ -598,7 +598,7 @@
                 <input type="number" id="modalCategoriaPresupuesto" placeholder="0 (Sin límite)" inputmode="decimal">
             </div>
             <div class="modal-botones-row">
-                <button class="btn btn-success" onclick="guardarEdicionCategoria()" data-i18n="btnGuardar">Guardar</button>
+                <button class="btn btn-success" data-action="guardar-edicion-categoria" data-i18n="btnGuardar">Guardar</button>
                 <button class="btn btn-secondary" data-action="cerrar-modal-categoria" data-i18n="btnCancelar">Cancelar</button>
             </div>
         </div>
@@ -606,26 +606,26 @@
 
     <div id="modalSeleccionMoneda" class="modal">
         <div class="modal-content">
-            <span class="close-btn" onclick="document.getElementById('modalSeleccionMoneda').style.display='none'">&times;</span>
+            <span class="close-btn" data-action="cerrar-modal-moneda">&times;</span>
             <h3 data-i18n="lblMoneda">Moneda</h3>
             <ul class="option-list">
-                <li class="option-item" data-val="$" onclick="cambiarMoneda('$')"><span>$ Dólar (USD)</span> <i class="fas fa-check option-check"></i></li>
-                <li class="option-item" data-val="€" onclick="cambiarMoneda('€')"><span>€ Euro</span> <i class="fas fa-check option-check"></i></li>
-                <li class="option-item" data-val="MXN$" onclick="cambiarMoneda('MXN$')"><span>MXN$ Peso Mex</span> <i class="fas fa-check option-check"></i></li>
-                <li class="option-item" data-val="S/" onclick="cambiarMoneda('S/')"><span>S/ Sol Peruano</span> <i class="fas fa-check option-check"></i></li>
-                <li class="option-item" data-val="COL$" onclick="cambiarMoneda('COL$')"><span>COL$ Peso Col</span> <i class="fas fa-check option-check"></i></li>
-                <li class="option-item" data-val="Bs." onclick="cambiarMoneda('Bs.')"><span>Bs. Boliviano</span> <i class="fas fa-check option-check"></i></li>
+                <li class="option-item" data-val="$" data-action="cambiar-moneda" data-value="$"><span>$ Dólar (USD)</span> <i class="fas fa-check option-check"></i></li>
+                <li class="option-item" data-val="€" data-action="cambiar-moneda" data-value="€"><span>€ Euro</span> <i class="fas fa-check option-check"></i></li>
+                <li class="option-item" data-val="MXN$" data-action="cambiar-moneda" data-value="MXN$"><span>MXN$ Peso Mex</span> <i class="fas fa-check option-check"></i></li>
+                <li class="option-item" data-val="S/" data-action="cambiar-moneda" data-value="S/"><span>S/ Sol Peruano</span> <i class="fas fa-check option-check"></i></li>
+                <li class="option-item" data-val="COL$" data-action="cambiar-moneda" data-value="COL$"><span>COL$ Peso Col</span> <i class="fas fa-check option-check"></i></li>
+                <li class="option-item" data-val="Bs." data-action="cambiar-moneda" data-value="Bs."><span>Bs. Boliviano</span> <i class="fas fa-check option-check"></i></li>
             </ul>
         </div>
     </div>
 
     <div id="modalSeleccionIdioma" class="modal">
         <div class="modal-content">
-            <span class="close-btn" onclick="document.getElementById('modalSeleccionIdioma').style.display='none'">&times;</span>
+            <span class="close-btn" data-action="cerrar-modal-idioma">&times;</span>
             <h3 data-i18n="lblIdioma">Idioma</h3>
             <ul class="option-list">
-                <li class="option-item" onclick="cambiarIdioma('es')"><span>🇪🇸 Español</span> <i class="fas fa-check option-check"></i></li>
-                <li class="option-item" onclick="cambiarIdioma('en')"><span>🇺🇸 English</span> <i class="fas fa-check option-check"></i></li>
+                <li class="option-item" data-action="cambiar-idioma" data-value="es"><span>🇪🇸 Español</span> <i class="fas fa-check option-check"></i></li>
+                <li class="option-item" data-action="cambiar-idioma" data-value="en"><span>🇺🇸 English</span> <i class="fas fa-check option-check"></i></li>
             </ul>
         </div>
     </div>
@@ -635,8 +635,8 @@
             <h2 data-i18n="titleConfirmar">Confirmar</h2>
             <p id="modalConfirmBody" style="text-align: center; margin-bottom: 20px;"></p>
             <div class="modal-botones-row">
-                <button class="btn btn-danger" onclick="ejecutarConfirmacion()" data-i18n="btnSi">Sí</button>
-                <button class="btn btn-secondary" onclick="cerrarModalConfirmacion()" data-i18n="btnNo">No</button>
+                <button class="btn btn-danger" data-action="ejecutar-confirmacion" data-i18n="btnSi">Sí</button>
+                <button class="btn btn-secondary" data-action="cerrar-modal-confirmacion" data-i18n="btnNo">No</button>
             </div>
         </div>
     </div>
@@ -647,8 +647,8 @@
             <p style="text-align:center; color:var(--secondary-color);">Ingresa 4 dígitos</p>
             <input type="tel" id="newPinInput" maxlength="4" style="font-size: 2em; letter-spacing: 10px; text-align: center; margin: 20px 0;">
             <div class="modal-botones-row">
-                <button class="btn btn-primary" onclick="guardarNuevoPin()">Aceptar</button>
-                <button class="btn btn-secondary" onclick="cancelarPin()">Cancelar</button>
+                <button class="btn btn-primary" data-action="guardar-nuevo-pin">Aceptar</button>
+                <button class="btn btn-secondary" data-action="cancelar-pin">Cancelar</button>
             </div>
         </div>
     </div>
@@ -656,11 +656,11 @@
     <div id="toast">Notificación</div>
 
     <div class="nav-tabs">
-        <button onclick="mostrarPantalla('gasto', this)" class="active"><i class="fas fa-plus-circle"></i><span data-i18n="menuGasto">Gasto</span></button>
-        <button onclick="mostrarPantalla('ingreso', this)"><i class="fas fa-money-bill-wave"></i><span data-i18n="menuIngreso">Ingreso</span></button>
-        <button onclick="mostrarPantalla('mensual', this)"><i class="fas fa-chart-pie"></i><span data-i18n="menuMes">Mes</span></button>
-        <button onclick="mostrarPantalla('historico', this)"><i class="fas fa-calendar-alt"></i><span data-i18n="menuAnio">Año</span></button>
-        <button onclick="mostrarPantalla('configuracion', this)">
+        <button data-action="mostrar-pantalla" data-screen="gasto" class="active"><i class="fas fa-plus-circle"></i><span data-i18n="menuGasto">Gasto</span></button>
+        <button data-action="mostrar-pantalla" data-screen="ingreso"><i class="fas fa-money-bill-wave"></i><span data-i18n="menuIngreso">Ingreso</span></button>
+        <button data-action="mostrar-pantalla" data-screen="mensual"><i class="fas fa-chart-pie"></i><span data-i18n="menuMes">Mes</span></button>
+        <button data-action="mostrar-pantalla" data-screen="historico"><i class="fas fa-calendar-alt"></i><span data-i18n="menuAnio">Año</span></button>
+        <button data-action="mostrar-pantalla" data-screen="configuracion">
             <i class="fas fa-cog"></i>
             <span data-i18n="menuConfig">Config</span>
             <div id="backupBadge" class="backup-dot"></div>

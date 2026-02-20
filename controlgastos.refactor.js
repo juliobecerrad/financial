@@ -280,6 +280,16 @@ function inicializarAccionesDeclarativas(){
         else if(action==='toggle-presupuestos') togglePresupuestos();
         else if(action==='abrir-modal-anual') abrirModalTablaAnual();
         else if(action==='cerrar-modal-anual') cerrarModalTablaAnual();
+        else if(action==='guardar-edicion-categoria') guardarEdicionCategoria();
+        else if(action==='cerrar-modal-moneda') document.getElementById('modalSeleccionMoneda').style.display='none';
+        else if(action==='cambiar-moneda') cambiarMoneda(actionEl.dataset.value);
+        else if(action==='cerrar-modal-idioma') document.getElementById('modalSeleccionIdioma').style.display='none';
+        else if(action==='cambiar-idioma') cambiarIdioma(actionEl.dataset.value);
+        else if(action==='ejecutar-confirmacion') ejecutarConfirmacion();
+        else if(action==='cerrar-modal-confirmacion') cerrarModalConfirmacion();
+        else if(action==='guardar-nuevo-pin') guardarNuevoPin();
+        else if(action==='cancelar-pin') cancelarPin();
+        else if(action==='mostrar-pantalla') mostrarPantalla(actionEl.dataset.screen, actionEl);
     });
 }
 
