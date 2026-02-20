@@ -183,6 +183,15 @@ async function validarPinIngresado(pin){
     }
     return pin===config.pin;
 }
+async function migrarPinLegacySiAplica(pin){
+    if(!config.pin || config.pinHash) return;
+    const salt=generarSaltPin();
+    const pinHash=await hashPin(pin,salt);
+    config.pinHash=pinHash;
+    config.pinSalt=salt;
+    config.pin=null;
+    guardarConfig();
+}
 function verificarPinInicio(){ if(pinEstaActivo()){ document.getElementById('lockScreen').style.display='flex'; if(msRestantesBloqueoPin()<=0&&config.pinBloqueadoHasta) limpiarBloqueoPin(); pinBuffer=""; actualizarPinDisplay(); } }
 function ingresarPin(d){ if(msRestantesBloqueoPin()>0){ const seg=Math.ceil(msRestantesBloqueoPin()/1000); actualizarErrorPin(`PIN bloqueado. Intenta en ${seg}s`); return; } if(d==='back') pinBuffer=pinBuffer.slice(0,-1); else if(pinBuffer.length<4) pinBuffer+=d; actualizarPinDisplay(); }
 function actualizarPinDisplay(){ document.getElementById('pinDisplay').textContent="•".repeat(pinBuffer.length); document.getElementById('pinError').style.display='none'; }
@@ -197,6 +206,7 @@ async function verificarPin(){
     }
     const pinEsValido=await validarPinIngresado(pinBuffer);
     if(pinEsValido){
+        await migrarPinLegacySiAplica(pinBuffer);
         document.getElementById('lockScreen').style.display='none';
         pinBuffer="";
         limpiarBloqueoPin();
