@@ -227,8 +227,8 @@
     <div id="mensual" class="pantalla">
         <h2 data-i18n="titleResumenMensual">Resumen Mensual</h2>
         <div class="filtro-container-inline">
-            <select id="filtroMes" onchange="actualizarResumenMensual()"></select>
-            <select id="filtroAnioMensual" onchange="actualizarResumenMensual()"></select>
+            <select id="filtroMes"></select>
+            <select id="filtroAnioMensual"></select>
         </div>
         <div class="dashboard-resumen">
             <div class="card-resumen">
@@ -298,7 +298,7 @@
     <div id="historico" class="pantalla">
         <h2 data-i18n="titleResumenAnual">Resumen Anual</h2>
         <div class="filtro-container-inline">
-            <select id="filtroAnioHistorico" onchange="actualizarResumenHistorico(true)"></select>
+            <select id="filtroAnioHistorico"></select>
         </div>
         <div class="dashboard-resumen">
             <div class="card-resumen">
@@ -372,7 +372,7 @@
             <div class="config-mini-card" data-action="trigger-toggle-pin">
                 <i class="fas fa-lock mini-card-icon" id="iconLockState"></i>
                 <label class="toggle-switch mini-switch" data-stop-propagation="1">
-                    <input type="checkbox" id="togglePin" onchange="toggleSeguridad(this)">
+                    <input type="checkbox" id="togglePin">
                     <span class="slider"></span>
                 </label>
                 <span class="mini-card-label">PIN</span>

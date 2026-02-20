@@ -323,6 +323,10 @@ function inicializarUI(){
 
     const f=document.getElementById('inputImportar'); if(f) f.addEventListener('change',importarDatos); 
     const buscadorDetalle=document.getElementById('buscarDetalleModal'); if(buscadorDetalle) buscadorDetalle.addEventListener('input',filtrarTablaDetalle);
+    const togglePin=document.getElementById('togglePin'); if(togglePin) togglePin.addEventListener('change',(e)=>toggleSeguridad(e.target));
+    const filtroMes=document.getElementById('filtroMes'); if(filtroMes) filtroMes.addEventListener('change',actualizarResumenMensual);
+    const filtroAnioMensual=document.getElementById('filtroAnioMensual'); if(filtroAnioMensual) filtroAnioMensual.addEventListener('change',actualizarResumenMensual);
+    const filtroAnioHistorico=document.getElementById('filtroAnioHistorico'); if(filtroAnioHistorico) filtroAnioHistorico.addEventListener('change',()=>actualizarResumenHistorico(true));
     document.querySelectorAll('input[name="filtroTipoPagoMensual"]').forEach(r=>{r.addEventListener('change',(e)=>{filtroPagoMensual=e.target.value;actualizarResumenMensual()})}); 
     document.querySelectorAll('input[name="filtroTipoPagoHistorico"]').forEach(r=>{r.addEventListener('change',(e)=>{filtroPagoHistorico=e.target.value;actualizarResumenHistorico(true)})}); 
 }
