@@ -39,7 +39,7 @@ function cargarDatos(){
         const def={
             moneda:'$', idioma:'es', 
             categorias:['🍔 Comida','🚌 Transporte','🏠 Hogar','💊 Salud','🎉 Ocio','📦 Otros'], 
-            presupuestos:{}, pin:null, fechaUltimoBackup:null, pinIntentos:0, pinBloqueadoHasta:null
+            presupuestos:{}, pin:null, pinHash:null, pinSalt:null, fechaUltimoBackup:null, pinIntentos:0, pinBloqueadoHasta:null
         };        
         const loaded=JSON.parse(localStorage.getItem('config_v2'));
         config=loaded?{...def,...loaded}:def;
@@ -70,7 +70,7 @@ function cargarDatos(){
         if(selIdioma) selIdioma.value = config.idioma;
 
         const toggle = document.getElementById('togglePin');
-        if(toggle) toggle.checked = !!config.pin;
+        if(toggle) toggle.checked = pinEstaActivo();
         
         establecerFechaHoy(); 
         
@@ -173,10 +173,20 @@ function guardarConfig(){ localStorage.setItem('config_v2',JSON.stringify(config
 function limpiarBloqueoPin(){ config.pinIntentos=0; config.pinBloqueadoHasta=null; guardarConfig(); }
 function msRestantesBloqueoPin(){ if(!config.pinBloqueadoHasta) return 0; const ms=new Date(config.pinBloqueadoHasta).getTime()-Date.now(); return Number.isFinite(ms)&&ms>0?ms:0; }
 function actualizarErrorPin(m){ const el=document.getElementById('pinError'); if(!el) return; el.textContent=m||'PIN Incorrecto'; el.style.display='block'; }
-function verificarPinInicio(){ if(config.pin){ document.getElementById('lockScreen').style.display='flex'; if(msRestantesBloqueoPin()<=0&&config.pinBloqueadoHasta) limpiarBloqueoPin(); pinBuffer=""; actualizarPinDisplay(); } }
+function pinEstaActivo(){ return !!(config.pinHash||config.pin); }
+function generarSaltPin(){ const bytes=new Uint8Array(16); crypto.getRandomValues(bytes); return Array.from(bytes,b=>b.toString(16).padStart(2,'0')).join(''); }
+async function hashPin(pin,salt){ const data=new TextEncoder().encode(`${salt}:${pin}`); const hashBuffer=await crypto.subtle.digest('SHA-256',data); const hashArray=Array.from(new Uint8Array(hashBuffer)); return hashArray.map(b=>b.toString(16).padStart(2,'0')).join(''); }
+async function validarPinIngresado(pin){
+    if(config.pinHash&&config.pinSalt){
+        const hashIngresado=await hashPin(pin,config.pinSalt);
+        return hashIngresado===config.pinHash;
+    }
+    return pin===config.pin;
+}
+function verificarPinInicio(){ if(pinEstaActivo()){ document.getElementById('lockScreen').style.display='flex'; if(msRestantesBloqueoPin()<=0&&config.pinBloqueadoHasta) limpiarBloqueoPin(); pinBuffer=""; actualizarPinDisplay(); } }
 function ingresarPin(d){ if(msRestantesBloqueoPin()>0){ const seg=Math.ceil(msRestantesBloqueoPin()/1000); actualizarErrorPin(`PIN bloqueado. Intenta en ${seg}s`); return; } if(d==='back') pinBuffer=pinBuffer.slice(0,-1); else if(pinBuffer.length<4) pinBuffer+=d; actualizarPinDisplay(); }
 function actualizarPinDisplay(){ document.getElementById('pinDisplay').textContent="•".repeat(pinBuffer.length); document.getElementById('pinError').style.display='none'; }
-function verificarPin(){
+async function verificarPin(){
     const msBloqueo=msRestantesBloqueoPin();
     if(msBloqueo>0){
         const seg=Math.ceil(msBloqueo/1000);
@@ -185,7 +195,8 @@ function verificarPin(){
         setTimeout(actualizarPinDisplay,500);
         return;
     }
-    if(pinBuffer===config.pin){
+    const pinEsValido=await validarPinIngresado(pinBuffer);
+    if(pinEsValido){
         document.getElementById('lockScreen').style.display='none';
         pinBuffer="";
         limpiarBloqueoPin();
@@ -206,8 +217,8 @@ function verificarPin(){
     setTimeout(actualizarPinDisplay,500);
     navigator.vibrate?.(200);
 }
-function toggleSeguridad(el){ if(el.checked){ document.getElementById('modalPinConfig').style.display='block'; document.getElementById('newPinInput').value=''; document.getElementById('newPinInput').focus(); } else { config.pin=null; limpiarBloqueoPin(); mostrarToast("PIN Desactivado","success"); actualizarCardsConfig();} }
-function guardarNuevoPin(){ const p=document.getElementById('newPinInput').value; if(p.length===4&&!isNaN(p)){ config.pin=p; limpiarBloqueoPin(); document.getElementById('modalPinConfig').style.display='none'; mostrarToast("PIN Activado","success"); actualizarCardsConfig();} else alert("PIN de 4 dígitos"); }
+function toggleSeguridad(el){ if(el.checked){ document.getElementById('modalPinConfig').style.display='block'; document.getElementById('newPinInput').value=''; document.getElementById('newPinInput').focus(); } else { config.pin=null; config.pinHash=null; config.pinSalt=null; limpiarBloqueoPin(); mostrarToast("PIN Desactivado","success"); actualizarCardsConfig();} }
+async function guardarNuevoPin(){ const p=document.getElementById('newPinInput').value; if(p.length===4&&!isNaN(p)){ const salt=generarSaltPin(); const pinHash=await hashPin(p,salt); config.pinHash=pinHash; config.pinSalt=salt; config.pin=null; limpiarBloqueoPin(); document.getElementById('modalPinConfig').style.display='none'; mostrarToast("PIN Activado","success"); actualizarCardsConfig();} else alert("PIN de 4 dígitos"); }
 function cancelarPin(){ document.getElementById('modalPinConfig').style.display='none'; document.getElementById('togglePin').checked=false; }
 function verificarRecordatorioBackup(){ if(!config.fechaUltimoBackup){ document.getElementById('backupBadge').style.display='block'; return; } const diff=Math.ceil(Math.abs(new Date()-new Date(config.fechaUltimoBackup))/(1000*60*60*24)); document.getElementById('backupBadge').style.display=(diff>7)?'block':'none'; }
 function insertarEmoji(e){ const i=document.getElementById('modalCategoriaNombre'); i.value=e+" "+i.value; i.focus(); }
@@ -720,7 +731,7 @@ function actualizarCardsConfig(){
     // 3. Actualizar Icono PIN
     const lockIcon = document.getElementById('iconLockState');
     if(lockIcon) {
-        if(config.pin) {
+        if(pinEstaActivo()) {
             lockIcon.style.color = 'var(--success-color)'; // Verde si está activo
             lockIcon.className = 'fas fa-lock mini-card-icon';
         } else {
