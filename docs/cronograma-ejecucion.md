@@ -38,6 +38,8 @@ Este cronograma continúa el plan aprobado asumiendo que la aplicación refactor
 - Mantener fallback de la versión anterior por 1-2 semanas.
 - Retirar fallback únicamente si no hay incidentes críticos.
 
+- Comunicación operativa: usar `docs/plantillas-comunicacion.md`.
+
 ## Entregables por fase
 - Piloto: bitácora diaria + decisión Go/No-Go.
 - Cutover: checklist de día de cambio completado.
