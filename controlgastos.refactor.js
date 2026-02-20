@@ -264,6 +264,14 @@ function inicializarAccionesDeclarativas(){
         else if(action==='abrir-importador') document.getElementById('inputImportar').click();
         else if(action==='borrar-todo') confirmarLimpiarTodosLosDatos();
         else if(action==='cerrar-modal-detalle') cerrarModalDetalle();
+        else if(action==='detalle-pagina') cambiarPagina(Number(actionEl.dataset.dir||0));
+        else if(action==='cerrar-modal-edicion-gasto') cerrarModal();
+        else if(action==='guardar-edicion-gasto') guardarEdicionDesdeModal();
+        else if(action==='eliminar-gasto') confirmarEliminarGasto();
+        else if(action==='cerrar-modal-edicion-ingreso') cerrarModalEdicionIngreso();
+        else if(action==='guardar-edicion-ingreso') guardarEdicionIngreso();
+        else if(action==='eliminar-ingreso') confirmarEliminarIngreso();
+        else if(action==='cerrar-modal-categoria') cerrarModalCategoria();
     });
 }
 

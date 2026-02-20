@@ -450,9 +450,9 @@
                 <tfoot><tr><td colspan="2" data-i18n="lblTotalGeneral">TOTAL GENERAL</td><td id="totalDetalleModal" class="gasto-valor"></td></tr></tfoot>
             </table>
             <div class="pagination-controls" id="paginacionDetalleModal">
-                <button class="btn btn-secondary" onclick="cambiarPagina(-1)">Ant</button>
+                <button class="btn btn-secondary" data-action="detalle-pagina" data-dir="-1">Ant</button>
                 <span id="pageInfoModal">Pág 1</span>
-                <button class="btn btn-secondary" onclick="cambiarPagina(1)">Sig</button>
+                <button class="btn btn-secondary" data-action="detalle-pagina" data-dir="1">Sig</button>
             </div>
             <button class="btn btn-secondary" style="margin-top:15px;" data-action="cerrar-modal-detalle" data-i18n="btnVolver">Volver</button>
         </div>
@@ -487,7 +487,7 @@
 
     <div id="modalEdicion" class="modal">
         <div class="modal-content">
-            <span class="close-btn" onclick="cerrarModal()">&times;</span>
+            <span class="close-btn" data-action="cerrar-modal-edicion-gasto">&times;</span>
             <h2 data-i18n="titleEditar">Editar</h2>
             <div class="form-group"><input type="date" id="modalFecha"></div>
             <div class="form-group"><select id="modalCategoria"></select></div>
@@ -502,31 +502,31 @@
                 <label for="modalPagoTransferencia"><i class="fas fa-mobile-alt"></i> <span data-i18n="lblTransf">Transf.</span></label>
             </div>
             <div class="modal-botones-row">
-                <button class="btn btn-success" onclick="guardarEdicionDesdeModal()" data-i18n="btnGuardar">Guardar</button>
-                <button class="btn btn-danger" onclick="confirmarEliminarGasto()" data-i18n="btnBorrar">Borrar</button>
-                <button class="btn btn-secondary" onclick="cerrarModal()" data-i18n="btnCancelar">Cancelar</button>
+                <button class="btn btn-success" data-action="guardar-edicion-gasto" data-i18n="btnGuardar">Guardar</button>
+                <button class="btn btn-danger" data-action="eliminar-gasto" data-i18n="btnBorrar">Borrar</button>
+                <button class="btn btn-secondary" data-action="cerrar-modal-edicion-gasto" data-i18n="btnCancelar">Cancelar</button>
             </div>
         </div>
     </div>
     
     <div id="modalEdicionIngreso" class="modal">
         <div class="modal-content">
-            <span class="close-btn" onclick="cerrarModalEdicionIngreso()">&times;</span>
+            <span class="close-btn" data-action="cerrar-modal-edicion-ingreso">&times;</span>
             <h2 data-i18n="titleEditarIngreso">Editar Ingreso</h2>
             <div class="form-group"><input type="date" id="modalFechaIngreso"></div>
             <div class="form-group"><input type="text" id="modalDescripcionIngreso"></div>
             <div class="form-group"><input type="text" id="modalValorIngreso" inputmode="decimal"></div>
             <div class="modal-botones-row">
-                <button class="btn btn-success" onclick="guardarEdicionIngreso()" data-i18n="btnGuardar">Guardar</button>
-                <button class="btn btn-danger" onclick="confirmarEliminarIngreso()" data-i18n="btnBorrar">Borrar</button>
-                <button class="btn btn-secondary" onclick="cerrarModalEdicionIngreso()" data-i18n="btnCancelar">Cancelar</button>
+                <button class="btn btn-success" data-action="guardar-edicion-ingreso" data-i18n="btnGuardar">Guardar</button>
+                <button class="btn btn-danger" data-action="eliminar-ingreso" data-i18n="btnBorrar">Borrar</button>
+                <button class="btn btn-secondary" data-action="cerrar-modal-edicion-ingreso" data-i18n="btnCancelar">Cancelar</button>
             </div>
         </div>
     </div>
     
     <div id="modalEdicionCategoria" class="modal">
         <div class="modal-content">
-            <span class="close-btn" onclick="cerrarModalCategoria()">&times;</span>
+            <span class="close-btn" data-action="cerrar-modal-categoria">&times;</span>
             <h2 data-i18n="titleRenombrar">Editar Categoría</h2>
             <div class="form-group">
                 <label data-i18n="lblNombreCat">Nombre:</label>
@@ -599,7 +599,7 @@
             </div>
             <div class="modal-botones-row">
                 <button class="btn btn-success" onclick="guardarEdicionCategoria()" data-i18n="btnGuardar">Guardar</button>
-                <button class="btn btn-secondary" onclick="cerrarModalCategoria()" data-i18n="btnCancelar">Cancelar</button>
+                <button class="btn btn-secondary" data-action="cerrar-modal-categoria" data-i18n="btnCancelar">Cancelar</button>
             </div>
         </div>
     </div>
