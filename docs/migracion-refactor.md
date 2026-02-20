@@ -16,6 +16,7 @@ Mover tráfico desde `controlgastos.html` (versión actual) hacia `controlgastos
 - Cronograma de ejecución acordado: `docs/cronograma-ejecucion.md`.
 - Para ejecutar piloto y cutover con checklist paso a paso, usar `docs/runbook-piloto-cutover.md`.
 - Para ejecución puntual del día de cambio, usar `docs/cutover-dia-checklist.md`.
+- Si decides omitir piloto e ir directo, usar `docs/produccion-directa.md`.
 
 ---
 
