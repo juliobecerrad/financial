@@ -245,6 +245,9 @@ function inicializarAccionesDeclarativas(){
         const keypad=e.target.closest('[data-keypad]');
         if(keypad){ tecladoPress(keypad.dataset.keypad); return; }
 
+        const stopEl=e.target.closest('[data-stop-propagation]');
+        if(stopEl){ e.stopPropagation(); return; }
+
         const actionEl=e.target.closest('[data-action]');
         if(!actionEl) return;
 
@@ -254,6 +257,13 @@ function inicializarAccionesDeclarativas(){
         else if(action==='toggle-gastos') toggleTablaGastos();
         else if(action==='toggle-ingresos') toggleTablaIngresos();
         else if(action==='cambiar-fecha') cambiarFechaSmart(actionEl.dataset.target);
+        else if(action==='trigger-toggle-pin') triggerTogglePin(e);
+        else if(action==='abrir-modal-moneda') abrirModalMoneda();
+        else if(action==='abrir-modal-idioma') abrirModalIdioma();
+        else if(action==='backup-json') compartirBackupJSON();
+        else if(action==='abrir-importador') document.getElementById('inputImportar').click();
+        else if(action==='borrar-todo') confirmarLimpiarTodosLosDatos();
+        else if(action==='cerrar-modal-detalle') cerrarModalDetalle();
     });
 }
 
@@ -285,6 +295,7 @@ function inicializarUI(){
     }; 
 
     const f=document.getElementById('inputImportar'); if(f) f.addEventListener('change',importarDatos); 
+    const buscadorDetalle=document.getElementById('buscarDetalleModal'); if(buscadorDetalle) buscadorDetalle.addEventListener('input',filtrarTablaDetalle);
     document.querySelectorAll('input[name="filtroTipoPagoMensual"]').forEach(r=>{r.addEventListener('change',(e)=>{filtroPagoMensual=e.target.value;actualizarResumenMensual()})}); 
     document.querySelectorAll('input[name="filtroTipoPagoHistorico"]').forEach(r=>{r.addEventListener('change',(e)=>{filtroPagoHistorico=e.target.value;actualizarResumenHistorico(true)})}); 
 }

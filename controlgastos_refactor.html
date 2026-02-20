@@ -369,22 +369,22 @@
         
         <div class="config-top-grid">
             
-            <div class="config-mini-card" onclick="triggerTogglePin(event)">
+            <div class="config-mini-card" data-action="trigger-toggle-pin">
                 <i class="fas fa-lock mini-card-icon" id="iconLockState"></i>
-                <label class="toggle-switch mini-switch" onclick="event.stopPropagation()">
+                <label class="toggle-switch mini-switch" data-stop-propagation="1">
                     <input type="checkbox" id="togglePin" onchange="toggleSeguridad(this)">
                     <span class="slider"></span>
                 </label>
                 <span class="mini-card-label">PIN</span>
             </div>
 
-            <div class="config-mini-card" onclick="abrirModalMoneda()">
+            <div class="config-mini-card" data-action="abrir-modal-moneda">
                 <div class="mini-card-icon" id="displayMonedaCard" style="font-weight:bold; font-family:sans-serif;">$</div>
                 <div style="font-size:0.8em; color:var(--secondary-color);">Cambiar</div>
                 <span class="mini-card-label" data-i18n="lblMoneda">Moneda</span>
             </div>
 
-            <div class="config-mini-card" onclick="abrirModalIdioma()">
+            <div class="config-mini-card" data-action="abrir-modal-idioma">
                 <i class="fas fa-globe mini-card-icon"></i>
                 <div id="displayIdiomaCard" style="font-size:0.8em; font-weight:bold; color:var(--text-main);">ES</div>
                 <span class="mini-card-label" data-i18n="lblIdioma">Idioma</span>
@@ -398,7 +398,7 @@
         <h3 style="margin-top: 30px;" data-i18n="titleDatos">Gestión de Datos</h3>
         
         <div class="data-actions-container">
-            <div class="action-card" onclick="compartirBackupJSON()">
+            <div class="action-card" data-action="backup-json">
                 <div class="action-icon-box icon-backup">
                     <i class="fas fa-cloud-upload-alt"></i>
                 </div>
@@ -410,7 +410,7 @@
             </div>
 
             <input type="file" id="inputImportar" style="display: none;">
-            <div class="action-card" onclick="document.getElementById('inputImportar').click()">
+            <div class="action-card" data-action="abrir-importador">
                 <div class="action-icon-box icon-restore">
                     <i class="fas fa-cloud-download-alt"></i>
                 </div>
@@ -423,7 +423,7 @@
         </div>
 
         <div class="danger-zone">
-            <button class="btn-danger-zone" onclick="confirmarLimpiarTodosLosDatos()">
+            <button class="btn-danger-zone" data-action="borrar-todo">
                 <i class="fas fa-exclamation-triangle"></i>
                 <span data-i18n="btnBorrarTodo">Eliminar Todos los Datos</span>
             </button>
@@ -436,14 +436,14 @@
     
     <div id="modalDetalleGastos" class="modal">
         <div class="modal-content">
-            <span class="close-btn" onclick="cerrarModalDetalle()">&times;</span>
+            <span class="close-btn" data-action="cerrar-modal-detalle">&times;</span>
             <h3 style="margin-top:0; margin-bottom:15px;"><span data-i18n="titleDetalle">Detalle</span>: <span id="modalDetalleCategoriaTitulo" style="color: var(--primary-color);"></span></h3>
             <div class="modal-chart-scroll-container" id="modalChartContainer">
                 <div class="modal-chart-wrapper">
                     <canvas id="modalChartCanvas"></canvas>
                 </div>
             </div>
-            <input type="text" id="buscarDetalleModal" class="input-buscar" data-i18n-ph="phBuscar" placeholder="Buscar..." onkeyup="filtrarTablaDetalle()">
+            <input type="text" id="buscarDetalleModal" class="input-buscar" data-i18n-ph="phBuscar" placeholder="Buscar...">
             <table id="tablaDetalleModal" class="tabla-gastos">
                 <thead><tr><th data-i18n="colFecha">Fecha</th><th data-i18n="colDesc">Descripción</th><th data-i18n="colValor">Valor</th></tr></thead>
                 <tbody></tbody>
@@ -454,7 +454,7 @@
                 <span id="pageInfoModal">Pág 1</span>
                 <button class="btn btn-secondary" onclick="cambiarPagina(1)">Sig</button>
             </div>
-            <button class="btn btn-secondary" style="margin-top:15px;" onclick="cerrarModalDetalle()" data-i18n="btnVolver">Volver</button>
+            <button class="btn btn-secondary" style="margin-top:15px;" data-action="cerrar-modal-detalle" data-i18n="btnVolver">Volver</button>
         </div>
     </div>
 
