@@ -21,9 +21,11 @@ Comandos sugeridos:
 
 ```bash
 cd /workspace/financial
-scripts/smoke-refactor.sh
+scripts/iniciar-piloto.sh
 scripts/start-beta-local.sh 4173
 ```
+
+> `scripts/iniciar-piloto.sh` ejecuta pre-flight y crea el paquete inicial de registros en `docs/registros/piloto-YYYYMMDD/`.
 
 ## 2) Piloto controlado (5-10%)
 

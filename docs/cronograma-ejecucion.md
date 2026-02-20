@@ -45,5 +45,6 @@ Este cronograma continúa el plan aprobado asumiendo que la aplicación refactor
 
 ## Entregables por fase
 - Piloto: bitácora diaria + decisión Go/No-Go.
+- Inicio operativo sugerido: `scripts/iniciar-piloto.sh`.
 - Cutover: checklist de día de cambio completado.
 - Cierre: resumen de resultados y backlog de mejoras.
