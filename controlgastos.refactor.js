@@ -263,50 +263,52 @@ function inicializarAccionesDeclarativas(){
         const actionEl=e.target.closest('[data-action]');
         if(!actionEl) return;
 
-        const actionHandlers={
-            'agregar-gasto':()=>agregarGasto(),
-            'agregar-ingreso':()=>agregarIngreso(),
-            'toggle-gastos':()=>toggleTablaGastos(),
-            'toggle-ingresos':()=>toggleTablaIngresos(),
-            'cambiar-fecha':()=>cambiarFechaSmart(actionEl.dataset.target),
-            'trigger-toggle-pin':()=>triggerTogglePin(e),
-            'abrir-modal-moneda':()=>abrirModalMoneda(),
-            'abrir-modal-idioma':()=>abrirModalIdioma(),
-            'backup-json':()=>compartirBackupJSON(),
-            'abrir-importador':()=>document.getElementById('inputImportar').click(),
-            'borrar-todo':()=>confirmarLimpiarTodosLosDatos(),
-            'cerrar-modal-detalle':()=>cerrarModalDetalle(),
-            'detalle-pagina':()=>cambiarPagina(Number(actionEl.dataset.dir||0)),
-            'cerrar-modal-edicion-gasto':()=>cerrarModal(),
-            'guardar-edicion-gasto':()=>guardarEdicionDesdeModal(),
-            'eliminar-gasto':()=>confirmarEliminarGasto(),
-            'cerrar-modal-edicion-ingreso':()=>cerrarModalEdicionIngreso(),
-            'guardar-edicion-ingreso':()=>guardarEdicionIngreso(),
-            'eliminar-ingreso':()=>confirmarEliminarIngreso(),
-            'cerrar-modal-categoria':()=>cerrarModalCategoria(),
-            'pagina-gastos':()=>cambiarPaginaPrincipal(Number(actionEl.dataset.dir||0)),
-            'anio-ingreso':()=>cambiarAnioIngreso(Number(actionEl.dataset.dir||0)),
-            'pagina-ingresos':()=>cambiarPaginaIngresos(Number(actionEl.dataset.dir||0)),
-            'export-csv':()=>generarYCompartirCSV(actionEl.dataset.kind),
-            'export-pdf':()=>generarPDF(actionEl.dataset.kind),
-            'toggle-presupuestos':()=>togglePresupuestos(),
-            'abrir-modal-anual':()=>abrirModalTablaAnual(),
-            'cerrar-modal-anual':()=>cerrarModalTablaAnual(),
-            'guardar-edicion-categoria':()=>guardarEdicionCategoria(),
-            'cerrar-modal-moneda':()=>{document.getElementById('modalSeleccionMoneda').style.display='none';},
-            'cambiar-moneda':()=>cambiarMoneda(actionEl.dataset.value),
-            'cerrar-modal-idioma':()=>{document.getElementById('modalSeleccionIdioma').style.display='none';},
-            'cambiar-idioma':()=>cambiarIdioma(actionEl.dataset.value),
-            'ejecutar-confirmacion':()=>ejecutarConfirmacion(),
-            'cerrar-modal-confirmacion':()=>cerrarModalConfirmacion(),
-            'guardar-nuevo-pin':()=>guardarNuevoPin(),
-            'cancelar-pin':()=>cancelarPin(),
-            'mostrar-pantalla':()=>mostrarPantalla(actionEl.dataset.screen, actionEl),
-            'insertar-emoji':()=>insertarEmoji(actionEl.dataset.value)
-        };
+        if(!inicializarAccionesDeclarativas._actionHandlers){
+            inicializarAccionesDeclarativas._actionHandlers={
+                'agregar-gasto':()=>agregarGasto(),
+                'agregar-ingreso':()=>agregarIngreso(),
+                'toggle-gastos':()=>toggleTablaGastos(),
+                'toggle-ingresos':()=>toggleTablaIngresos(),
+                'cambiar-fecha':({actionEl})=>cambiarFechaSmart(actionEl.dataset.target),
+                'trigger-toggle-pin':({e})=>triggerTogglePin(e),
+                'abrir-modal-moneda':()=>abrirModalMoneda(),
+                'abrir-modal-idioma':()=>abrirModalIdioma(),
+                'backup-json':()=>compartirBackupJSON(),
+                'abrir-importador':()=>document.getElementById('inputImportar').click(),
+                'borrar-todo':()=>confirmarLimpiarTodosLosDatos(),
+                'cerrar-modal-detalle':()=>cerrarModalDetalle(),
+                'detalle-pagina':({actionEl})=>cambiarPagina(Number(actionEl.dataset.dir||0)),
+                'cerrar-modal-edicion-gasto':()=>cerrarModal(),
+                'guardar-edicion-gasto':()=>guardarEdicionDesdeModal(),
+                'eliminar-gasto':()=>confirmarEliminarGasto(),
+                'cerrar-modal-edicion-ingreso':()=>cerrarModalEdicionIngreso(),
+                'guardar-edicion-ingreso':()=>guardarEdicionIngreso(),
+                'eliminar-ingreso':()=>confirmarEliminarIngreso(),
+                'cerrar-modal-categoria':()=>cerrarModalCategoria(),
+                'pagina-gastos':({actionEl})=>cambiarPaginaPrincipal(Number(actionEl.dataset.dir||0)),
+                'anio-ingreso':({actionEl})=>cambiarAnioIngreso(Number(actionEl.dataset.dir||0)),
+                'pagina-ingresos':({actionEl})=>cambiarPaginaIngresos(Number(actionEl.dataset.dir||0)),
+                'export-csv':({actionEl})=>generarYCompartirCSV(actionEl.dataset.kind),
+                'export-pdf':({actionEl})=>generarPDF(actionEl.dataset.kind),
+                'toggle-presupuestos':()=>togglePresupuestos(),
+                'abrir-modal-anual':()=>abrirModalTablaAnual(),
+                'cerrar-modal-anual':()=>cerrarModalTablaAnual(),
+                'guardar-edicion-categoria':()=>guardarEdicionCategoria(),
+                'cerrar-modal-moneda':()=>{document.getElementById('modalSeleccionMoneda').style.display='none';},
+                'cambiar-moneda':({actionEl})=>cambiarMoneda(actionEl.dataset.value),
+                'cerrar-modal-idioma':()=>{document.getElementById('modalSeleccionIdioma').style.display='none';},
+                'cambiar-idioma':({actionEl})=>cambiarIdioma(actionEl.dataset.value),
+                'ejecutar-confirmacion':()=>ejecutarConfirmacion(),
+                'cerrar-modal-confirmacion':()=>cerrarModalConfirmacion(),
+                'guardar-nuevo-pin':()=>guardarNuevoPin(),
+                'cancelar-pin':()=>cancelarPin(),
+                'mostrar-pantalla':({actionEl})=>mostrarPantalla(actionEl.dataset.screen, actionEl),
+                'insertar-emoji':({actionEl})=>insertarEmoji(actionEl.dataset.value)
+            };
+        }
 
-        const handler=actionHandlers[actionEl.dataset.action];
-        if(handler) handler();
+        const handler=inicializarAccionesDeclarativas._actionHandlers[actionEl.dataset.action];
+        if(handler) handler({actionEl,e});
     });
 }
 
