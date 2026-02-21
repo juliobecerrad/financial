@@ -1,4 +1,4 @@
-const CACHE_NAME = 'control-gastos-v2-offline'; // Cambié el nombre para forzar actualización
+const CACHE_NAME = 'control-gastos-v3-offline'; // Cambié el nombre para forzar actualización
 
 // Lista de archivos requeridos
 const urlsToCache = [
@@ -78,3 +78,4 @@ self.addEventListener('activate', (event) => {
     })
   );
 });
+
