@@ -263,46 +263,50 @@ function inicializarAccionesDeclarativas(){
         const actionEl=e.target.closest('[data-action]');
         if(!actionEl) return;
 
-        const action=actionEl.dataset.action;
-        if(action==='agregar-gasto') agregarGasto();
-        else if(action==='agregar-ingreso') agregarIngreso();
-        else if(action==='toggle-gastos') toggleTablaGastos();
-        else if(action==='toggle-ingresos') toggleTablaIngresos();
-        else if(action==='cambiar-fecha') cambiarFechaSmart(actionEl.dataset.target);
-        else if(action==='trigger-toggle-pin') triggerTogglePin(e);
-        else if(action==='abrir-modal-moneda') abrirModalMoneda();
-        else if(action==='abrir-modal-idioma') abrirModalIdioma();
-        else if(action==='backup-json') compartirBackupJSON();
-        else if(action==='abrir-importador') document.getElementById('inputImportar').click();
-        else if(action==='borrar-todo') confirmarLimpiarTodosLosDatos();
-        else if(action==='cerrar-modal-detalle') cerrarModalDetalle();
-        else if(action==='detalle-pagina') cambiarPagina(Number(actionEl.dataset.dir||0));
-        else if(action==='cerrar-modal-edicion-gasto') cerrarModal();
-        else if(action==='guardar-edicion-gasto') guardarEdicionDesdeModal();
-        else if(action==='eliminar-gasto') confirmarEliminarGasto();
-        else if(action==='cerrar-modal-edicion-ingreso') cerrarModalEdicionIngreso();
-        else if(action==='guardar-edicion-ingreso') guardarEdicionIngreso();
-        else if(action==='eliminar-ingreso') confirmarEliminarIngreso();
-        else if(action==='cerrar-modal-categoria') cerrarModalCategoria();
-        else if(action==='pagina-gastos') cambiarPaginaPrincipal(Number(actionEl.dataset.dir||0));
-        else if(action==='anio-ingreso') cambiarAnioIngreso(Number(actionEl.dataset.dir||0));
-        else if(action==='pagina-ingresos') cambiarPaginaIngresos(Number(actionEl.dataset.dir||0));
-        else if(action==='export-csv') generarYCompartirCSV(actionEl.dataset.kind);
-        else if(action==='export-pdf') generarPDF(actionEl.dataset.kind);
-        else if(action==='toggle-presupuestos') togglePresupuestos();
-        else if(action==='abrir-modal-anual') abrirModalTablaAnual();
-        else if(action==='cerrar-modal-anual') cerrarModalTablaAnual();
-        else if(action==='guardar-edicion-categoria') guardarEdicionCategoria();
-        else if(action==='cerrar-modal-moneda') document.getElementById('modalSeleccionMoneda').style.display='none';
-        else if(action==='cambiar-moneda') cambiarMoneda(actionEl.dataset.value);
-        else if(action==='cerrar-modal-idioma') document.getElementById('modalSeleccionIdioma').style.display='none';
-        else if(action==='cambiar-idioma') cambiarIdioma(actionEl.dataset.value);
-        else if(action==='ejecutar-confirmacion') ejecutarConfirmacion();
-        else if(action==='cerrar-modal-confirmacion') cerrarModalConfirmacion();
-        else if(action==='guardar-nuevo-pin') guardarNuevoPin();
-        else if(action==='cancelar-pin') cancelarPin();
-        else if(action==='mostrar-pantalla') mostrarPantalla(actionEl.dataset.screen, actionEl);
-        else if(action==='insertar-emoji') insertarEmoji(actionEl.dataset.value);
+        const actionHandlers={
+            'agregar-gasto':()=>agregarGasto(),
+            'agregar-ingreso':()=>agregarIngreso(),
+            'toggle-gastos':()=>toggleTablaGastos(),
+            'toggle-ingresos':()=>toggleTablaIngresos(),
+            'cambiar-fecha':()=>cambiarFechaSmart(actionEl.dataset.target),
+            'trigger-toggle-pin':()=>triggerTogglePin(e),
+            'abrir-modal-moneda':()=>abrirModalMoneda(),
+            'abrir-modal-idioma':()=>abrirModalIdioma(),
+            'backup-json':()=>compartirBackupJSON(),
+            'abrir-importador':()=>document.getElementById('inputImportar').click(),
+            'borrar-todo':()=>confirmarLimpiarTodosLosDatos(),
+            'cerrar-modal-detalle':()=>cerrarModalDetalle(),
+            'detalle-pagina':()=>cambiarPagina(Number(actionEl.dataset.dir||0)),
+            'cerrar-modal-edicion-gasto':()=>cerrarModal(),
+            'guardar-edicion-gasto':()=>guardarEdicionDesdeModal(),
+            'eliminar-gasto':()=>confirmarEliminarGasto(),
+            'cerrar-modal-edicion-ingreso':()=>cerrarModalEdicionIngreso(),
+            'guardar-edicion-ingreso':()=>guardarEdicionIngreso(),
+            'eliminar-ingreso':()=>confirmarEliminarIngreso(),
+            'cerrar-modal-categoria':()=>cerrarModalCategoria(),
+            'pagina-gastos':()=>cambiarPaginaPrincipal(Number(actionEl.dataset.dir||0)),
+            'anio-ingreso':()=>cambiarAnioIngreso(Number(actionEl.dataset.dir||0)),
+            'pagina-ingresos':()=>cambiarPaginaIngresos(Number(actionEl.dataset.dir||0)),
+            'export-csv':()=>generarYCompartirCSV(actionEl.dataset.kind),
+            'export-pdf':()=>generarPDF(actionEl.dataset.kind),
+            'toggle-presupuestos':()=>togglePresupuestos(),
+            'abrir-modal-anual':()=>abrirModalTablaAnual(),
+            'cerrar-modal-anual':()=>cerrarModalTablaAnual(),
+            'guardar-edicion-categoria':()=>guardarEdicionCategoria(),
+            'cerrar-modal-moneda':()=>{document.getElementById('modalSeleccionMoneda').style.display='none';},
+            'cambiar-moneda':()=>cambiarMoneda(actionEl.dataset.value),
+            'cerrar-modal-idioma':()=>{document.getElementById('modalSeleccionIdioma').style.display='none';},
+            'cambiar-idioma':()=>cambiarIdioma(actionEl.dataset.value),
+            'ejecutar-confirmacion':()=>ejecutarConfirmacion(),
+            'cerrar-modal-confirmacion':()=>cerrarModalConfirmacion(),
+            'guardar-nuevo-pin':()=>guardarNuevoPin(),
+            'cancelar-pin':()=>cancelarPin(),
+            'mostrar-pantalla':()=>mostrarPantalla(actionEl.dataset.screen, actionEl),
+            'insertar-emoji':()=>insertarEmoji(actionEl.dataset.value)
+        };
+
+        const handler=actionHandlers[actionEl.dataset.action];
+        if(handler) handler();
     });
 }
 
