@@ -314,12 +314,12 @@ function inicializarUI(){
         di.addEventListener('focus', () => ocultarConfirmaciones()); // <--- OCULTAR AL ESCRIBIR
     }
 
-    window.onclick=(e)=>{ 
+    document.addEventListener('click',(e)=>{ 
         if(e.target.className==='modal'||e.target.className==='close-btn') { document.querySelectorAll('.modal').forEach(m=>m.style.display='none'); } 
         const g=document.getElementById('smartCategories'); 
         const c=e.target.closest('.smart-cat-grid')||e.target.closest('.cat-btn')||e.target.closest('#gastoDescripcion'); 
         if(!c&&g){ if(document.getElementById('gastoCategoria').value!==""||document.getElementById('gastoDescripcion').value.trim().length>0) g.classList.remove('expanded'); } 
-    }; 
+    }); 
 
     const f=document.getElementById('inputImportar'); if(f) f.addEventListener('change',importarDatos); 
     const buscadorDetalle=document.getElementById('buscarDetalleModal'); if(buscadorDetalle) buscadorDetalle.addEventListener('input',filtrarTablaDetalle);
