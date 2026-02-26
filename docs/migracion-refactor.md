@@ -13,6 +13,20 @@ Mover tráfico desde `controlgastos.html` (versión actual) hacia `controlgastos
 ---
 
 ## Guía operativa
+
+### Ejecución integral (sin paso a paso manual)
+Si necesitas correr todo el proceso de una sola vez, usa:
+
+```bash
+scripts/finalizar-refactor.sh --modo piloto
+```
+
+Para cerrar directo a producción (con backup automático):
+
+```bash
+scripts/finalizar-refactor.sh --modo directo --deploy
+```
+
 - Cronograma de ejecución acordado: `docs/cronograma-ejecucion.md`.
 - Para ejecutar piloto y cutover con checklist paso a paso, usar `docs/runbook-piloto-cutover.md`.
 - Para ejecución puntual del día de cambio, usar `docs/cutover-dia-checklist.md`.
